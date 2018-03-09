@@ -6,7 +6,8 @@ package com.bimapp.model.oauth;
 
 public class OAuthHandler {
 
-    public OAuthHandler(){
+    public OAuthHandler(String link, String Scope){
+        
 
     }
 }
