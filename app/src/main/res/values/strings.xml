@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BimApp</string>
+    <string name="welcome_message">You need to log in.</string>
+    <string name="log_in_button">Log In</string>
 </resources>
