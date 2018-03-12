@@ -12,7 +12,7 @@ public class BimApp extends Application {
     private String AuthorizationCode;
 
     @Override
-    public void onCreate() {
+    public void onCreate(){
         super.onCreate();
         AuthorizationCode = getAuthorizationCodeFromStorage();
     }

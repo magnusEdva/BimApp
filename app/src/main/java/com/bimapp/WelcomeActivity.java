@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -34,12 +35,13 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     public void onNewIntent(Intent intent){
         Uri uri = intent.getData();
-
+        Log.d("sug", "meg");
         if (uri != null && uri.toString().startsWith("bimapp://oauthresponse")){
             String code = uri.getQueryParameter("code");
 
             BimApp context = (BimApp) getApplication();
             context.setAuthorizationCode(code);
+
             Intent launchLoggedin = new Intent(this.getApplicationContext(), LoggedIn.class);
             startActivity(launchLoggedin);
         }
