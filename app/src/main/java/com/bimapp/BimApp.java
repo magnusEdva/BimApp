@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.bimapp.model.oauth.OAuthHandler;
+
 /**
  * Context class
  */
@@ -11,15 +13,22 @@ import android.content.SharedPreferences;
 public class BimApp extends Application {
 
     private String AuthorizationCode;
+    private OAuthHandler mOAuth;
 
     @Override
     public void onCreate(){
         super.onCreate();
         AuthorizationCode = getAuthorizationCodeFromStorage();
-        if(AuthorizationCode == null){
-            Intent intent = new Intent(this, WelcomeActivity.class);
-            startActivity(intent);
+        mOAuth = new OAuthHandler(this);
+
+        if(!isLoggedIn()){
+            logIn();
         }
+
+    }
+
+    public OAuthHandler getmOAuth(){
+        return mOAuth;
     }
 
     public String getAuthorizatonCode(){
@@ -38,4 +47,15 @@ public class BimApp extends Application {
         SharedPreferences prefs = getSharedPreferences("oAuth", MODE_PRIVATE);
         return prefs.getString("AuthorizationCode", null);
     }
+
+    public boolean isLoggedIn(){
+        return AuthorizationCode != null;
+    }
+
+    public void logIn(){
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        startActivity(intent);
+    }
+
+
 }

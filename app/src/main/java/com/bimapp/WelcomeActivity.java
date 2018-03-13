@@ -23,27 +23,13 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-    }
 
-    public void login_button(View view){
-        String url = "https://api.bimsync.com/1.0/oauth/authorize?client_id=RoQ3h7VtoKkAMnS&redirect_uri=bimapp://oauthresponse&state=1&response_type=code";
+        BimApp context = (BimApp) getApplication();
+        String URL = context.getmOAuth().getoAuthUrI();
+
+
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
         CustomTabsIntent customTabsIntent = builder.build();
-        customTabsIntent.launchUrl(this, Uri.parse(url));
-    }
-
-    @Override
-    public void onNewIntent(Intent intent){
-        Uri uri = intent.getData();
-        Log.d("sug", "meg");
-        if (uri != null && uri.toString().startsWith("bimapp://oauthresponse")){
-            String code = uri.getQueryParameter("code");
-
-            BimApp context = (BimApp) getApplication();
-            context.setAuthorizationCode(code);
-
-            Intent launchLoggedin = new Intent(this.getApplicationContext(), LoggedIn.class);
-            startActivity(launchLoggedin);
-        }
+        customTabsIntent.launchUrl(this, Uri.parse(URL));
     }
 }
