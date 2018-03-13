@@ -3,8 +3,7 @@
     <string name="welcome_message">You need to log in.</string>
     <string name="log_in_button">Log In</string>
     <string name="BimSyncURL">https://api.bimsync.com/</string>
-    <string name="APIversion">1.0/</string>
-    <string name="oAuth0">oauth/authorize</string>
+    <string name="oAuth0">oauth2/authorize</string>
     <string name="oAuthRedirectURI">&amp;redirect_uri=bimapp://oauthresponse</string>
     <string name="oAuthClientId">\?client_id=</string>
     <string name="oAuthEnd">&amp;state=1&amp;response_type=code</string>
