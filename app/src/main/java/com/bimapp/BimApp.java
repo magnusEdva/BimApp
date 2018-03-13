@@ -1,6 +1,7 @@
 package com.bimapp;
 
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
 /**
@@ -15,6 +16,10 @@ public class BimApp extends Application {
     public void onCreate(){
         super.onCreate();
         AuthorizationCode = getAuthorizationCodeFromStorage();
+        if(AuthorizationCode == null){
+            Intent intent = new Intent(this, WelcomeActivity.class);
+            startActivity(intent);
+        }
     }
 
     public String getAuthorizatonCode(){
