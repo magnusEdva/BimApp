@@ -28,7 +28,7 @@ public class HomeActivity extends AppCompatActivity {
                 String code = uri.getQueryParameter("code");
 
                 BimApp context = (BimApp) getApplication();
-                context.setAuthorizationCode(code);
+                //context.setAuthorizationCode(code);
             }
         }
     }

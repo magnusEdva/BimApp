@@ -34,64 +34,6 @@ public class LoggedIn extends AppCompatActivity {
         //getToken(code);
     }
 
-    private void getToken(final String code){
-
-
-        String url = "https://api.bimsync.com/oauth2/token";
-
-
-
-        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try{
-                            Log.d("Access Token","???");
-                        } catch (Exception e){
-                            e.printStackTrace();
-                        }
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("Something happened", error.toString());
-                        error.printStackTrace();
-                    }
-                }
-        ) {
-            @Override
-            protected Map<String, String> getParams()
-            {
-                Map<String, String>  params = new HashMap<>();
-                // the POST parameters:
-                params.put("client_id", APIkey.Client_id);
-                params.put("client_secret",APIkey.Secret_id);
-                params.put("code", code );
-                params.put("grant_type", "authorization_code");
-                params.put("redirect_uri", "bimapp://oauthresponse");
-                return params;
-            }
-            @Override
-                    public String getBodyContentType()
-            {
-                return "application/x-www-form-urlencoded";
-
-            }
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError
-            {
-                Map<String, String> headers = new HashMap<String, String>();
-
-                headers.put("Accept", "application/json");
-
-                return headers;
-            }
-        };
-
-        mApplication.add(postRequest);
-    }
 
 
 
