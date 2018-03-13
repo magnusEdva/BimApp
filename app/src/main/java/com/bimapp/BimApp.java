@@ -48,6 +48,30 @@ public class BimApp extends Application {
         return prefs.getString("AuthorizationCode", null);
     }
 
+    public void storeRefreshToken(String refreshToken){
+        SharedPreferences prefs = getSharedPreferences("oAuth", MODE_PRIVATE);
+        SharedPreferences.Editor edit = prefs.edit();
+        edit.putString("RefreshToken", refreshToken);
+        edit.apply();
+    }
+
+    public String getRefreshToken(){
+        SharedPreferences prefs = getSharedPreferences("oAuth", MODE_PRIVATE);
+        return prefs.getString("RefreshToken", null);
+    }
+    public void storeAccesToken(String accessToken){
+        SharedPreferences prefs = getSharedPreferences("oAuth", MODE_PRIVATE);
+        SharedPreferences.Editor edit = prefs.edit();
+        edit.putString("AccessToken", accessToken);
+        edit.apply();
+    }
+
+    public String getAcessToken(){
+        SharedPreferences prefs = getSharedPreferences("oAuth", MODE_PRIVATE);
+        return prefs.getString("AccessToken", null);
+    }
+
+
     public boolean isLoggedIn(){
         return AuthorizationCode != null;
     }
@@ -56,6 +80,9 @@ public class BimApp extends Application {
         Intent intent = new Intent(this, WelcomeActivity.class);
         startActivity(intent);
     }
+
+
+
 
 
 }
