@@ -29,13 +29,17 @@ public class LoggedIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in);
         mApplication = (BimApp) this.getApplicationContext();
-        Uri uri = getIntent().getData();
+        //String code = getIntent().getData().getQueryParameter("code");
 
-        if (uri != null && uri.toString().startsWith("bimapp://oauthresponse")) {
-            storeCode(uri.getQueryParameter("code"));
-            Log.d(uri.toString(), "message");
-        }
-        String url = "https://api.bimsync.com/oauth2/token"; //"http://10.0.0.8:8089/oauth2/token"
+        //getToken(code);
+    }
+
+    private void getToken(final String code){
+
+
+        String url = "https://api.bimsync.com/oauth2/token";
+
+
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -64,7 +68,7 @@ public class LoggedIn extends AppCompatActivity {
                 // the POST parameters:
                 params.put("client_id", APIkey.Client_id);
                 params.put("client_secret",APIkey.Secret_id);
-                params.put("code", mApplication.getAuthorizatonCode() );
+                params.put("code", code );
                 params.put("grant_type", "authorization_code");
                 params.put("redirect_uri", "bimapp://oauthresponse");
                 return params;
@@ -85,12 +89,10 @@ public class LoggedIn extends AppCompatActivity {
                 return headers;
             }
         };
-        Volley.newRequestQueue(this).add(postRequest);
+
+        mApplication.add(postRequest);
     }
 
-    private void storeCode(String code) {
-        mApplication.setAuthorizationCode(code);
-    }
 
 
 }
