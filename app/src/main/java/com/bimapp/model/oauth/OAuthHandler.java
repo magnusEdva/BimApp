@@ -99,4 +99,11 @@ public class OAuthHandler {
         URI.append(mContext.getText(R.string.oAuthEnd));
         return URI.toString();
     }
+
+    public void launchBrowser(){
+        String url = getoAuthUrI();
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.launchUrl(mContext, Uri.parse(url));
+    }
 }
