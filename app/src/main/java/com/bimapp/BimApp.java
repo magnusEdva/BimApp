@@ -59,10 +59,11 @@ public class BimApp extends Application {
         SharedPreferences prefs = getSharedPreferences("oAuth", MODE_PRIVATE);
         return prefs.getString("RefreshToken", null);
     }
-    public void storeAccesToken(String accessToken){
+    public void storeAccesToken(String accessToken, int expiration ){
         SharedPreferences prefs = getSharedPreferences("oAuth", MODE_PRIVATE);
         SharedPreferences.Editor edit = prefs.edit();
         edit.putString("AccessToken", accessToken);
+        edit.putLong("ExpiresAt",System.currentTimeMillis() + (expiration * 1000));
         edit.apply();
     }
 
