@@ -3,7 +3,11 @@ package com.bimapp;
 import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.nfc.Tag;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.bimapp.model.oauth.OAuthHandler;
 
 /**
@@ -12,13 +16,14 @@ import com.bimapp.model.oauth.OAuthHandler;
 
 public class BimApp extends Application {
 
-    private String AuthorizationCode;
+
     private OAuthHandler mOAuth;
+    private RequestQueue requestQueue;
 
     @Override
     public void onCreate(){
         super.onCreate();
-        AuthorizationCode = getAuthorizationCodeFromStorage();
+        requestQueue = Volley.newRequestQueue(this);
         mOAuth = new OAuthHandler(this);
 
         if(!isLoggedIn()){
@@ -31,22 +36,6 @@ public class BimApp extends Application {
         return mOAuth;
     }
 
-    public String getAuthorizatonCode(){
-        return AuthorizationCode;
-    }
-
-    public void setAuthorizationCode(String code){
-        AuthorizationCode = code;
-        SharedPreferences prefs = getSharedPreferences("oAuth", MODE_PRIVATE);
-        SharedPreferences.Editor edit = prefs.edit();
-        edit.putString("AuthorizationCode", AuthorizationCode);
-        edit.apply();
-    }
-
-    public String getAuthorizationCodeFromStorage(){
-        SharedPreferences prefs = getSharedPreferences("oAuth", MODE_PRIVATE);
-        return prefs.getString("AuthorizationCode", null);
-    }
 
     public void storeRefreshToken(String refreshToken){
         SharedPreferences prefs = getSharedPreferences("oAuth", MODE_PRIVATE);
@@ -72,9 +61,26 @@ public class BimApp extends Application {
         return prefs.getString("AccessToken", null);
     }
 
+    public Boolean isValidAccessToken(){
+        SharedPreferences prefs = getSharedPreferences("oAuth", MODE_PRIVATE);
+        Long expirationDate =  prefs.getLong("AccessToken", 0l);
+
+        return expirationDate < System.currentTimeMillis() - 100000;
+
+    }
 
     public boolean isLoggedIn(){
-        return AuthorizationCode != null;
+        if(isValidAccessToken())
+            return true;
+        else if(getRefreshToken() != null){
+            return  refreshToken();
+        }
+        return false;
+
+    }
+
+    public boolean refreshToken(){
+        return false;
     }
 
     public void logIn(){
@@ -82,8 +88,17 @@ public class BimApp extends Application {
         startActivity(intent);
     }
 
+    public RequestQueue getRequestQueue(){
+        return requestQueue;
+    }
 
-
+    public <T> void add(Request<T> req){
+        req.setTag("lol");
+        requestQueue.add(req);
+    }
+    public void cancel(){
+        requestQueue.cancelAll("lol");
+    }
 
 
 }
