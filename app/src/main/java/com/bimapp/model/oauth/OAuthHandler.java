@@ -32,7 +32,7 @@ public class OAuthHandler {
      * Always fetches a new AccessToken
      * @return
      */
-    public String getAccessToken(final String code){
+    public String getAccessToken(final String code, final OAuthCallback callback){
 
 
             String url = "https://api.bimsync.com/oauth2/token"; //TODO Move this to strings XML
@@ -41,6 +41,7 @@ public class OAuthHandler {
                         @Override
                         public void onResponse(String response) {
                             try{
+                                callback.onSuccessResponse(response);
 
                                 Log.d("Access Token","???");
                             } catch (Exception e){
@@ -51,6 +52,7 @@ public class OAuthHandler {
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            callback.onErrorResponse(error);
                             Log.d("Something happened", error.toString());
                             error.printStackTrace();
                         }
