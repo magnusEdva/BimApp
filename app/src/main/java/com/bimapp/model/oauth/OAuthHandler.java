@@ -2,6 +2,7 @@ package com.bimapp.model.oauth;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.customtabs.CustomTabsIntent;
 import android.util.Log;
 import android.widget.Toast;
@@ -38,10 +39,14 @@ public class OAuthHandler implements OAuthCallback {
     }
 
     /**
-     * Always fetches a new AccessToken
-     * @return
+     * Aqcuires an access token and a refresh Token. Uses OAuthCallback implemented by OAuthHandler
+     * Requires that @Param grantType is either "authorization_code" or "refresh_token". And that @Param
+     * code contains the appropriate value.
+     * @param code @NonNull
+     * @param grantType @NonNull
+     * @return ?
      */
-    public String getAccessToken(final String code){
+    public void getAccessToken(@NonNull final String code,@NonNull final String grantType){
 
 
             String url = "https://api.bimsync.com/oauth2/token"; //TODO Move this to strings XML
@@ -74,9 +79,14 @@ public class OAuthHandler implements OAuthCallback {
                     // the POST parameters:
                     params.put("client_id", APIkey.Client_id);
                     params.put("client_secret",APIkey.Secret_id);
-                    params.put("code", code );
-                    params.put("grant_type", "authorization_code");
+                    params.put("grant_type", grantType);
                     params.put("redirect_uri", "bimapp://oauthresponse");
+
+                    if(grantType == "authorization_code")
+                        params.put("code", code );
+                    else if(grantType =="refresh_token")
+                        params.put("refresh_token", code );
+
                     return params;
                 }
                 @Override
@@ -97,7 +107,7 @@ public class OAuthHandler implements OAuthCallback {
             };
 
             mContext.add(postRequest);
-        return "";
+
     }
 
     public String getoAuthUrI(){
@@ -143,14 +153,15 @@ public class OAuthHandler implements OAuthCallback {
 
     @Override
     public void onErrorResponse(VolleyError error) {
+        Log.d("VolleyError",error.getMessage());
         if (error instanceof TimeoutError || error instanceof NoConnectionError) {
             Toast.makeText(mContext,
                     mContext.getString(R.string.errorNetworkTimeout),
                     Toast.LENGTH_LONG).show();
         } else if (error instanceof AuthFailureError) {
-            //TODO
+            launchBrowser();
         } else if (error instanceof ServerError) {
-            //TODO
+            launchBrowser();
         } else if (error instanceof NetworkError) {
             //TODO
         } else if (error instanceof ParseError) {

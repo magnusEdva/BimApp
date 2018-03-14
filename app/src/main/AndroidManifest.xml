@@ -13,6 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".WelcomeActivity">
+            <category android:name="android.intent.category.DEFAULT"/>
+            <category android:name="android.intent.category.BROWSABLE"/>
+            <data
+                android:host="oauthresponse"
+                android:scheme="bimapp" />
         </activity>
         <activity android:name=".LoggedIn">
             <intent-filter>
@@ -21,11 +26,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data
-                    android:host="oauthresponse"
-                    android:scheme="bimapp" />
+
             </intent-filter>
         </activity>
     </application>

@@ -1,18 +1,10 @@
 package com.bimapp;
 
 import android.app.Application;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.nfc.Tag;
-import android.support.customtabs.CustomTabsIntent;
-import android.util.Log;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.bimapp.model.oauth.OAuthCallback;
 import com.bimapp.model.oauth.OAuthHandler;
 
 /**
@@ -37,7 +29,7 @@ public class BimApp extends Application{
 
     }
 
-    public OAuthHandler getmOAuth(){
+    public OAuthHandler getMOAuth(){
         return mOAuth;
     }
 
@@ -78,14 +70,14 @@ public class BimApp extends Application{
         if(isValidAccessToken())
             return true;
         else if(getRefreshToken() != null){
-            return  refreshToken("");
+         //   return  refreshToken();
         }
         return false;
 
     }
 
-    public boolean refreshToken(String code){
-        mOAuth.getAccessToken(code);
+    public boolean refreshToken(String code, String grantType){
+        mOAuth.getAccessToken(code, grantType);
         return false;
     }
 
