@@ -34,6 +34,10 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
 
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+    }
 
     @Override
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
