@@ -32,6 +32,13 @@ public class BimApp extends Application{
         return mOAuth;
     }
 
+    public void deleteTokens(){
+        SharedPreferences prefs = getSharedPreferences("oAuth", MODE_PRIVATE);
+        SharedPreferences.Editor edit = prefs.edit();
+        edit.clear();
+        edit.apply();
+    }
+
 
     public void storeRefreshToken(String refreshToken){
         SharedPreferences prefs = getSharedPreferences("oAuth", MODE_PRIVATE);
