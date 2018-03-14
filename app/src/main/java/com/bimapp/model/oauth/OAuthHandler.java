@@ -32,9 +32,12 @@ import java.util.Map;
  */
 public class OAuthHandler implements OAuthCallback {
 
+    public final static String GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
+    public final static String GRANT_TYPE_AUTHORIZATION_CODE = "authorization_code";
+
     BimApp mContext;
 
-    public OAuthHandler(Context context){
+    public OAuthHandler(Context context) {
         mContext = (BimApp) context;
     }
 
@@ -42,75 +45,74 @@ public class OAuthHandler implements OAuthCallback {
      * Aqcuires an access token and a refresh Token. Uses OAuthCallback implemented by OAuthHandler
      * Requires that @Param grantType is either "authorization_code" or "refresh_token". And that @Param
      * code contains the appropriate value.
-     * @param code @NonNull
-     * @param grantType @NonNull
-     * @return ?
+     *
+     * @param code      @NonNull
+     * @param grantType either GRANT_TYPE_AUTHORIZATION_CODE or GRANT_TYPE_REFRESH_TOKEN
      */
-    public void getAccessToken(@NonNull final String code,@NonNull final String grantType){
+    public void getAccessToken(@NonNull final String code, @NonNull final String grantType) {
 
 
-            String url = "https://api.bimsync.com/oauth2/token"; //TODO Move this to strings XML
-            StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try{
-                                OAuthHandler.this.onSuccessResponse(response);
+        String url = "https://api.bimsync.com/oauth2/token"; //TODO Move this to strings XML
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            OAuthHandler.this.onSuccessResponse(response);
 
-                                Log.d("Access Token","???");
-                            } catch (Exception e){
-                                e.printStackTrace();
-                            }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            OAuthHandler.this.onErrorResponse(error);
-                            Log.d("Something happened", error.toString());
-                            error.printStackTrace();
+                            Log.d("Access Token", "???");
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
-            ) {
-                @Override
-                protected Map<String, String> getParams()
-                {
-                    Map<String, String>  params = new HashMap<>();
-                    // the POST parameters:
-                    params.put("client_id", APIkey.Client_id);
-                    params.put("client_secret",APIkey.Secret_id);
-                    params.put("grant_type", grantType);
-                    params.put("redirect_uri", "bimapp://oauthresponse");
-
-                    if(grantType == "authorization_code")
-                        params.put("code", code );
-                    else if(grantType =="refresh_token")
-                        params.put("refresh_token", code );
-
-                    return params;
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        OAuthHandler.this.onErrorResponse(error);
+                        Log.d("Something happened", error.toString());
+                        error.printStackTrace();
+                    }
                 }
-                @Override
-                public String getBodyContentType()
-                {
-                    return "application/x-www-form-urlencoded";
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                // the POST parameters:
+                params.put("client_id", APIkey.Client_id);
+                params.put("client_secret", APIkey.Secret_id);
+                params.put("grant_type", grantType);
+                params.put("redirect_uri", "bimapp://oauthresponse");
 
-                }
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError
-                {
-                    Map<String, String> headers = new HashMap<String, String>();
+                if (grantType == GRANT_TYPE_AUTHORIZATION_CODE)
+                    params.put("code", code);
+                else if (grantType == GRANT_TYPE_REFRESH_TOKEN)
+                    params.put("refresh_token", code);
 
-                    headers.put("Accept", "application/json");
+                return params;
+            }
 
-                    return headers;
-                }
-            };
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded";
 
-            mContext.add(postRequest);
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
+
+                headers.put("Accept", "application/json");
+
+                return headers;
+            }
+        };
+
+        mContext.add(postRequest);
 
     }
 
-    public String getoAuthUrI(){
+    public String getOAuthUri() {
         StringBuilder URI = new StringBuilder();
         URI.append(mContext.getText(R.string.BimSyncURL)); //mContext.getText(R.string.BimSyncURL)"http://10.0.0.8:8089/"
         URI.append(mContext.getText(R.string.oAuth0));
@@ -121,8 +123,8 @@ public class OAuthHandler implements OAuthCallback {
         return URI.toString();
     }
 
-    public void launchBrowser(){
-        String url = getoAuthUrI();
+    public void launchBrowser() {
+        String url = getOAuthUri();
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
         CustomTabsIntent customTabsIntent = builder.build();
         customTabsIntent.launchUrl(mContext, Uri.parse(url));
@@ -142,9 +144,9 @@ public class OAuthHandler implements OAuthCallback {
             refresh_token = response.getString("refresh_token");
             token_type = response.getString("token_type");
             expires_in = response.getString("expires_in");
-            mContext.storeAccesToken(access_token,Integer.parseInt(expires_in));
+            mContext.storeAccesToken(access_token, Integer.parseInt(expires_in));
             mContext.storeRefreshToken(refresh_token);
-        } catch (JSONException j){
+        } catch (JSONException j) {
             j.printStackTrace();
         }
 
@@ -153,7 +155,7 @@ public class OAuthHandler implements OAuthCallback {
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Log.d("VolleyError",error.getMessage());
+        Log.d("VolleyError", error.getMessage());
         if (error instanceof TimeoutError || error instanceof NoConnectionError) {
             Toast.makeText(mContext,
                     mContext.getString(R.string.errorNetworkTimeout),

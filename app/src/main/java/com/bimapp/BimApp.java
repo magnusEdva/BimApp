@@ -1,6 +1,7 @@
 package com.bimapp;
 
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,9 +24,7 @@ public class BimApp extends Application{
         requestQueue = Volley.newRequestQueue(this);
         mOAuth = new OAuthHandler(this);
 
-        if(!isLoggedIn()){
-            logIn();
-        }
+        checkLogIn();
 
     }
 
@@ -60,9 +59,11 @@ public class BimApp extends Application{
 
     public Boolean isValidAccessToken(){
         SharedPreferences prefs = getSharedPreferences("oAuth", MODE_PRIVATE);
-        Long expirationDate =  prefs.getLong("AccessToken", 0L);
+        Long expirationDate =  prefs.getLong("ExpiresAt", -1L);
+        String AccessToken = prefs.getString("AccessToken", null);
 
-        return expirationDate != 0L && expirationDate < System.currentTimeMillis() - 100000;
+        return AccessToken != null
+                && expirationDate > System.currentTimeMillis() + 100000;
 
     }
 
@@ -70,7 +71,7 @@ public class BimApp extends Application{
         if(isValidAccessToken())
             return true;
         else if(getRefreshToken() != null){
-         //   return  refreshToken();
+            return  refreshToken(getRefreshToken(), OAuthHandler.GRANT_TYPE_REFRESH_TOKEN);
         }
         return false;
 
@@ -81,8 +82,12 @@ public class BimApp extends Application{
         return false;
     }
 
-    public void logIn(){
-        mOAuth.launchBrowser();
+    public void checkLogIn(){
+        if(!isLoggedIn()){
+            Intent intent = new Intent(this, WelcomeActivity.class);
+            startActivity(intent);
+        }
+
     }
 
     public RequestQueue getRequestQueue(){
