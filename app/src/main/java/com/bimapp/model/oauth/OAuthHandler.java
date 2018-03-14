@@ -4,15 +4,24 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.customtabs.CustomTabsIntent;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bimapp.APIkey;
 import com.bimapp.BimApp;
 import com.bimapp.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +29,7 @@ import java.util.Map;
 /**
  * Class responsible for handling all authentication using oAuth, namely getting the Authorization Code, getting the access token and the refresh token
  */
-public class OAuthHandler {
+public class OAuthHandler implements OAuthCallback {
 
     BimApp mContext;
 
@@ -32,7 +41,7 @@ public class OAuthHandler {
      * Always fetches a new AccessToken
      * @return
      */
-    public String getAccessToken(final String code, final OAuthCallback callback){
+    public String getAccessToken(final String code){
 
 
             String url = "https://api.bimsync.com/oauth2/token"; //TODO Move this to strings XML
@@ -41,7 +50,7 @@ public class OAuthHandler {
                         @Override
                         public void onResponse(String response) {
                             try{
-                                callback.onSuccessResponse(response);
+                                OAuthHandler.this.onSuccessResponse(response);
 
                                 Log.d("Access Token","???");
                             } catch (Exception e){
@@ -52,7 +61,7 @@ public class OAuthHandler {
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            callback.onErrorResponse(error);
+                            OAuthHandler.this.onErrorResponse(error);
                             Log.d("Something happened", error.toString());
                             error.printStackTrace();
                         }
@@ -107,5 +116,45 @@ public class OAuthHandler {
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
         CustomTabsIntent customTabsIntent = builder.build();
         customTabsIntent.launchUrl(mContext, Uri.parse(url));
+    }
+
+    @Override
+    public void onSuccessResponse(String result) {
+        JSONObject response;
+
+        String access_token;
+        String refresh_token;
+        String token_type;
+        String expires_in;
+        try {
+            response = new JSONObject(result);
+            access_token = response.getString("access_token");
+            refresh_token = response.getString("refresh_token");
+            token_type = response.getString("token_type");
+            expires_in = response.getString("expires_in");
+            mContext.storeAccesToken(access_token,Integer.parseInt(expires_in));
+            mContext.storeRefreshToken(refresh_token);
+        } catch (JSONException j){
+            j.printStackTrace();
+        }
+
+
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+            Toast.makeText(mContext,
+                    mContext.getString(R.string.errorNetworkTimeout),
+                    Toast.LENGTH_LONG).show();
+        } else if (error instanceof AuthFailureError) {
+            //TODO
+        } else if (error instanceof ServerError) {
+            //TODO
+        } else if (error instanceof NetworkError) {
+            //TODO
+        } else if (error instanceof ParseError) {
+            //TODO
+        }
     }
 }

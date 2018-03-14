@@ -6,17 +6,20 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.support.customtabs.CustomTabsIntent;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.bimapp.model.oauth.OAuthCallback;
 import com.bimapp.model.oauth.OAuthHandler;
 
 /**
  * Context class
  */
 
-public class BimApp extends Application {
+public class BimApp extends Application{
 
 
     private OAuthHandler mOAuth;
@@ -75,13 +78,14 @@ public class BimApp extends Application {
         if(isValidAccessToken())
             return true;
         else if(getRefreshToken() != null){
-            return  refreshToken();
+            return  refreshToken("");
         }
         return false;
 
     }
 
-    public boolean refreshToken(){
+    public boolean refreshToken(String code){
+        mOAuth.getAccessToken(code);
         return false;
     }
 
@@ -100,6 +104,4 @@ public class BimApp extends Application {
     public void cancel(){
         requestQueue.cancelAll("lol");
     }
-
-
 }

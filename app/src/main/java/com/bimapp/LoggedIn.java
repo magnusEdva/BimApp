@@ -29,8 +29,10 @@ public class LoggedIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in);
         mApplication = (BimApp) this.getApplicationContext();
-        //String code = getIntent().getData().getQueryParameter("code");
-
+        if(getIntent().getData() != null) {
+            String code = getIntent().getData().getQueryParameter("code");
+            mApplication.refreshToken(code);
+        }
         //getToken(code);
     }
 
