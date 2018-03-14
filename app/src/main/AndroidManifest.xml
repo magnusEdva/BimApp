@@ -23,7 +23,7 @@
                     android:scheme="bimapp" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoggedIn">
+        <activity android:name=".ProjectsViewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

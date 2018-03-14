@@ -20,7 +20,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoggedIn extends AppCompatActivity {
+public class ProjectsViewActivity extends AppCompatActivity {
 
     BimApp mApplication;
 
@@ -28,7 +28,7 @@ public class LoggedIn extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in);
-
+        mApplication = (BimApp) getApplication();
     }
 
 
