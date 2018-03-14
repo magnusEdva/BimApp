@@ -19,23 +19,26 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mApplication = (BimApp) this.getApplicationContext();
+
         setContentView(R.layout.activity_welcome);
+
     }
 
     public void buttonOnClick(View v){
-        mApplication = (BimApp) this.getApplicationContext();
+
         mApplication.getMOAuth().launchBrowser();
-        if(getIntent().getData() != null) {
-            String code = getIntent().getData().getQueryParameter("code");
-            mApplication.refreshToken(code, OAuthHandler.GRANT_TYPE_AUTHORIZATION_CODE);
-            Intent intent = new Intent(this, ProjectsViewActivity.class);
-            startActivity(intent);
-        }
+
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-
+        if(getIntent().getData() != null && getIntent().getData().getQueryParameter("code") != null) {
+            String code = getIntent().getData().getQueryParameter("code");
+            mApplication.refreshToken(code, OAuthHandler.GRANT_TYPE_AUTHORIZATION_CODE);
+            Intent intent = new Intent(this, ProjectsViewActivity.class);
+            startActivity(intent);
+        }
     }
 }
