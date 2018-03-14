@@ -13,6 +13,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bimapp.model.network.GetUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +30,16 @@ public class ProjectsViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in);
         mApplication = (BimApp) getApplication();
+
+
+
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        GetUser.getUser(mApplication);
     }
 
 
