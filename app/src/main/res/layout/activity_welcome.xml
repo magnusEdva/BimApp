@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="344dp"
-        android:onClick="login_button"
+        android:onClick="buttonOnClick"
         android:text="@string/log_in_button"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
