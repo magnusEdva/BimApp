@@ -9,12 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.bimapp.R;
-import com.bimapp.view.fragments.dummy.DummyContent;
-import com.bimapp.view.fragments.dummy.DummyContent.DummyItem;
-
-import java.util.List;
+import com.bimapp.model.entity.Project;
+import java.util.ArrayList;
 
 /**
  * A fragment representing a list of Items.
@@ -70,7 +67,7 @@ public class ProjectsFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyProjectsRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(new MyProjectsRecyclerViewAdapter(new ArrayList<Project>(), mListener, getContext()));
         }
         return view;
     }
@@ -105,6 +102,6 @@ public class ProjectsFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(Project project);
     }
 }

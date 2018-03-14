@@ -1,30 +1,44 @@
 package com.bimapp.view.fragments;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.telecom.Call;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bimapp.BimApp;
 import com.bimapp.R;
+import com.bimapp.model.entity.Project;
+import com.bimapp.model.network.Callback;
+import com.bimapp.model.network.GetUser;
 import com.bimapp.view.fragments.ProjectsFragment.OnListFragmentInteractionListener;
-import com.bimapp.view.fragments.dummy.DummyContent.DummyItem;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.Arrays;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link Project} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjectsRecyclerViewAdapter.ViewHolder> {
+public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjectsRecyclerViewAdapter.ViewHolder>
+    implements Callback {
 
-    private final List<DummyItem> mValues;
+    private final List<Project> mProjects;
     private final OnListFragmentInteractionListener mListener;
+    private final BimApp mContext;
 
-    public MyProjectsRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
+    public MyProjectsRecyclerViewAdapter(List<Project> projects, OnListFragmentInteractionListener listener, Context context) {
+        mProjects = projects;
         mListener = listener;
+        mContext = (BimApp) context.getApplicationContext();
+        loadProjects();
     }
 
     @Override
@@ -36,9 +50,8 @@ public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjec
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mProject = mProjects.get(position);
+        holder.mContentView.setText(mProjects.get(position).getName());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,7 +59,7 @@ public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjec
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onListFragmentInteraction(holder.mProject);
                 }
             }
         });
@@ -54,19 +67,39 @@ public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjec
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mProjects.size();
+    }
+
+    private void loadProjects(){
+        GetUser.getUser(mContext, this);
+    }
+    @Override
+    public void onError(String response) {
+        //TODO
+    }
+
+    @Override
+    public void onSuccess(JSONArray arr) {
+        Project p = new Project();
+        mProjects.addAll(Arrays.asList((Project[])p.construct(arr)));
+        this.notifyDataSetChanged();
+        Log.d("got here", mProjects.get(0).toString());
+    }
+
+    @Override
+    public void onSuccess(JSONObject obj) {
+        //??
+        Log.d("obj", "project");
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public Project mProject;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
         }
 

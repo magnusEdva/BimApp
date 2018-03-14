@@ -1,19 +1,16 @@
 package com.bimapp.model.network;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.bimapp.APIkey;
 import com.bimapp.BimApp;
-import com.bimapp.model.oauth.OAuthHandler;
+import com.bimapp.model.entity.Project;
 
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,24 +22,21 @@ import java.util.Map;
 public class GetUser {
 
 
-    public static void getUser(final BimApp mContext) {
+    public static void getUser(final BimApp mContext, final Callback callback) {
 
 
-        String url = "https://api.bimsync.com/v2/user"; //TODO Move this to strings XML
+        String url = "https://api.bimsync.com/v2/projects"; //TODO Move this to strings XML
         StringRequest getUserRequest = new StringRequest(
                 Request.Method.GET,
                 url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        JSONObject user;
+                        JSONArray projects;
                         String name;
                         try {
-                            user = new JSONObject(response);
-                            name = user.getString("name");
-                            Toast.makeText(mContext, name, Toast.LENGTH_LONG ).show();
-
-                            Log.d("Access Token", "???");
+                            projects= new JSONArray(response);
+                            callback.onSuccess(projects);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
