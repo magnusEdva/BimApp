@@ -13,6 +13,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bimapp.view.fragments.ProjectsFragment;
+import com.bimapp.view.fragments.dummy.DummyContent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +22,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProjectsViewActivity extends AppCompatActivity {
+public class ProjectsViewActivity extends AppCompatActivity implements ProjectsFragment.OnListFragmentInteractionListener {
 
     BimApp mApplication;
 
@@ -29,9 +31,12 @@ public class ProjectsViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in);
         mApplication = (BimApp) getApplication();
+
     }
 
 
-
-
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+        mApplication.deleteTokens();
+    }
 }
