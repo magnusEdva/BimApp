@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.bimapp.model.entity.Project;
-import com.bimapp.model.network.Callback;
-import com.bimapp.model.network.GetUser;
 import com.bimapp.view.fragments.ProjectsFragment;
 import com.bimapp.view.fragments.UserFragment;
 import com.bimapp.view.fragments.dummy.DummyContent;
