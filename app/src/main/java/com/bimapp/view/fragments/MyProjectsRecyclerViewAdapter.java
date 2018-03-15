@@ -2,7 +2,6 @@ package com.bimapp.view.fragments;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.telecom.Call;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,7 @@ import com.bimapp.BimApp;
 import com.bimapp.R;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.network.Callback;
-import com.bimapp.model.network.GetUser;
+import com.bimapp.model.network.NetworkConnManager;
 import com.bimapp.view.fragments.ProjectsFragment.OnListFragmentInteractionListener;
 
 import org.json.JSONArray;
@@ -71,7 +70,8 @@ public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjec
     }
 
     public void loadProjects(){
-        GetUser.getUser(mContext, this);
+        NetworkConnManager.GET(mContext, NetworkConnManager.JSONTypes.ARRAY,
+                NetworkConnManager.APICall.GETProjects, this);
     }
     @Override
     public void onError(String response) {
