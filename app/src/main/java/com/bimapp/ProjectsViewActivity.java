@@ -11,31 +11,49 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 
 import com.bimapp.model.entity.Project;
+import com.bimapp.model.entity.User;
+import com.bimapp.model.network.Callback;
+import com.bimapp.model.network.NetworkConnManager;
 import com.bimapp.view.fragments.ProjectsFragment;
 import com.bimapp.view.fragments.UserFragment;
 import com.bimapp.view.fragments.dummy.DummyContent;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-public class ProjectsViewActivity extends AppCompatActivity implements ProjectsFragment.OnListFragmentInteractionListener, UserFragment.OnListFragmentInteractionListener {
+
+public class ProjectsViewActivity extends AppCompatActivity implements ProjectsFragment.OnListFragmentInteractionListener, UserFragment.OnListFragmentInteractionListener , Callback{
 
     private BimApp mApplication;
     private DrawerLayout mDrawerLayout;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in);
         mApplication = (BimApp) getApplication();
+
+        //Somehow I have a feeling this is a terrible way to handle things! It essentially gets the
+        //user and sets the user variable through a callback method
+        NetworkConnManager.GET(mApplication, NetworkConnManager.JSONTypes.OBJECT,
+        NetworkConnManager.APICall.GETUser, this);
+
+
+
         //Setting toolbar as the actionbar.
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
 
         // Defines the drawer
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -107,5 +125,24 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
                 return true;
         }
         return super.onOptionsItemSelected(menuItem);
+    }
+
+    @Override
+    public void onError(String response) {
+
+    }
+
+    @Override
+    public void onSuccess(JSONArray arr) {
+
+
+    }
+
+    @Override
+    public void onSuccess(JSONObject obj) {
+        user = (User) user.construct(obj);
+        Log.d("Created user", user.getName());
+        TextView textView = findViewById(R.id.nav_header);
+        textView.setText(user.getName());
     }
 }

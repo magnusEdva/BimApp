@@ -61,7 +61,7 @@ public class GETRequest {
             }
         };
 
-        mContext.add(getUserRequest);
+        mContext.add(getUserRequest, call.name());
 
     }
 

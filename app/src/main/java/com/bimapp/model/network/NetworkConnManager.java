@@ -36,11 +36,14 @@ public class NetworkConnManager {
     }
 
     public enum JSONTypes {
-        OBJECT, ARRAY;
+        OBJECT, ARRAY
     }
 
     public enum APICall {
-        GETProjects("https://api.bimsync.com/v2/projects");
+        GETProjects("https://api.bimsync.com/v2/projects"),
+        GETUser("https://api.bimsync.com/v2/user"),
+        GETTopics("...")
+        ;
 
         private String mURL;
 

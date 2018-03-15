@@ -20,7 +20,7 @@
     <string name="api_refresh"></string>
     <string name="api_user"></string>
     <string name="api_project"></string>
-    <string name="api_projects"></string>
+    <string name="api_projects">https://api.bimsync.com/v2/projects</string>
     <string name="api_issue"></string>
     <string name="api_issues"></string>
     <string name="url_encode">application/x-www-form-urlencoded</string>

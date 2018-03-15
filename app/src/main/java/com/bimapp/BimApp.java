@@ -101,7 +101,7 @@ public class BimApp extends Application{
         return requestQueue;
     }
 
-    public <T> void add(Request<T> req){
+    public <T> void add(Request<T> req, String tag){
         req.setTag("lol");
         requestQueue.add(req);
     }
