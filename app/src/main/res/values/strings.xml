@@ -8,4 +8,8 @@
     <string name="oAuthClientId">\?client_id=</string>
     <string name="oAuthEnd">&amp;state=1&amp;response_type=code</string>
     <string name="errorNetworkTimeout">Are thou connected to the internet?</string>
+
+    <!-- Navigation drawer-->
+    <string name="projects">Projects</string>
+    <string name="logout">Log Out</string>
 </resources>
