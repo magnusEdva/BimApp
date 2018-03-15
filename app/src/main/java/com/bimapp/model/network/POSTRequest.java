@@ -6,6 +6,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bimapp.BimApp;
+import com.bimapp.model.entity.Entity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,18 +15,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Provider of a very general GET method that can be accessed through NetworkConnManager.
+ * Provider of a very general POST request which is accessed through NetworkConnManager to be used in the rest of the application.
  */
 
-public class GETRequest {
-
-
-    protected static void GET(final BimApp mContext, final NetworkConnManager.JSONTypes responseType,
-                              NetworkConnManager.APICall call, final Callback callback) {
+public class POSTRequest {
+    protected static void POST(final BimApp mContext, final NetworkConnManager.JSONTypes responseType,
+                              NetworkConnManager.APICall call, final Callback callback,final Entity params) {
 
         String url = call.getURL();
         StringRequest getUserRequest = new StringRequest(
-                Request.Method.GET,
+                Request.Method.POST,
                 url,
                 new Response.Listener<String>() {
                     @Override
@@ -58,6 +57,14 @@ public class GETRequest {
 
                 return headers;
             }
+            @Override
+            public Map<String,String> getParams(){
+                Map<String, String> tempParams = new HashMap<>();
+                tempParams = params.getParams(tempParams);
+
+                return tempParams;
+
+            }
         };
 
         mContext.add(getUserRequest);
@@ -84,4 +91,3 @@ public class GETRequest {
         }
     }
 }
-

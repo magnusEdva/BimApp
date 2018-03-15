@@ -12,7 +12,6 @@ import com.bimapp.BimApp;
 import com.bimapp.R;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.network.Callback;
-import com.bimapp.model.network.GETRequest;
 import com.bimapp.model.network.NetworkConnManager;
 import com.bimapp.view.fragments.ProjectsFragment.OnListFragmentInteractionListener;
 
@@ -71,7 +70,7 @@ public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjec
     }
 
     public void loadProjects(){
-        NetworkConnManager.GETrequest(mContext, NetworkConnManager.JSONTypes.ARRAY,
+        NetworkConnManager.GET(mContext, NetworkConnManager.JSONTypes.ARRAY,
                 NetworkConnManager.APICall.GETProjects, this);
     }
     @Override
