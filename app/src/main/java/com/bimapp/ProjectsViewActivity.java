@@ -56,7 +56,7 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
                             case R.id.user:
                                 fragment = new UserFragment();
                                 fragmentTransaction.add(R.id.fragments_container, fragment);
-                                fragmentTransaction.addToBackStack(null)
+                                fragmentTransaction.addToBackStack(null);
                                 fragmentTransaction.commit();
                                 break;
                             case R.id.log_out:
