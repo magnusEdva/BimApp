@@ -60,7 +60,6 @@ public class GetUser {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<String, String>();
-
                 headers.put("Authorization" , "Bearer " + mContext.getAcessToken());
                 headers.put("Accept", "application/json");
 

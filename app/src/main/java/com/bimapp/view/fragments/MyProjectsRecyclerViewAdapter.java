@@ -38,7 +38,7 @@ public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjec
         mProjects = projects;
         mListener = listener;
         mContext = (BimApp) context.getApplicationContext();
-        loadProjects();
+
     }
 
     @Override
@@ -70,7 +70,7 @@ public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjec
         return mProjects.size();
     }
 
-    private void loadProjects(){
+    public void loadProjects(){
         GetUser.getUser(mContext, this);
     }
     @Override

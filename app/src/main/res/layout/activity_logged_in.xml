@@ -14,7 +14,7 @@
         tools:context="com.bimapp.ProjectsViewActivity">
 
         <fragment android:name="com.bimapp.view.fragments.ProjectsFragment"
-            android:id="@+id/headlines_fragment"
+            android:id="@+id/projects_fragment"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent" />

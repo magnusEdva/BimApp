@@ -26,6 +26,7 @@ public class ProjectsFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private MyProjectsRecyclerViewAdapter mAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -41,6 +42,7 @@ public class ProjectsFragment extends Fragment {
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -67,7 +69,8 @@ public class ProjectsFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyProjectsRecyclerViewAdapter(new ArrayList<Project>(), mListener, getContext()));
+            mAdapter = new MyProjectsRecyclerViewAdapter(new ArrayList<Project>(), mListener, getContext());
+            recyclerView.setAdapter(mAdapter);
         }
         return view;
     }
@@ -88,6 +91,10 @@ public class ProjectsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public void loadProjects(){
+        mAdapter.loadProjects();
     }
 
     /**
