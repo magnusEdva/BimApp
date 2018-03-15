@@ -3,7 +3,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/projects"
-            android:title="Projects" />
+            android:title="@string/projects" /> <!--TODO add string in strings xml -->
         <item
             android:id="@+id/nav_gallery"
             android:title="Gallery" />
@@ -11,7 +11,7 @@
             android:id="@+id/nav_slideshow"
             android:title="Slideshow" />
         <item
-            android:id="@+id/nav_manage"
-            android:title="Tools" />
+            android:id="@+id/log_out"
+            android:title="@string/logout" />
     </group>
 </menu>
