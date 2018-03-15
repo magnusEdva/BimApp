@@ -81,6 +81,7 @@ public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjec
     @Override
     public void onSuccess(JSONArray arr) {
         Project p = new Project();
+        mProjects.clear();
         mProjects.addAll(Arrays.asList((Project[])p.construct(arr)));
         this.notifyDataSetChanged();
         Log.d("got here", mProjects.get(0).toString());
