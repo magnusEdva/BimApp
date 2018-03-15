@@ -1,6 +1,7 @@
 package com.bimapp;
 
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -38,17 +39,19 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
                         item.setChecked(true);
                         // Close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
+                        int id = item.getItemId();
 
-                        // Add code here to swap UI based on item selected!
-                        /*
-                        switch(item)
-                        case:project
-                            showProjectFragment
-                        case:user
-                            showUserInfo
-                        etc
+                        switch (id){
+                            case R.id.projects:
 
-                         */
+                                break;
+                            case R.id.log_out:
+                                mApplication.deleteTokens();
+                                Intent intent = new Intent(ProjectsViewActivity.this, WelcomeActivity.class);
+                                startActivity(intent);
+                                break;
+                        }
+
 
                         return true;
 
@@ -65,7 +68,8 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
 
     @Override
     public void onListFragmentInteraction(Project project) {
-        mApplication.deleteTokens();
+
+
     }
 
 
