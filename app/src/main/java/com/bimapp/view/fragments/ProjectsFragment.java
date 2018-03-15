@@ -2,7 +2,7 @@ package com.bimapp.view.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -71,6 +71,7 @@ public class ProjectsFragment extends Fragment {
             }
             mAdapter = new MyProjectsRecyclerViewAdapter(new ArrayList<Project>(), mListener, getContext());
             recyclerView.setAdapter(mAdapter);
+            loadProjects();
         }
         return view;
     }

@@ -9,23 +9,18 @@
     >
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/logged_in"
+        android:orientation="vertical"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.bimapp.ProjectsViewActivity">
 
-        <fragment android:name="com.bimapp.view.fragments.ProjectsFragment"
-            android:id="@+id/projects_fragment"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
-
-        <fragment android:name="com.bimapp.view.fragments.UserFragment"
-            android:id="@+id/fragment_user"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+        <FrameLayout
+            android:id="@+id/fragments_container"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             />
-
     </LinearLayout>
 
     <android.support.design.widget.NavigationView

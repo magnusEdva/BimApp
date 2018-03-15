@@ -1,9 +1,11 @@
 package com.bimapp;
 
-
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager; // Should this be android.app.FragmentManager?
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +31,8 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
 
         mApplication = (BimApp) getApplication();
 
+
+        // Defines the drawer
         mDrawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
@@ -40,16 +44,22 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
                         // Close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
                         int id = item.getItemId();
+                        FragmentManager fragmentManager = ProjectsViewActivity.this.getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        Fragment fragment;
 
                         switch (id){
                             case R.id.projects:
-
-                                ProjectsFragment fragment = (ProjectsFragment ) ProjectsViewActivity.this.getFragmentManager().findFragmentById(R.id.projects_fragment);
-                                fragment.loadProjects();
+                                fragment = new ProjectsFragment();
+                                fragmentTransaction.add(R.id.fragments_container, fragment);
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.commit();
                                 break;
                             case R.id.user:
-                                UserFragment userFragment = (UserFragment) ProjectsViewActivity.this.getFragmentManager().findFragmentById(R.id.fragment_user);
-                                userFragment.loadUser();
+                                fragment = new UserFragment();
+                                fragmentTransaction.add(R.id.fragments_container, fragment);
+                                fragmentTransaction.addToBackStack(null)
+                                fragmentTransaction.commit();
                                 break;
                             case R.id.log_out:
                                 mApplication.deleteTokens();
