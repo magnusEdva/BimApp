@@ -14,7 +14,7 @@ import java.util.Map;
  * Model implementation of a the project type.
  */
 
-public class Project implements Entity<String> {
+public class Project extends Entity<String> {
     private Date createdAt;
     private String id;
     private String name;

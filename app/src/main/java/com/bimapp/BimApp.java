@@ -78,7 +78,7 @@ public class BimApp extends Application{
         if(isValidAccessToken())
             return true;
         else if(getRefreshToken() != null){
-            return  refreshToken(getRefreshToken(), OAuthHandler.GRANT_TYPE_REFRESH_TOKEN);
+            refreshToken(getRefreshToken(), OAuthHandler.GRANT_TYPE_REFRESH_TOKEN);
         }
         return false;
 
@@ -86,7 +86,7 @@ public class BimApp extends Application{
 
     public boolean refreshToken(String code, String grantType){
         mOAuth.getAccessToken(code, grantType);
-        return false;
+        return true;
     }
 
     public void checkLogIn(){

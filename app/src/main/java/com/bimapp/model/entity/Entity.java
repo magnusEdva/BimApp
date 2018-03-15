@@ -14,24 +14,24 @@ import java.util.Map;
  * for API requests.
  */
 
-public interface Entity <T> {
+public abstract class Entity <T> {
     /**
      * Takes a map and populates it with the implementations parameters
      * @param map @NonNull
      * @return same map with model parameters
      */
-    Map<T,T> getParams(@NonNull Map<T,T> map);
+    abstract Map<T,T> getParams(@NonNull Map<T,T> map);
 
     /**
      * constructs the model with it's corresponding JSONObject
      * @param object needs to actually contain the correct entity
      * @return the created Entity
      */
-    Entity construct(JSONObject object);
+    abstract Entity construct(JSONObject object);
     /**
      * constructs the list with it's corresponding JSONArray
      * @param array needs to actually contain the correct entity
      * @return the created Entity
      */
-    Entity [] construct(JSONArray array);
+    abstract Entity [] construct(JSONArray array);
 }
