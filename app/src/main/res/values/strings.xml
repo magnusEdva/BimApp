@@ -12,4 +12,5 @@
     <!-- Navigation drawer-->
     <string name="projects">Projects</string>
     <string name="logout">Log Out</string>
+    <string name="user">User</string>
 </resources>

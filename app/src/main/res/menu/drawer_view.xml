@@ -5,8 +5,8 @@
             android:id="@+id/projects"
             android:title="@string/projects" /> <!--TODO add string in strings xml -->
         <item
-            android:id="@+id/nav_gallery"
-            android:title="Gallery" />
+            android:id="@+id/user"
+            android:title="@string/user" />
         <item
             android:id="@+id/nav_slideshow"
             android:title="Slideshow" />

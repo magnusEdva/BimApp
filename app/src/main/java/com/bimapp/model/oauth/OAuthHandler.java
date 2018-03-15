@@ -109,6 +109,7 @@ public class OAuthHandler implements OAuthCallback {
             }
         };
 
+        postRequest.setShouldRetryServerErrors(true);
         mContext.add(postRequest);
 
     }

@@ -13,10 +13,11 @@ import com.bimapp.model.entity.Project;
 import com.bimapp.model.network.Callback;
 import com.bimapp.model.network.GetUser;
 import com.bimapp.view.fragments.ProjectsFragment;
+import com.bimapp.view.fragments.UserFragment;
+import com.bimapp.view.fragments.dummy.DummyContent;
 
 
-
-public class ProjectsViewActivity extends AppCompatActivity implements ProjectsFragment.OnListFragmentInteractionListener{
+public class ProjectsViewActivity extends AppCompatActivity implements ProjectsFragment.OnListFragmentInteractionListener, UserFragment.OnListFragmentInteractionListener {
 
     private BimApp mApplication;
     private DrawerLayout mDrawerLayout;
@@ -29,14 +30,13 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
         mApplication = (BimApp) getApplication();
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         // set item as selected to persist highlight
-                        item.setChecked(true);
+                        //item.setChecked(true);
                         // Close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
                         int id = item.getItemId();
@@ -44,6 +44,12 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
                         switch (id){
                             case R.id.projects:
 
+                                ProjectsFragment fragment = (ProjectsFragment ) ProjectsViewActivity.this.getFragmentManager().findFragmentById(R.id.projects_fragment);
+                                fragment.loadProjects();
+                                break;
+                            case R.id.user:
+                                UserFragment userFragment = (UserFragment) ProjectsViewActivity.this.getFragmentManager().findFragmentById(R.id.fragment_user);
+                                userFragment.loadUser();
                                 break;
                             case R.id.log_out:
                                 mApplication.deleteTokens();
@@ -51,19 +57,17 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
                                 startActivity(intent);
                                 break;
                         }
-
-
                         return true;
-
                     }
                 }
         );
-
     }
 
     @Override
     public void onResume(){
         super.onResume();
+        //ProjectsFragment fragment = (ProjectsFragment ) this.getFragmentManager().findFragmentById(R.id.projects_fragment);
+        //fragment.loadProjects();
     }
 
     @Override
@@ -73,4 +77,8 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
     }
 
 
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+
+    }
 }
