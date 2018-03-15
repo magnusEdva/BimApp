@@ -49,19 +49,21 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
                         switch (id){
                             case R.id.projects:
                                 fragment = new ProjectsFragment();
-                                fragmentTransaction.add(R.id.fragments_container, fragment);
+                                fragmentTransaction.replace(R.id.fragments_container, fragment);
                                 fragmentTransaction.addToBackStack(null);
+
                                 fragmentTransaction.commit();
                                 break;
                             case R.id.user:
                                 fragment = new UserFragment();
-                                fragmentTransaction.add(R.id.fragments_container, fragment);
+                                fragmentTransaction.replace(R.id.fragments_container, fragment);
                                 fragmentTransaction.addToBackStack(null);
                                 fragmentTransaction.commit();
                                 break;
                             case R.id.log_out:
                                 mApplication.deleteTokens();
                                 Intent intent = new Intent(ProjectsViewActivity.this, WelcomeActivity.class);
+                                //TODO Make sure that when this is called, the BackStack is cleared somehow!
                                 startActivity(intent);
                                 break;
                         }

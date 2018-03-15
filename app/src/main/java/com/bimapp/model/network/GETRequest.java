@@ -6,6 +6,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bimapp.BimApp;
+import com.bimapp.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,7 +47,7 @@ public class GETRequest {
         ) {
             @Override
             public String getBodyContentType() {
-                return "application/x-www-form-urlencoded";
+                return mContext.getString(R.string.url_encode);
 
             }
 

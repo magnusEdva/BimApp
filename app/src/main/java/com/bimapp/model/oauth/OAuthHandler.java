@@ -53,7 +53,7 @@ public class OAuthHandler implements OAuthCallback {
     public void getAccessToken(@NonNull final String code, @NonNull final String grantType) {
 
 
-        String url = "https://api.bimsync.com/oauth2/token"; //TODO Move this to strings XML
+        String url = mContext.getString(R.string.api_token);
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -61,7 +61,7 @@ public class OAuthHandler implements OAuthCallback {
                         try {
                             OAuthHandler.this.onSuccessResponse(response);
 
-                            Log.d("Access Token", "???");
+                            Log.d("Access Token", "Successfully got an access token");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -95,7 +95,7 @@ public class OAuthHandler implements OAuthCallback {
 
             @Override
             public String getBodyContentType() {
-                return "application/x-www-form-urlencoded";
+                return mContext.getString(R.string.url_encode);
 
             }
 

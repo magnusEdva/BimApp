@@ -13,4 +13,15 @@
     <string name="projects">Projects</string>
     <string name="logout">Log Out</string>
     <string name="user">User</string>
+    <string name="issues">Issues</string>
+
+    <!-- API- strings, add api-urls here-->
+    <string name="api_token">https://api.bimsync.com/oauth2/token</string>
+    <string name="api_refresh"></string>
+    <string name="api_user"></string>
+    <string name="api_project"></string>
+    <string name="api_projects"></string>
+    <string name="api_issue"></string>
+    <string name="api_issues"></string>
+    <string name="url_encode">application/x-www-form-urlencoded</string>
 </resources>
