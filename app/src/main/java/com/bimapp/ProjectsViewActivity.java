@@ -140,9 +140,10 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
 
     @Override
     public void onSuccess(JSONObject obj) {
+        user = new User();
         user = (User) user.construct(obj);
         Log.d("Created user", user.getName());
-        TextView textView = findViewById(R.id.nav_header);
+        TextView textView = findViewById(R.id.nav_header_title);
         textView.setText(user.getName());
     }
 }
