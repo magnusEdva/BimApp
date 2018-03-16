@@ -28,8 +28,6 @@ public class WelcomeActivity extends AppCompatActivity {
 
         if(mApplication.checkLogIn())
             openProjectsView();
-
-
     }
 
     public void buttonOnClick(View v){

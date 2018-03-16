@@ -79,6 +79,9 @@ public class OAuthHandler {
     public OAuthHandler(BimApp context) {
         mContext = context;
         refreshCycleCheck = 0;
+        accessToken = null;
+        refreshToken = null;
+        expiresAt = -1L;
     }
 
     /**
@@ -233,9 +236,18 @@ public class OAuthHandler {
         return accessToken;
     }
 
+    public long getExpiresAt(){
+        if(expiresAt == -1L) {
+            SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFS_KEY, MODE_PRIVATE);
+            expiresAt = prefs.getLong("ExpiresAt", -1L);
+        }
+        return expiresAt;
+    }
+
     private Boolean isValidAccessToken(){
         accessToken = getAccessToken();
         refreshToken = getRefreshToken();
+        expiresAt = getExpiresAt();
 
         return accessToken != null && refreshToken != null
                 && expiresAt > System.currentTimeMillis() + 100000;
@@ -261,7 +273,7 @@ public class OAuthHandler {
         }
         else if(getRefreshToken() != null){
             getAccessToken(getRefreshToken(), OAuthHandler.GRANT_TYPE_REFRESH_TOKEN);
-
+            return true;
         }
         return false;
     }
@@ -299,9 +311,8 @@ public class OAuthHandler {
                         Toast.LENGTH_LONG).show();
             } else if (error instanceof AuthFailureError) {
                 checkRefresh();
-                launchBrowser();
             } else if (error instanceof ServerError) {
-                launchBrowser();
+                //TODO
             } else if (error instanceof NetworkError) {
                 //TODO
             } else if (error instanceof ParseError) {
