@@ -1,9 +1,10 @@
 package com.bimapp.model.oauth;
 
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.util.Log;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.bimapp.APIkey;
 import com.bimapp.BimApp;
 import com.bimapp.R;
+import com.bimapp.model.network.Callback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,18 +30,55 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Class responsible for handling all authentication using oAuth, namely getting the Authorization Code, getting the access token and the refresh token
  */
-public class OAuthHandler implements OAuthCallback {
-
+public class OAuthHandler {
+    /**
+     * These strings are used to tell the class what kind of the authentication is being used
+     * at this time.
+     */
     public final static String GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
+    /**
+     * These strings are used to tell the class what kind of the authentication is being used
+     * at this time.
+     */
     public final static String GRANT_TYPE_AUTHORIZATION_CODE = "authorization_code";
+    /**
+     * access key for finding the shared preference in which the oAuth tokens are stored.
+     */
+    private final static String SHARED_PREFS_KEY = "oAuth";
+    /**
+     * used to aqcuire application based data.
+     */
+    private BimApp mContext;
+    /**
+     * oAuth 2.0 acces token. Expires at the time provided by expiresAt.
+     */
+    private String accessToken;
+    /**
+     * oAuth 2.0 refresh token. Used to refres an expired access token.
+     */
+    private String refreshToken;
+    /**
+     * ms from 1970 when the access token will expire.
+     */
+    private long expiresAt;
 
-    BimApp mContext;
+    /**
+     * is 0 if there is no pending token refresh or 1 if there is.
+     */
+    private int refreshCycleCheck;
 
-    public OAuthHandler(Context context) {
-        mContext = (BimApp) context;
+    /**
+     * @param context a BimApp application
+     */
+
+    public OAuthHandler(BimApp context) {
+        mContext = context;
+        refreshCycleCheck = 0;
     }
 
     /**
@@ -49,8 +88,9 @@ public class OAuthHandler implements OAuthCallback {
      *
      * @param code      @NonNull
      * @param grantType either GRANT_TYPE_AUTHORIZATION_CODE or GRANT_TYPE_REFRESH_TOKEN
+     * @param callback used when acquiring the first token.
      */
-    public void getAccessToken(@NonNull final String code, @NonNull final String grantType) {
+    public void getAccessToken(@NonNull final String code, @NonNull final String grantType, @Nullable final Callback callback) {
 
 
         String url = mContext.getString(R.string.api_token);
@@ -59,8 +99,9 @@ public class OAuthHandler implements OAuthCallback {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            OAuthHandler.this.onSuccessResponse(response);
-
+                            new CallbackHandler().onSuccessResponse(response);
+                            if(callback != null)
+                                callback.onSuccess((JSONObject) null);
                             Log.d("Access Token", "Successfully got an access token");
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -70,8 +111,7 @@ public class OAuthHandler implements OAuthCallback {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        OAuthHandler.this.onErrorResponse(error);
-                        Log.d("Something happened", error.toString());
+                        new CallbackHandler().onErrorResponse(error);
                         error.printStackTrace();
                     }
                 }
@@ -85,9 +125,9 @@ public class OAuthHandler implements OAuthCallback {
                 params.put("grant_type", grantType);
                 params.put("redirect_uri", "bimapp://oauthresponse");
 
-                if (grantType == GRANT_TYPE_AUTHORIZATION_CODE)
+                if (GRANT_TYPE_AUTHORIZATION_CODE.equals(grantType))
                     params.put("code", code);
-                else if (grantType == GRANT_TYPE_REFRESH_TOKEN)
+                else if (GRANT_TYPE_REFRESH_TOKEN.equals(grantType))
                     params.put("refresh_token", code);
 
                 return params;
@@ -110,11 +150,19 @@ public class OAuthHandler implements OAuthCallback {
         };
 
         postRequest.setShouldRetryServerErrors(true);
-        mContext.add(postRequest, "token");
+        mContext.addToRequestQueue(postRequest, "token");
 
     }
 
-    public String getOAuthUri() {
+    /**
+     * calls getAccessToken(String, String, null);
+     * @param code
+     * @param grantType
+     */
+    public void getAccessToken(@NonNull final String code, @NonNull final String grantType){
+        getAccessToken(code, grantType,null);
+    }
+    private String getOAuthUri() {
         StringBuilder URI = new StringBuilder();
         URI.append(mContext.getText(R.string.BimSyncURL)); //mContext.getText(R.string.BimSyncURL)"http://10.0.0.8:8089/"
         URI.append(mContext.getText(R.string.oAuth0));
@@ -134,45 +182,133 @@ public class OAuthHandler implements OAuthCallback {
         customTabsIntent.launchUrl(mContext, Uri.parse(url));
     }
 
-    @Override
-    public void onSuccessResponse(String result) {
-        JSONObject response;
+    /**
+     * effectively logs out.
+     */
+    public void deleteTokens(){
+        accessToken = null;
+        refreshToken = null;
+        expiresAt = -1L;
 
-        String access_token;
-        String refresh_token;
-        String token_type;
-        String expires_in;
-        try {
-            response = new JSONObject(result);
-            access_token = response.getString("access_token");
-            refresh_token = response.getString("refresh_token");
-            token_type = response.getString("token_type");
-            expires_in = response.getString("expires_in");
-            mContext.storeAccesToken(access_token, Integer.parseInt(expires_in));
-            mContext.storeRefreshToken(refresh_token);
-        } catch (JSONException j) {
-            j.printStackTrace();
+        SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFS_KEY, MODE_PRIVATE);
+        SharedPreferences.Editor edit = prefs.edit();
+        edit.clear();
+        edit.apply();
+    }
+
+
+    public void storeRefreshToken(String refreshToken){
+        this.refreshToken = refreshToken;
+
+        SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFS_KEY, MODE_PRIVATE);
+        SharedPreferences.Editor edit = prefs.edit();
+        edit.putString("RefreshToken", refreshToken);
+        edit.apply();
+    }
+
+    public String getRefreshToken(){
+        if(refreshToken == null) {
+            SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFS_KEY, MODE_PRIVATE);
+            refreshToken = prefs.getString("RefreshToken", null);
         }
+        return refreshToken;
+    }
 
+    private void storeAccesToken(String accessToken, int expiration ){
+        this.expiresAt = System.currentTimeMillis() + (expiration * 1000);
+        this.accessToken = accessToken;
+
+        SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFS_KEY, MODE_PRIVATE);
+        SharedPreferences.Editor edit = prefs.edit();
+        edit.putString("AccessToken", accessToken);
+        edit.putLong("ExpiresAt", expiresAt);
+        edit.apply();
+    }
+
+    public String getAccessToken(){
+        if(accessToken == null) {
+            SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFS_KEY, MODE_PRIVATE);
+            accessToken = prefs.getString("AccessToken", null);
+        }
+        return accessToken;
+    }
+
+    private Boolean isValidAccessToken(){
+        accessToken = getAccessToken();
+        refreshToken = getRefreshToken();
+
+        return accessToken != null && refreshToken != null
+                && expiresAt > System.currentTimeMillis() + 100000;
 
     }
 
-    @Override
-    public void onErrorResponse(VolleyError error) {
-
-        Log.d("VolleyError", error.getMessage());
-        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-            Toast.makeText(mContext,
-                    mContext.getString(R.string.errorNetworkTimeout),
-                    Toast.LENGTH_LONG).show();
-        } else if (error instanceof AuthFailureError) {
-            launchBrowser();
-        } else if (error instanceof ServerError) {
-            launchBrowser();
-        } else if (error instanceof NetworkError) {
-            //TODO
-        } else if (error instanceof ParseError) {
-            //TODO
+    private void checkRefresh(){
+        if( expiresAt > System.currentTimeMillis() + 100000){
+            if(refreshCycleCheck > 1) {
+                getAccessToken(refreshToken, GRANT_TYPE_REFRESH_TOKEN);
+                refreshCycleCheck++;
+            }
+            else{
+                launchBrowser();
+                refreshCycleCheck = 0;
+            }
         }
     }
+
+    public boolean isLoggedIn(){
+        if(isValidAccessToken()) {
+            return true;
+        }
+        else if(getRefreshToken() != null){
+            getAccessToken(getRefreshToken(), OAuthHandler.GRANT_TYPE_REFRESH_TOKEN);
+
+        }
+        return false;
+    }
+
+    private class CallbackHandler implements OAuthCallback {
+        @Override
+        public void onSuccessResponse(String result) {
+            JSONObject response;
+
+            String access_token;
+            String refresh_token;
+            String token_type;
+            String expires_in;
+            try {
+                response = new JSONObject(result);
+                access_token = response.getString("access_token");
+                refresh_token = response.getString("refresh_token");
+                token_type = response.getString("token_type");
+                expires_in = response.getString("expires_in");
+
+                storeAccesToken(access_token, Integer.parseInt(expires_in));
+                storeRefreshToken(refresh_token);
+            } catch (JSONException j) {
+                j.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onErrorResponse(VolleyError error) {
+
+            Log.d("VolleyError", error.getMessage());
+            if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                Toast.makeText(mContext,
+                        mContext.getString(R.string.errorNetworkTimeout),
+                        Toast.LENGTH_LONG).show();
+            } else if (error instanceof AuthFailureError) {
+                checkRefresh();
+                launchBrowser();
+            } else if (error instanceof ServerError) {
+                launchBrowser();
+            } else if (error instanceof NetworkError) {
+                //TODO
+            } else if (error instanceof ParseError) {
+                //TODO
+            }
+        }
+    }
+
+
 }

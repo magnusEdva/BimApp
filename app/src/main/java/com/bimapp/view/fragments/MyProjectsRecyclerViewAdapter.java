@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.R;
 import com.bimapp.model.entity.Project;
@@ -70,8 +71,8 @@ public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjec
     }
 
     public void loadProjects(){
-        NetworkConnManager.GET(mContext, NetworkConnManager.JSONTypes.ARRAY,
-                NetworkConnManager.APICall.GETProjects, this);
+        NetworkConnManager.networkRequest(mContext, Request.Method.GET,NetworkConnManager.JSONTypes.ARRAY,
+                NetworkConnManager.APICall.GETProjects, this, null);
     }
     @Override
     public void onError(String response) {

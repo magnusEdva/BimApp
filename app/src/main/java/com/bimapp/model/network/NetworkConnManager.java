@@ -2,8 +2,9 @@ package com.bimapp.model.network;
 
 
 import android.support.annotation.NonNull;
-import android.telecom.Call;
+import android.support.annotation.Nullable;
 
+import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.model.entity.Entity;
 
@@ -19,20 +20,19 @@ public class NetworkConnManager {
 
     /**
      * Sends a GET request using the @Param call URL. Data is provided to the callbacks onSuccess.
-     * @param context Required to aqcuire tokens.
+     *
+     * @param context      Required to aqcuire tokens.
+     * @param method       type of request.
      * @param responseType expected JSON Type in response
-     * @param call the call to be executed. Found in NetworkConnManager.APICall
-     * @param callback implementation of the network.Callback interface.
+     * @param call         the call to be executed. Found in NetworkConnManager.APICall
+     * @param callback     implementation of the network.Callback interface.
      */
-    static public void GET(@NonNull BimApp context, @NonNull JSONTypes responseType,
-                           @NonNull APICall call, @NonNull Callback callback) {
-        GETRequest.GET(context, responseType, call, callback);
-
-    }
-    static public void POST(@NonNull BimApp context, @NonNull JSONTypes responseType,
-                            @NonNull APICall call, @NonNull Callback callback, @NonNull Entity params) {
-        POSTRequest.POST(context,responseType,call,callback,params);
-
+    static public void networkRequest(@NonNull BimApp context, @NonNull int method, @NonNull JSONTypes responseType,
+                                      @NonNull APICall call, @NonNull Callback callback, @Nullable Entity params) {
+        if (params == null && method != Request.Method.GET) {
+            //TODO fix
+        } else
+            BimAppRequest.GET(context, method, responseType, call, callback, params);
     }
 
     public enum JSONTypes {
@@ -42,8 +42,7 @@ public class NetworkConnManager {
     public enum APICall {
         GETProjects("https://api.bimsync.com/v2/projects"),
         GETUser("https://api.bimsync.com/v2/user"),
-        GETTopics("...")
-        ;
+        GETTopics("...");
 
         private String mURL;
 

@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.User;
 import com.bimapp.model.network.Callback;
@@ -42,8 +43,8 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
 
         //Somehow I have a feeling this is a terrible way to handle things! It essentially gets the
         //user and sets the user variable through a callback method
-        NetworkConnManager.GET(mApplication, NetworkConnManager.JSONTypes.OBJECT,
-        NetworkConnManager.APICall.GETUser, this);
+        NetworkConnManager.networkRequest(mApplication, Request.Method.GET, NetworkConnManager.JSONTypes.OBJECT,
+        NetworkConnManager.APICall.GETUser, this, null);
 
 
 
@@ -86,7 +87,7 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
                                 fragmentTransaction.commit();
                                 break;
                             case R.id.nav_log_out:
-                                mApplication.deleteTokens();
+                                mApplication.logOut();
                                 Intent intent = new Intent(ProjectsViewActivity.this, WelcomeActivity.class);
                                 //TODO Make sure that when this is called, the BackStack is cleared somehow!
                                 startActivity(intent);

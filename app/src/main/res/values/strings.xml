@@ -15,7 +15,7 @@
     <string name="user">User</string>
     <string name="issues">Issues</string>
 
-    <!-- API- strings, add api-urls here-->
+    <!-- API- strinaddToRequestQueue add api-urls here-->
     <string name="api_token">https://api.bimsync.com/oauth2/token</string>
     <string name="api_refresh"></string>
     <string name="api_user"></string>

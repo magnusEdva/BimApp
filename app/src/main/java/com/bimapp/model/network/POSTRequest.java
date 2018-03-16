@@ -67,7 +67,7 @@ public class POSTRequest {
             }
         };
 
-        mContext.add(getUserRequest, call.name());
+        mContext.addToRequestQueue(getUserRequest, call.name());
 
     }
 
