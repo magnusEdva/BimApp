@@ -155,7 +155,7 @@ public class OAuthHandler {
             }
         };
         oAuthRequest.setRetryPolicy(new DefaultRetryPolicy(0,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         oAuthRequest.setShouldRetryServerErrors(true);
         mContext.addToRequestQueue(oAuthRequest, "token");
 
