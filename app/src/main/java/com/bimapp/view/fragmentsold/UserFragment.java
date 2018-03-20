@@ -1,4 +1,4 @@
-package com.bimapp.view.fragments;
+package com.bimapp.view.fragmentsold;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,10 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bimapp.R;
-import com.bimapp.view.fragments.dummy.DummyContent;
-import com.bimapp.view.fragments.dummy.DummyContent.DummyItem;
-
-import java.util.List;
+import com.bimapp.view.fragmentsold.dummy.DummyContent;
+import com.bimapp.view.fragmentsold.dummy.DummyContent.DummyItem;
 
 /**
  * A fragment representing a list of Items.

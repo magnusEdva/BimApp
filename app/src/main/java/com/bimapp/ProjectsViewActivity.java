@@ -21,9 +21,9 @@ import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.User;
 import com.bimapp.model.network.Callback;
 import com.bimapp.model.network.NetworkConnManager;
-import com.bimapp.view.fragments.ProjectsFragment;
-import com.bimapp.view.fragments.UserFragment;
-import com.bimapp.view.fragments.dummy.DummyContent;
+import com.bimapp.view.fragmentsold.ProjectsFragment;
+import com.bimapp.view.fragmentsold.UserFragment;
+import com.bimapp.view.fragmentsold.dummy.DummyContent;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

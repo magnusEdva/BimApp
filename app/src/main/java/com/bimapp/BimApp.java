@@ -1,12 +1,12 @@
 package com.bimapp;
 
 import android.app.Application;
-import android.content.Intent;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.bimapp.model.network.Callback;
-import com.bimapp.model.oauth.OAuthHandler;
+import com.bimapp.model.network.oauth.OAuthHandler;
 
 /**
  * Context class

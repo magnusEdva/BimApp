@@ -1,4 +1,4 @@
-package com.bimapp.model.oauth;
+package com.bimapp.model.network.oauth;
 
 import com.android.volley.VolleyError;
 

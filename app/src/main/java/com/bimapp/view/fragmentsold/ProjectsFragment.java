@@ -1,4 +1,4 @@
-package com.bimapp.view.fragments;
+package com.bimapp.view.fragmentsold;
 
 import android.content.Context;
 import android.os.Bundle;

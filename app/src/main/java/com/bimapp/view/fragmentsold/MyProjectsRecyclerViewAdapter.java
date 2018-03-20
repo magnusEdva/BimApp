@@ -1,4 +1,4 @@
-package com.bimapp.view.fragments;
+package com.bimapp.view.fragmentsold;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +14,7 @@ import com.bimapp.R;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.network.Callback;
 import com.bimapp.model.network.NetworkConnManager;
-import com.bimapp.view.fragments.ProjectsFragment.OnListFragmentInteractionListener;
+import com.bimapp.view.fragmentsold.ProjectsFragment.OnListFragmentInteractionListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

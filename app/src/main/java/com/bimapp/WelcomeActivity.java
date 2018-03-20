@@ -1,14 +1,12 @@
 package com.bimapp;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.customtabs.CustomTabsIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.bimapp.model.network.Callback;
-import com.bimapp.model.oauth.OAuthHandler;
+import com.bimapp.model.network.oauth.OAuthHandler;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

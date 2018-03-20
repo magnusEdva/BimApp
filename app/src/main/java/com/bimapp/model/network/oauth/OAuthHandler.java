@@ -1,4 +1,4 @@
-package com.bimapp.model.oauth;
+package com.bimapp.model.network.oauth;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
