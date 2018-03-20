@@ -1,6 +1,7 @@
 package com.bimapp.model.network;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -25,7 +26,6 @@ class BimAppRequest {
 
     static void GET(final BimApp mContext, int method, NetworkConnManager.APICall call,
                     final Callback callback, @Nullable final Entity params) {
-
         String url = call.getURL();
         StringRequest getUserRequest = new StringRequest(
                 method,

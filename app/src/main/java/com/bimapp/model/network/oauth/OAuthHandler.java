@@ -275,10 +275,8 @@ public class OAuthHandler {
         if (isValidAccessToken()) {
             return true;
         } else if (getRefreshToken() == null) {
-            refreshToken = "browserLaunched";
-            launchBrowser();
             return false;
-        }else if (getRefreshToken() != null && !refreshToken.equals("browserLaunched")) {
+        }else if (getRefreshToken() != null) {
             getAccessToken(getRefreshToken(), OAuthHandler.GRANT_TYPE_REFRESH_TOKEN);
             return true;
         }
