@@ -1,4 +1,4 @@
-package com.bimapp.view.fragmentsold.dummy;
+package com.bimapp.fragmentsold.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

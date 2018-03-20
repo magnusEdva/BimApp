@@ -24,4 +24,7 @@
     <string name="api_issue"></string>
     <string name="api_issues"></string>
     <string name="url_encode">application/x-www-form-urlencoded</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
