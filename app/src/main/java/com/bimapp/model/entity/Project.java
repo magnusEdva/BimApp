@@ -15,19 +15,20 @@ import java.util.Map;
  */
 
 public class Project implements Entity {
-    private Date createdAt;
+    private String createdAt;
     private String id;
     private String name;
-    private Date updatedAt;
+    private String updatedAt;
 
-    public Project() {
+    public Project(JSONObject project) {
+        construct(project);
     }
 
-    public Date getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -47,11 +48,11 @@ public class Project implements Entity {
         this.name = name;
     }
 
-    public Date getUpdatedAt() {
+    public String getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -64,30 +65,16 @@ public class Project implements Entity {
         return map;
     }
 
-    @Override
-    public Entity construct(JSONObject object) {
+
+    private void construct(JSONObject object) {
         try {
             id = object.getString("id");
             name = object.getString("name");
+            updatedAt = object.getString("updatedAt");
+            createdAt = object.getString("createdAt");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return this;
-    }
-
-    @Override
-    public Entity[] construct(JSONArray array) {
-        Project[] projects = null;
-        try {
-            projects = new Project[array.length()];
-            for (int i = 0; i < array.length(); i++) {
-                projects[i] = new Project();
-                projects[i].construct(array.getJSONObject(i));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return projects;
     }
 
     @Override
