@@ -4,7 +4,7 @@ package com.bimapp.view.interfaces;
  * Created by Håkon on 20.03.2018.
  */
 
-public interface ProjectsInterface extends ViewMVP {
+public interface ProjectsViewInterface extends ViewMVP {
 
     interface ShowProjectsViewListener{
         void onSelectedItem();

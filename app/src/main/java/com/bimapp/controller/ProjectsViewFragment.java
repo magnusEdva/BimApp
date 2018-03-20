@@ -8,60 +8,70 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bimapp.BimApp;
 import com.bimapp.R;
-import com.bimapp.controller.interfaces.ProjectsManager;
-import com.bimapp.view.interfaces.ProjectsInterface;
-import com.bimapp.view.interfaces.ViewMVP;
+import com.bimapp.controller.interfaces.ProjectsFragmentrInterface;
+import com.bimapp.model.entityManagers.ProjectEntityManager;
+import com.bimapp.view.ProjectsView;
+import com.bimapp.view.interfaces.ProjectsViewInterface;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link ProjectsViewFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ProjectsViewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProjectsViewFragment extends Fragment implements ProjectsInterface.ShowProjectsViewListener , ProjectsManager.ProjectsListener{
+public class ProjectsViewFragment extends Fragment implements ProjectsViewInterface.ShowProjectsViewListener , ProjectsFragmentrInterface.ProjectsListener{
 
-    private ProjectsInterface.ShowProjectsViewListener mProjectsListener;
-    private OnFragmentInteractionListener mListener;
+    /*
+    The implementation of the View
+     */
+    private ProjectsView mProjectsView;
+    private ProjectEntityManager mProjectsManager;
+    private BimApp mContext;
 
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        mContext = (BimApp) getContext();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mProjectsManager = new ProjectEntityManager(mContext);
+        mProjectsManager.getProjects();
 
-
+        mProjectsView = new ProjectsView(inflater,container);
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_projects_view, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        mProjectsManager = null;
     }
 
     @Override
     public void onSelectedItem() {
+
+    }
+
+    @Override
+    public void onProjectSelected(String projectId) {
 
     }
 
