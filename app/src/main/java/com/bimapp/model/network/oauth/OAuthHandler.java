@@ -277,7 +277,7 @@ public class OAuthHandler {
         }
         else if(getRefreshToken() != null){
             getAccessToken(getRefreshToken(), OAuthHandler.GRANT_TYPE_REFRESH_TOKEN);
-            return true;
+            return false;
         }
         return false;
     }
