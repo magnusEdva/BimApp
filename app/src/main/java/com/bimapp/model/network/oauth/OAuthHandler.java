@@ -107,7 +107,7 @@ public class OAuthHandler {
                         try {
                             new CallbackHandler().onSuccessResponse(response);
                             if(callback != null)
-                                callback.onSuccess((JSONObject) null);
+                                callback.onSuccess( response);
                             Log.d("Access Token", "Successfully got an access token");
                         } catch (Exception e) {
                             e.printStackTrace();

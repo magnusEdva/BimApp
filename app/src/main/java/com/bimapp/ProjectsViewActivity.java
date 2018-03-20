@@ -26,6 +26,7 @@ import com.bimapp.fragmentsold.UserFragment;
 import com.bimapp.fragmentsold.dummy.DummyContent;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -43,7 +44,7 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
 
         //Somehow I have a feeling this is a terrible way to handle things! It essentially gets the
         //user and sets the user variable through a callback method
-        NetworkConnManager.networkRequest(mApplication, Request.Method.GET, NetworkConnManager.JSONTypes.OBJECT,
+        NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
         NetworkConnManager.APICall.GETUser, this, null);
 
 
@@ -134,13 +135,13 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
     }
 
     @Override
-    public void onSuccess(JSONArray arr) {
-
-
-    }
-
-    @Override
-    public void onSuccess(JSONObject obj) {
+    public void onSuccess(String response) {
+        JSONObject obj = null;
+        try {
+            obj = new JSONObject(response);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         user = new User();
         user = (User) user.construct(obj);
         Log.d("Created user", user.getName());

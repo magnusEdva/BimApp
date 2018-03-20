@@ -17,6 +17,7 @@ import com.bimapp.model.network.NetworkConnManager;
 import com.bimapp.fragmentsold.ProjectsFragment.OnListFragmentInteractionListener;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -71,7 +72,7 @@ public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjec
     }
 
     public void loadProjects(){
-        NetworkConnManager.networkRequest(mContext, Request.Method.GET,NetworkConnManager.JSONTypes.ARRAY,
+        NetworkConnManager.networkRequest(mContext, Request.Method.GET,
                 NetworkConnManager.APICall.GETProjects, this, null);
     }
     @Override
@@ -79,19 +80,20 @@ public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjec
         //TODO
     }
 
+
     @Override
-    public void onSuccess(JSONArray arr) {
+    public void onSuccess(String response) {
         Project p = new Project();
+        JSONArray arr = null;
+        try {
+            arr = new JSONArray(response);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         mProjects.clear();
         mProjects.addAll(Arrays.asList((Project[])p.construct(arr)));
         this.notifyDataSetChanged();
         Log.d("got here", mProjects.get(0).toString());
-    }
-
-    @Override
-    public void onSuccess(JSONObject obj) {
-        //??
-        Log.d("obj", "project");
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

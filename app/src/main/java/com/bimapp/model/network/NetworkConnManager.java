@@ -8,6 +8,9 @@ import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.model.entity.Entity;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 /**
  * Provider of all access to all API calls and methods.
  */
@@ -22,20 +25,44 @@ public class NetworkConnManager {
      *
      * @param context      Required to aqcuire tokens.
      * @param method       type of request.
-     * @param responseType expected JSON Type in response
      * @param call         the call to be executed. Found in NetworkConnManager.APICall
      * @param callback     implementation of the network.Callback interface.
      */
-    static public void networkRequest(@NonNull BimApp context, @NonNull int method, @NonNull JSONTypes responseType,
+    static public void networkRequest(@NonNull BimApp context, @NonNull int method,
                                       @NonNull APICall call, @NonNull Callback callback, @Nullable Entity params) {
         if (params == null && method != Request.Method.GET) {
             //TODO fix
+        }else if(context.checkLogIn()){
+            BimAppRequest.GET(context, method, call, new networkCallback(callback), params);
         } else
-            BimAppRequest.GET(context, method, responseType, call, callback, params);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            networkRequest(context, method, call,callback, params);
     }
 
     public enum JSONTypes {
         OBJECT, ARRAY
+    }
+
+    public static class networkCallback implements Callback{
+        Callback otherCall;
+        public networkCallback(Callback otherCallback){
+            otherCall = otherCallback;
+        }
+
+        @Override
+        public void onError(String response) {
+            otherCall.onError(response);
+        }
+
+        @Override
+        public void onSuccess(String response) {
+            otherCall.onSuccess(response);
+        }
+
     }
 
     public enum APICall {

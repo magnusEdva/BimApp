@@ -23,8 +23,8 @@ import java.util.Map;
 class BimAppRequest {
 
 
-    static void GET(final BimApp mContext, int method, final NetworkConnManager.JSONTypes responseType,
-                    NetworkConnManager.APICall call, final Callback callback, @Nullable final Entity params) {
+    static void GET(final BimApp mContext, int method, NetworkConnManager.APICall call,
+                    final Callback callback, @Nullable final Entity params) {
 
         String url = call.getURL();
         StringRequest getUserRequest = new StringRequest(
@@ -33,10 +33,7 @@ class BimAppRequest {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        if (responseType == NetworkConnManager.JSONTypes.ARRAY)
-                            onResponseArray(response, callback);
-                        else if (responseType == NetworkConnManager.JSONTypes.OBJECT)
-                            onResponseObject(response, callback);
+                        onResponseString(response, callback);
                     }
                 },
                 new Response.ErrorListener() {
@@ -76,24 +73,9 @@ class BimAppRequest {
 
     }
 
-    private static void onResponseArray(String response, Callback callback) {
-        JSONArray array;
-        try {
-            array = new JSONArray(response);
-            callback.onSuccess(array);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private static void onResponseString(String response, Callback callback) {
+            callback.onSuccess(response);
     }
 
-    private static void onResponseObject(String response, Callback callback) {
-        JSONObject object;
-        try {
-            object = new JSONObject(response);
-            callback.onSuccess(object);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
 

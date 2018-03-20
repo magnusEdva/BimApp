@@ -9,6 +9,5 @@ import org.json.JSONObject;
 
 public interface Callback {
     void onError(String response);
-    void onSuccess(JSONArray arr);
-    void onSuccess(JSONObject obj);
+    void onSuccess(String JSONResponse);
 }

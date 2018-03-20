@@ -54,13 +54,9 @@ public class WelcomeActivity extends AppCompatActivity {
         public void onError(String response) {}
 
         @Override
-        public void onSuccess(JSONArray arr) {
+        public void onSuccess(String response) {
             openProjectsView();
         }
 
-        @Override
-        public void onSuccess(JSONObject obj) {
-            openProjectsView();
-        }
     }
 }
