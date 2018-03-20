@@ -15,8 +15,7 @@ import com.bimapp.model.entity.Entity;
 public class NetworkConnManager {
 
 
-    private NetworkConnManager() {
-    }
+    private NetworkConnManager() {}
 
     /**
      * Sends a GET request using the @Param call URL. Data is provided to the callbacks onSuccess.

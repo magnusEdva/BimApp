@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
@@ -33,7 +34,8 @@ import java.util.Map;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
- * Class responsible for handling all authentication using oAuth, namely getting the Authorization Code, getting the access token and the refresh token
+ * Class responsible for handling all authentication using oAuth,
+ * namely getting the Authorization Code, getting the access token and the refresh token
  */
 public class OAuthHandler {
     /**
@@ -96,8 +98,9 @@ public class OAuthHandler {
     public void getAccessToken(@NonNull final String code, @NonNull final String grantType, @Nullable final Callback callback) {
 
 
+
         String url = mContext.getString(R.string.api_token);
-        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+        StringRequest oAuthRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -151,9 +154,10 @@ public class OAuthHandler {
                 return headers;
             }
         };
-
-        postRequest.setShouldRetryServerErrors(true);
-        mContext.addToRequestQueue(postRequest, "token");
+        oAuthRequest.setRetryPolicy(new DefaultRetryPolicy(0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        oAuthRequest.setShouldRetryServerErrors(true);
+        mContext.addToRequestQueue(oAuthRequest, "token");
 
     }
 
@@ -255,8 +259,7 @@ public class OAuthHandler {
     }
 
     private void checkRefresh(){
-        if( expiresAt > System.currentTimeMillis() + 100000){
-            if(refreshCycleCheck > 1) {
+            if(refreshCycleCheck == 0) {
                 getAccessToken(refreshToken, GRANT_TYPE_REFRESH_TOKEN);
                 refreshCycleCheck++;
             }
@@ -264,7 +267,8 @@ public class OAuthHandler {
                 launchBrowser();
                 refreshCycleCheck = 0;
             }
-        }
+            Log.d("Auth error","Tried to refresh");
+
     }
 
     public boolean isLoggedIn(){
