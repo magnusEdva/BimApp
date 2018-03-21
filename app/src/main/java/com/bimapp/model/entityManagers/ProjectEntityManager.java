@@ -45,7 +45,7 @@ public class ProjectEntityManager implements ProjectsFragmentInterface.FragmentP
 
             try {
                 JSONArray jsonArray = new JSONArray(response);
-                projects = EntityListConstructor.constructProjects(jsonArray);
+                projects = EntityListConstructor.Projects(jsonArray);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

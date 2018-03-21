@@ -89,7 +89,7 @@ public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjec
             e.printStackTrace();
         }
         mProjects.clear();
-        mProjects.addAll((EntityListConstructor.constructProjects(arr)));
+        mProjects.addAll((EntityListConstructor.Projects(arr)));
         this.notifyDataSetChanged();
         Log.d("got here", mProjects.get(0).toString());
     }

@@ -71,7 +71,8 @@ public class NetworkConnManager {
     public enum APICall {
         GETProjects("https://api.bimsync.com/v2/projects"),
         GETUser("https://bcf.bimsync.com/bcf/beta/current-user"),
-        GETTopics("...");
+        GETTopics("https://bcf.bimsync.com/bcf/beta/projects/bb76d10d62c24bc18dda452e5d0fe6be/topics");
+
 
         private String mURL;
 

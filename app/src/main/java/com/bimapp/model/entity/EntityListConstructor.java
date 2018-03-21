@@ -19,7 +19,7 @@ public class EntityListConstructor {
      * @param projectsJSON contains properly formatted Project entities.
      * @return Actual Project[] of @param PojectsJSON
      */
-    public static List<Project> constructProjects(JSONArray projectsJSON){
+    public static List<Project> Projects(JSONArray projectsJSON){
         List<Project> projects = new ArrayList<>();
 
         for(int i = 0; i < projectsJSON.length(); i++){
@@ -30,5 +30,18 @@ public class EntityListConstructor {
             }
         }
         return projects;
+    }
+
+    public static List<Topic> constructTopics(JSONArray topicsJSON){
+        List<Topic> topics = new ArrayList<>();
+
+        for(int i = 0; i < topicsJSON.length(); i++){
+            try {
+                topics.add(new Topic(topicsJSON.getJSONObject(i)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return topics;
     }
 }
