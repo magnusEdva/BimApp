@@ -142,8 +142,7 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        user = new User();
-        user = (User) user.construct(obj);
+        user = new User(obj);
         Log.d("Created user", user.getName());
         TextView textView = findViewById(R.id.nav_header_title);
         textView.setText(user.getName());

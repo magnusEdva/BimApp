@@ -64,9 +64,13 @@ public class NetworkConnManager {
 
     }
 
+    /**
+     * lists all the APIcalls supported by the app.
+     * Also includes correct URLs
+     */
     public enum APICall {
         GETProjects("https://api.bimsync.com/v2/projects"),
-        GETUser("https://api.bimsync.com/v2/user"),
+        GETUser("https://bcf.bimsync.com/bcf/beta/current-user"),
         GETTopics("...");
 
         private String mURL;

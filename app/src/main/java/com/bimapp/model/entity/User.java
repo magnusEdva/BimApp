@@ -10,48 +10,52 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Created by Hakon on 15.03.2018.
+ * User entity class. As defined in API.
  */
 
 public class User implements Entity {
     /*
 
      */
-    private String createdAt; // This is a DATE format
     private String id;
     private String name;
-    private String username; // Documentation says this is both added and not added!
 
-    public User(){
-
+    /**
+     *
+     * @param obj contains parameter keys "id" and "name", specifies a user object.
+     */
+    public User(JSONObject obj){
+        construct(obj);
     }
 
+    /**
+     * not used.
+     * @param map @NonNull an empty map.
+     * @return null value
+     */
     @Override
     public Map<String, String> getParams(@NonNull Map<String, String> map) {
         // Should never ADD a user, don't need to do anything here
         return null;
     }
 
-    public User construct(JSONObject object) {
+    /**
+     * used in the constructor. Builds a user object from JSON.
+     * @param object
+     */
+    private void construct(JSONObject object) {
         try {
-            createdAt = object.getString("createdAt");
             id = object.getString("id");
             name = object.getString("name");
-            username = object.getString("username");
         } catch (JSONException e){
             e.printStackTrace();
         }
-        return this;
+
     }
 
     @Override
     public String toString(){
         return name;
-    }
-
-    //No reason to have setters, right?
-    public String getCreatedAt() {
-        return createdAt;
     }
 
     public String getId() {
@@ -62,7 +66,5 @@ public class User implements Entity {
         return name;
     }
 
-    public String getUsername() {
-        return username;
-    }
+
 }
