@@ -116,8 +116,10 @@ public class OAuthHandler {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        new CallbackHandler().onErrorResponse(error);
-                        error.printStackTrace();
+                        if(error != null) {
+                            new CallbackHandler().onErrorResponse(error);
+                            error.printStackTrace();
+                        }
                     }
                 }
         ) {
