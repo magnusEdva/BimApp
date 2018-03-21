@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.R;
-import com.bimapp.model.entity.EntityArrayConstructor;
+import com.bimapp.model.entity.EntityListConstructor;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.network.Callback;
 import com.bimapp.model.network.NetworkConnManager;
@@ -19,9 +19,7 @@ import com.bimapp.fragmentsold.ProjectsFragment.OnListFragmentInteractionListene
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -91,7 +89,7 @@ public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjec
             e.printStackTrace();
         }
         mProjects.clear();
-        mProjects.addAll(Arrays.asList(EntityArrayConstructor.constructProjects(arr)));
+        mProjects.addAll((EntityListConstructor.constructProjects(arr)));
         this.notifyDataSetChanged();
         Log.d("got here", mProjects.get(0).toString());
     }

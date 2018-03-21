@@ -46,10 +46,6 @@ public class NetworkConnManager {
 
     }
 
-    public enum JSONTypes {
-        OBJECT, ARRAY
-    }
-
     public static class networkCallback implements Callback{
         Callback otherCall;
         public networkCallback(Callback otherCallback){
