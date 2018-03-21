@@ -15,63 +15,31 @@ import java.util.Map;
  */
 
 public class Project implements Entity {
-    private String createdAt;
-    private String id;
-    private String name;
-    private String updatedAt;
+    String projectId;
+    String bimsyncProjectName;
+    String name;
+    String bimsyncProjectId;
 
     public Project(JSONObject project) {
         construct(project);
     }
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     @Override
     public Map<String, String> getParams(@NonNull Map<String, String> map) {
-        map.put("createdAt", "");
-        map.put("id", id);
+        map.put("project_id", projectId);
+        map.put("bimsync_project_name", bimsyncProjectName);
         map.put("name", name);
-        map.put("updatedAt", "");
+        map.put("bimsync_project_id", bimsyncProjectId);
         return map;
     }
 
 
     private void construct(JSONObject object) {
         try {
-            id = object.getString("id");
+            projectId = object.getString("project_id");
             name = object.getString("name");
-            updatedAt = object.getString("updatedAt");
-            createdAt = object.getString("createdAt");
+            bimsyncProjectName = object.getString("bimsync_project_name");
+            bimsyncProjectId = object.getString("bimsync_project_id");
         } catch (JSONException e) {
             e.printStackTrace();
         }
