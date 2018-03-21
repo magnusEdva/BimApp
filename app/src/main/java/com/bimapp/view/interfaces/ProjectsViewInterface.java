@@ -1,5 +1,9 @@
 package com.bimapp.view.interfaces;
 
+import com.bimapp.model.entity.Project;
+
+import java.util.List;
+
 /**
  * Created by Håkon on 20.03.2018.
  */
@@ -7,9 +11,13 @@ package com.bimapp.view.interfaces;
 public interface ProjectsViewInterface extends ViewMVP {
 
     interface ShowProjectsViewListener{
-        void onSelectedItem();
+        void onSelectedItem(String id);
     }
 
-    void SetListener(ShowProjectsViewListener projectsView);
+    void registerListener(ShowProjectsViewListener projectsView);
+
+    void unregisterListener();
+
+    void setProjects(List<Project> projects);
 
 }

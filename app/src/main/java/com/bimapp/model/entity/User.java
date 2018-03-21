@@ -50,7 +50,6 @@ public class User implements Entity {
         } catch (JSONException e){
             e.printStackTrace();
         }
-
     }
 
     @Override
