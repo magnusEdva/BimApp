@@ -26,20 +26,20 @@ public class NetworkConnManager {
      *
      * @param context      Required to aqcuire tokens.
      * @param method       type of request.
-     * @param call         the call to be executed. Found in NetworkConnManager.APICall
+     * @param url          the url to be executed. Found in APICall
      * @param callback     implementation of the network.Callback interface.
      */
     static public void networkRequest(@NonNull BimApp context, @NonNull int method,
-                                      @NonNull APICall call, @NonNull Callback callback, @Nullable Entity params) {
+                                      @NonNull String url, @NonNull Callback callback, @Nullable Entity params) {
         if (params == null && method != Request.Method.GET) {
             //TODO fix
         }else if(context.checkLogIn()){
-            BimAppRequest.GET(context, method, call, new networkCallback(callback), params);
+            BimAppRequest.GET(context, method, url, new networkCallback(callback), params);
         } else
             try {
                 Thread.sleep(100);
                 Log.d("asleep","kindoff");
-                networkRequest(context, method, call,callback, params);
+                networkRequest(context, method, url,callback, params);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -62,27 +62,5 @@ public class NetworkConnManager {
             otherCall.onSuccess(response);
         }
 
-    }
-
-    private static String VersionNumber = "beta";
-    /**
-     * lists all the APIcalls supported by the app.
-     * Also includes correct URLs
-     */
-    public enum APICall {
-        GETProjects("https://bcf.bimsync.com/bcf/" + VersionNumber + "/projects"),
-        GETUser("https://bcf.bimsync.com/bcf/" + VersionNumber + "/current-user"),
-        GETTopics("https://bcf.bimsync.com/bcf/" + VersionNumber + "/projects/bb76d10d62c24bc18dda452e5d0fe6be/topics");
-
-
-        private String mURL;
-
-        APICall(String URL) {
-            mURL = URL;
-        }
-
-        public String getURL() {
-            return mURL;
-        }
     }
 }

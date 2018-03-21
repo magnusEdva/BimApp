@@ -113,23 +113,38 @@ public class Topic implements Entity {
     }
 
     private void construct(JSONObject obj) {
-        try{
-            mGuid = obj.getString("guid");
-            mTopicType = obj.getString("topic_type");
-            mTopicStatus = obj.getString("topic_status");
+
+        try {
+            if (obj.has("guid"))
+                mGuid = obj.getString("guid");
+            if (obj.has("topic_type"))
+                mTopicType = obj.getString("topic_type");
+            if (obj.has("topic_status"))
+                mTopicStatus = obj.getString("topic_status");
             //TODO aquire an actual array mReferenceLinks = obj.getJSONArray("reference_links");
-            mTitle = obj.getString("title");
-            mPriority = obj.getString("priority");
-            mIndex = obj.getInt("index");
-            mCreationDate = obj.getString("creation_date");
-            mCreationAuthor = obj.getString("creation_author");
-            mModifiedAuthor = obj.getString("modified_author");
-            mAssignedTo = obj.getString("assigned_to");
-            mStage = obj.getString("stage");
-            mDescription = obj.getString("description");
+            if (obj.has("title"))
+                mTitle = obj.getString("title");
+            if (obj.has("description"))
+                mDescription = obj.getString("description");
+            if (obj.has("priority"))
+                mPriority = obj.getString("priority");
+            if (obj.has("index"))
+                mIndex = obj.getInt("index");
+            if (obj.has("creation_date"))
+                mCreationDate = obj.getString("creation_date");
+            if (obj.has("creation_author"))
+                mCreationAuthor = obj.getString("creation_author");
+            if (obj.has("modified_author"))
+                mModifiedAuthor = obj.getString("modified_author");
+            if (obj.has("assigned_to"))
+                mAssignedTo = obj.getString("assigned_to");
+            if (obj.has("stage"))
+                mStage = obj.getString("stage");
+
             //TODO bimSnippet = obj.getString("bim_snippet");
-            mDueDate = obj.getString("due_date");
-        }catch (JSONException e){
+            if (obj.has("due_date"))
+                mDueDate = obj.getString("due_date");
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -140,26 +155,26 @@ public class Topic implements Entity {
      */
     @Override
     public Map<String, String> getParams(@NonNull Map<String, String> map) {
-        map.put("guid",mGuid);
-        map.put("topic_type",mTopicType);
-        map.put("topic_status",mTopicStatus);
+        map.put("guid", mGuid);
+        map.put("topic_type", mTopicType);
+        map.put("topic_status", mTopicStatus);
         //TODO map.put("reference_links", mReferenceLinks);
-        map.put("title",mTitle);
-        map.put("priority",mPriority);
-        map.put("index",mIndex.toString());
-        map.put("creation_date",mCreationDate);
-        map.put("creation_author",mCreationAuthor);
-        map.put("modified_author",mModifiedAuthor);
-        map.put("assigned_to",mAssignedTo);
-        map.put("stage",mStage);
-        map.put("description",mDescription);
+        map.put("title", mTitle);
+        map.put("priority", mPriority);
+        map.put("index", mIndex.toString());
+        map.put("creation_date", mCreationDate);
+        map.put("creation_author", mCreationAuthor);
+        map.put("modified_author", mModifiedAuthor);
+        map.put("assigned_to", mAssignedTo);
+        map.put("stage", mStage);
+        map.put("description", mDescription);
         //TODO map.put("bim_snippet, mBimSnippet);
-        map.put("due_date",mDueDate);
+        map.put("due_date", mDueDate);
         return map;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return mTitle + " " + mDescription;
     }
 }

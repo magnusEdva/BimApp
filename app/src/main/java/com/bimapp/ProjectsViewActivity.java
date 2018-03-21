@@ -18,8 +18,11 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.bimapp.controller.FragmentViewProject;
+import com.bimapp.model.entity.EntityListConstructor;
 import com.bimapp.model.entity.Project;
+import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.User;
+import com.bimapp.model.network.APICall;
 import com.bimapp.model.network.Callback;
 import com.bimapp.model.network.NetworkConnManager;
 import com.bimapp.fragmentsold.ProjectsFragment;
@@ -29,6 +32,8 @@ import com.bimapp.fragmentsold.dummy.DummyContent;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 
 public class ProjectsViewActivity extends AppCompatActivity implements ProjectsFragment.OnListFragmentInteractionListener, UserFragment.OnListFragmentInteractionListener , Callback{
@@ -46,8 +51,7 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
         //Somehow I have a feeling this is a terrible way to handle things! It essentially gets the
         //user and sets the user variable through a callback method
         NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
-        NetworkConnManager.APICall.GETUser, this, null);
-
+        APICall.GETUser(), this, null);
 
 
         //Setting toolbar as the actionbar.
@@ -76,7 +80,7 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
 
                         switch (id){
                             case R.id.nav_projects:
-                                fragment = (Fragment) new FragmentViewProject(); // new ProjectsFragment();
+                                fragment =  new FragmentViewProject(); // new ProjectsFragment();
                                 fragmentTransaction.replace(R.id.fragments_container, fragment);
                                 fragmentTransaction.addToBackStack(null);
 
