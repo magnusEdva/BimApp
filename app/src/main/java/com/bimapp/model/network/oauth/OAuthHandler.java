@@ -313,8 +313,9 @@ public class OAuthHandler {
             Log.d("VolleyError", error.getMessage());
             if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                 Toast.makeText(mContext,
-                        mContext.getString(R.string.errorNetworkTimeout),
+                        ("fuck you apparently"),
                         Toast.LENGTH_LONG).show();
+                error.printStackTrace();
             } else if (error instanceof AuthFailureError) {
                 error.printStackTrace();
                 checkRefresh();
