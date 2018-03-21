@@ -20,53 +20,53 @@ import java.util.List;
 public class ProjectEntityManager implements ProjectsFragmentInterface.ProjectsListener {
 
     private BimApp mContext;
-    // Callback from the network
-    private Callback callback;
 
-    public ProjectEntityManager(BimApp context){
+    public ProjectEntityManager(BimApp context) {
         mContext = context;
-        callback = createCallback();
-
     }
 
-    private Callback createCallback() {
-        return new Callback() {
-            @Override
-            public void onError(String response) {
-                // TODO Error handling
+    private class ProjectCallback implements Callback {
 
+        ProjectsFragmentInterface mControllerCallback;
+
+        public ProjectCallback(ProjectsFragmentInterface controllerCallback) {
+            mControllerCallback = controllerCallback;
+        }
+
+        @Override
+        public void onError(String response) {
+            // TODO Error handling
+
+        }
+
+        @Override
+        public void onSuccess(String response) {
+            List<Project> projects = null;
+
+            try {
+                JSONArray jsonArray = new JSONArray(response);
+                projects = EntityListConstructor.constructProjects(jsonArray);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+            // Make project list
+            // Callback to fragment with list
+            gotProjects(projects, mControllerCallback);
 
-            @Override
-            public void onSuccess(String response) {
-                List<Project> projects = null;
-
-                try {
-                    JSONArray jsonArray = new JSONArray(response);
-                    projects = EntityListConstructor.constructProjects(jsonArray);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                // Make project list
-                // Callback to fragment with list
-                gotProjects(projects);
-
-            }
-
-        };
+        }
     }
-
 
     @Override
-    public void gotProjects(List<Project> projects) {
-
+    public void gotProjects(List<Project> projects, ProjectsFragmentInterface controllerCallback) {
+        controllerCallback.setProjects(projects);
     }
 
-    public void getProjects() {
-        NetworkConnManager.networkRequest(mContext, Request.Method.GET, NetworkConnManager.APICall.GETProjects,callback,null);
+    public void getProjects(ProjectsFragmentInterface controllerCallback) {
+        NetworkConnManager.networkRequest(mContext, Request.Method.GET, NetworkConnManager.APICall.GETProjects,
+                new ProjectCallback(controllerCallback), null);
     }
 
-    public void getProject(String projectId){
+    public void getProject(String projectId) {
 
     }
 }
