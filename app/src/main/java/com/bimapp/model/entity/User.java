@@ -32,8 +32,7 @@ public class User implements Entity {
         return null;
     }
 
-    @Override
-    public Entity construct(JSONObject object) {
+    public User construct(JSONObject object) {
         try {
             createdAt = object.getString("createdAt");
             id = object.getString("id");
@@ -43,21 +42,6 @@ public class User implements Entity {
             e.printStackTrace();
         }
         return this;
-    }
-
-    @Override
-    public Entity[] construct(JSONArray array) {
-        User[] users = null;
-        try{
-            users = new User[array.length()];
-            for (int i = 0; i < array.length(); i++) {
-                users[i] = new User();
-                users[i].construct(array.getJSONObject(i));
-            }
-        }catch (JSONException e){
-            e.printStackTrace();
-        }
-        return users;
     }
 
     @Override

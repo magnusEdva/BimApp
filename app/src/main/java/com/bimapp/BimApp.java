@@ -54,10 +54,10 @@ public class BimApp extends Application{
     }
 
     public <T> void addToRequestQueue(Request<T> req, String tag){
-        req.setTag("lol");
+        req.setTag(tag);
         requestQueue.add(req);
     }
-    public void cancelRequestQueue(){
-        requestQueue.cancelAll("lol");
+    public void cancelRequestQueue(String tag){
+        requestQueue.cancelAll(tag);
     }
 }

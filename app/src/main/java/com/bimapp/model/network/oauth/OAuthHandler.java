@@ -93,10 +93,9 @@ public class OAuthHandler {
      *
      * @param code      @NonNull
      * @param grantType either GRANT_TYPE_AUTHORIZATION_CODE or GRANT_TYPE_REFRESH_TOKEN
-     * @param callback used when acquiring the first token.
+     * @param callback  used when acquiring the first token.
      */
     public void getAccessToken(@NonNull final String code, @NonNull final String grantType, @Nullable final Callback callback) {
-
 
 
         String url = mContext.getString(R.string.api_token);
@@ -106,8 +105,8 @@ public class OAuthHandler {
                     public void onResponse(String response) {
                         try {
                             new CallbackHandler().onSuccessResponse(response);
-                            if(callback != null)
-                                callback.onSuccess( response);
+                            if (callback != null)
+                                callback.onSuccess(response);
                             Log.d("Access Token", "Successfully got an access token");
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -163,12 +162,14 @@ public class OAuthHandler {
 
     /**
      * calls getAccessToken(String, String, null);
+     *
      * @param code
      * @param grantType
      */
-    public void getAccessToken(@NonNull final String code, @NonNull final String grantType){
-        getAccessToken(code, grantType,null);
+    public void getAccessToken(@NonNull final String code, @NonNull final String grantType) {
+        getAccessToken(code, grantType, null);
     }
+
     private String getOAuthUri() {
         StringBuilder URI = new StringBuilder();
         URI.append(mContext.getText(R.string.BimSyncURL)); //mContext.getText(R.string.BimSyncURL)"http://10.0.0.8:8089/"
@@ -192,7 +193,7 @@ public class OAuthHandler {
     /**
      * effectively logs out.
      */
-    public void deleteTokens(){
+    public void deleteTokens() {
         accessToken = null;
         refreshToken = null;
         expiresAt = -1L;
@@ -204,7 +205,7 @@ public class OAuthHandler {
     }
 
 
-    public void storeRefreshToken(String refreshToken){
+    public void storeRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
 
         SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFS_KEY, MODE_PRIVATE);
@@ -213,15 +214,15 @@ public class OAuthHandler {
         edit.apply();
     }
 
-    public String getRefreshToken(){
-        if(refreshToken == null) {
+    public String getRefreshToken() {
+        if (refreshToken == null) {
             SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFS_KEY, MODE_PRIVATE);
             refreshToken = prefs.getString("RefreshToken", null);
         }
         return refreshToken;
     }
 
-    private void storeAccesToken(String accessToken, int expiration ){
+    private void storeAccesToken(String accessToken, int expiration) {
         this.expiresAt = System.currentTimeMillis() + (expiration * 1000);
         this.accessToken = accessToken;
 
@@ -232,23 +233,23 @@ public class OAuthHandler {
         edit.apply();
     }
 
-    public String getAccessToken(){
-        if(accessToken == null) {
+    public String getAccessToken() {
+        if (accessToken == null) {
             SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFS_KEY, MODE_PRIVATE);
             accessToken = prefs.getString("AccessToken", null);
         }
         return accessToken;
     }
 
-    public long getExpiresAt(){
-        if(expiresAt == -1L) {
+    public long getExpiresAt() {
+        if (expiresAt == -1L) {
             SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFS_KEY, MODE_PRIVATE);
             expiresAt = prefs.getLong("ExpiresAt", -1L);
         }
         return expiresAt;
     }
 
-    private Boolean isValidAccessToken(){
+    private Boolean isValidAccessToken() {
         accessToken = getAccessToken();
         refreshToken = getRefreshToken();
         expiresAt = getExpiresAt();
@@ -258,24 +259,24 @@ public class OAuthHandler {
 
     }
 
-    private void checkRefresh(){
-            if(refreshCycleCheck == 0) {
-                getAccessToken(refreshToken, GRANT_TYPE_REFRESH_TOKEN);
-                refreshCycleCheck++;
-            }
-            else{
-                launchBrowser();
-                refreshCycleCheck = 0;
-            }
-            Log.d("Auth error","Tried to refresh");
+    private void checkRefresh() {
+        if (refreshCycleCheck == 0) {
+            getAccessToken(refreshToken, GRANT_TYPE_REFRESH_TOKEN);
+            refreshCycleCheck++;
+        } else {
+            launchBrowser();
+            refreshCycleCheck = 0;
+        }
+        Log.d("Auth error", "Tried to refresh");
 
     }
 
-    public boolean isLoggedIn(){
-        if(isValidAccessToken()) {
+    public boolean isLoggedIn() {
+        if (isValidAccessToken()) {
             return true;
-        }
-        else if(getRefreshToken() != null){
+        } else if (getRefreshToken() == null) {
+            return false;
+        }else if (getRefreshToken() != null) {
             getAccessToken(getRefreshToken(), OAuthHandler.GRANT_TYPE_REFRESH_TOKEN);
             return true;
         }
@@ -285,6 +286,7 @@ public class OAuthHandler {
     private class CallbackHandler implements OAuthCallback {
         @Override
         public void onSuccessResponse(String result) {
+            refreshCycleCheck = 0;
             JSONObject response;
 
             String access_token;
@@ -314,12 +316,16 @@ public class OAuthHandler {
                         mContext.getString(R.string.errorNetworkTimeout),
                         Toast.LENGTH_LONG).show();
             } else if (error instanceof AuthFailureError) {
+                error.printStackTrace();
                 checkRefresh();
             } else if (error instanceof ServerError) {
+                error.printStackTrace();
                 //TODO
             } else if (error instanceof NetworkError) {
+                error.printStackTrace();
                 //TODO
             } else if (error instanceof ParseError) {
+                error.printStackTrace();
                 //TODO
             }
         }

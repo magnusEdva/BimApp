@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.R;
+import com.bimapp.model.entity.EntityArrayConstructor;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.network.Callback;
 import com.bimapp.model.network.NetworkConnManager;
@@ -83,7 +84,6 @@ public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjec
 
     @Override
     public void onSuccess(String response) {
-        Project p = new Project();
         JSONArray arr = null;
         try {
             arr = new JSONArray(response);
@@ -91,7 +91,7 @@ public class MyProjectsRecyclerViewAdapter extends RecyclerView.Adapter<MyProjec
             e.printStackTrace();
         }
         mProjects.clear();
-        mProjects.addAll(Arrays.asList((Project[])p.construct(arr)));
+        mProjects.addAll(Arrays.asList(EntityArrayConstructor.constructProjects(arr)));
         this.notifyDataSetChanged();
         Log.d("got here", mProjects.get(0).toString());
     }
