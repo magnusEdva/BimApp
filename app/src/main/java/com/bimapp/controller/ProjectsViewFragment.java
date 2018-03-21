@@ -10,10 +10,13 @@ import android.view.ViewGroup;
 
 import com.bimapp.BimApp;
 import com.bimapp.R;
-import com.bimapp.controller.interfaces.ProjectsFragmentrInterface;
+import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
+import com.bimapp.model.entity.Project;
 import com.bimapp.model.entityManagers.ProjectEntityManager;
 import com.bimapp.view.ProjectsView;
 import com.bimapp.view.interfaces.ProjectsViewInterface;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,7 +25,7 @@ import com.bimapp.view.interfaces.ProjectsViewInterface;
  * to handle interaction events.
  * create an instance of this fragment.
  */
-public class ProjectsViewFragment extends Fragment implements ProjectsViewInterface.ShowProjectsViewListener , ProjectsFragmentrInterface.ProjectsListener{
+public class ProjectsViewFragment extends Fragment implements ProjectsViewInterface.ShowProjectsViewListener , ProjectsFragmentInterface.ProjectsListener{
 
     /*
     The implementation of the View
@@ -71,7 +74,7 @@ public class ProjectsViewFragment extends Fragment implements ProjectsViewInterf
     }
 
     @Override
-    public void onProjectSelected(String projectId) {
+    public void gotProjects(List<Project> projects) {
 
     }
 

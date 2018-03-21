@@ -2,23 +2,22 @@ package com.bimapp.model.entityManagers;
 
 import com.android.volley.Request;
 import com.bimapp.BimApp;
-import com.bimapp.controller.interfaces.ProjectsFragmentrInterface;
+import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
+import com.bimapp.model.entity.EntityListConstructor;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.network.Callback;
 import com.bimapp.model.network.NetworkConnManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by Håkon on 20.03.2018.
  */
 
-public class ProjectEntityManager implements ProjectsFragmentrInterface.ProjectsListener {
+public class ProjectEntityManager implements ProjectsFragmentInterface.ProjectsListener {
 
     private BimApp mContext;
     // Callback from the network
@@ -34,25 +33,23 @@ public class ProjectEntityManager implements ProjectsFragmentrInterface.Projects
         return new Callback() {
             @Override
             public void onError(String response) {
+                // TODO Error handling
 
             }
 
             @Override
             public void onSuccess(String response) {
-                List<Project> projects;
+                List<Project> projects = null;
 
                 try {
                     JSONArray jsonArray = new JSONArray(response);
-                    Project p = new Project();
-
-                    projects = Arrays.asList((Project[]) p.construct(jsonArray));
-
+                    projects = EntityListConstructor.constructProjects(jsonArray);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 // Make project list
                 // Callback to fragment with list
-                onProjectSelected("sdf");
+                gotProjects(projects);
 
             }
 
@@ -61,7 +58,7 @@ public class ProjectEntityManager implements ProjectsFragmentrInterface.Projects
 
 
     @Override
-    public void onProjectSelected(String projectId) {
+    public void gotProjects(List<Project> projects) {
 
     }
 

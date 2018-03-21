@@ -1,14 +1,19 @@
 package com.bimapp.controller.interfaces;
 
+import com.bimapp.model.entity.Project;
+
+import java.util.List;
+
 /**
  * Created by Håkon on 20.03.2018.
  */
 
-public interface ProjectsFragmentrInterface {
+public interface ProjectsFragmentInterface {
 
 
     interface ProjectsListener {
-        void onProjectSelected(String projectId);
+        void gotProjects(List<Project> projects);
+
     }
 
     void registerListener(ProjectsListener listener);
