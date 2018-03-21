@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
+import com.bimapp.controller.FragmentViewProject;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.User;
 import com.bimapp.model.network.Callback;
@@ -75,7 +76,7 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
 
                         switch (id){
                             case R.id.nav_projects:
-                                fragment = new ProjectsFragment();
+                                fragment = (Fragment) new FragmentViewProject();
                                 fragmentTransaction.replace(R.id.fragments_container, fragment);
                                 fragmentTransaction.addToBackStack(null);
 

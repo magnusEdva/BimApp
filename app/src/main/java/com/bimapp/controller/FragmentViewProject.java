@@ -3,7 +3,7 @@ package com.bimapp.controller;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,31 +21,31 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ProjectsViewFragment.OnFragmentInteractionListener} interface
+ * {@link FragmentViewProject.OnFragmentInteractionListener} interface
  * to handle interaction events.
  * create an instance of this fragment.
  */
-public class ProjectsViewFragment extends Fragment implements ProjectsViewInterface.ShowProjectsViewListener , ProjectsFragmentInterface.ProjectsListener{
+public class FragmentViewProject extends Fragment implements ProjectsFragmentInterface, ProjectsViewInterface.ShowProjectsViewListener{
 
     /*
     The implementation of the View
      */
-    private ProjectsView mProjectsView;
+    private ProjectsViewInterface mProjectsView;
     private ProjectEntityManager mProjectsManager;
-    private BimApp mContext;
+    private BimApp mApplication;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        mContext = (BimApp) getContext();
+        mApplication = (BimApp) this.getActivity().getApplication();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mProjectsManager = new ProjectEntityManager(mContext);
-        mProjectsManager.getProjects();
+        mProjectsManager = new ProjectEntityManager(mApplication);
+        //mProjectsManager.getProjects();
 
         mProjectsView = new ProjectsView(inflater,container);
         // Inflate the layout for this fragment
@@ -68,15 +68,26 @@ public class ProjectsViewFragment extends Fragment implements ProjectsViewInterf
         mProjectsManager = null;
     }
 
+    /**
+     * Callback method from the view.
+     * Starts new activity/fragment based on which project was selected.
+     * @param id the id of the selected project
+     */
     @Override
-    public void onSelectedItem() {
+    public void onSelectedItem(String id) {
 
     }
 
+    /**
+     * From the ProjectsFragmentsInterface.
+     * This is the method the listener calls on to set the projects.
+     * @param projects the projects to be listed
+     */
     @Override
-    public void gotProjects(List<Project> projects) {
-
+    public void setProjects(List<Project> projects) {
+        mProjectsView.setProjects(projects);
     }
+
 
     /**
      * This interface must be implemented by activities that contain this

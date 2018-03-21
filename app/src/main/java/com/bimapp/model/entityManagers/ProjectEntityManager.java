@@ -17,7 +17,7 @@ import java.util.List;
  * Created by Håkon on 20.03.2018.
  */
 
-public class ProjectEntityManager implements ProjectsFragmentInterface.ProjectsListener {
+public class ProjectEntityManager implements ProjectsFragmentInterface.FragmentProjectListener {
 
     private BimApp mContext;
 

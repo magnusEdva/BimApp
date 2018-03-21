@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.bimapp.R;
 import com.bimapp.model.entity.Project;
@@ -17,12 +20,11 @@ import java.util.List;
 
 public class ProjectsView implements ProjectsViewInterface {
 
-    private View mRootView;
+    private ListView mRootView;
     private ShowProjectsViewListener mListener;
 
     public ProjectsView(LayoutInflater inflater, ViewGroup container){
-        mRootView = inflater.inflate(R.layout.fragment_projects_view, container);
-
+        mRootView = (ListView) inflater.inflate(R.layout.fragment_projects_view, container);
     }
 
 
@@ -58,6 +60,10 @@ public class ProjectsView implements ProjectsViewInterface {
      */
     @Override
     public void setProjects(List<Project> projects) {
+
+        ArrayAdapter<Project> arrayAdapter = new ArrayAdapter<Project>(this.getRootView().getContext(), R.layout.project_simpler_layout,projects);
+        ListView listView = (ListView) mRootView.findViewById(R.id.project_list);
+        listView.setAdapter(arrayAdapter);
 
     }
 }
