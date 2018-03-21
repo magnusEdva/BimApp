@@ -18,7 +18,7 @@ import java.util.List;
  * Created by Håkon on 20.03.2018.
  */
 
-public class ProjectsView implements ProjectsViewInterface {
+public class ProjectsView implements ProjectsViewInterface{
 
     private View mRootView;
     private ShowProjectsViewListener mListener;
@@ -59,11 +59,17 @@ public class ProjectsView implements ProjectsViewInterface {
      * @param projects a List of projects.
      */
     @Override
-    public void setProjects(List<Project> projects) {
+    public void setProjects(final List<Project> projects) {
 
         ArrayAdapter<Project> arrayAdapter = new ArrayAdapter<Project>(this.getRootView().getContext(), android.R.layout.simple_list_item_1,projects);
         ListView listView = (ListView) mRootView.findViewById(R.id.project_list);
         listView.setAdapter(arrayAdapter);
-
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mListener.onSelectedItem(projects.get((int) id).getBimsyncProjectId());
+            }
+        });
     }
+
 }
