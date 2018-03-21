@@ -64,14 +64,15 @@ public class NetworkConnManager {
 
     }
 
+    private static String VersionNumber = "beta";
     /**
      * lists all the APIcalls supported by the app.
      * Also includes correct URLs
      */
     public enum APICall {
-        GETProjects("https://api.bimsync.com/v2/projects"),
-        GETUser("https://bcf.bimsync.com/bcf/beta/current-user"),
-        GETTopics("https://bcf.bimsync.com/bcf/beta/projects/bb76d10d62c24bc18dda452e5d0fe6be/topics");
+        GETProjects("https://bcf.bimsync.com/bcf/" + VersionNumber + "/projects"),
+        GETUser("https://bcf.bimsync.com/bcf/" + VersionNumber + "/current-user"),
+        GETTopics("https://bcf.bimsync.com/bcf/" + VersionNumber + "/projects/bb76d10d62c24bc18dda452e5d0fe6be/topics");
 
 
         private String mURL;
