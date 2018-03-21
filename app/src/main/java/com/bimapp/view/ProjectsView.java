@@ -6,7 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bimapp.R;
+import com.bimapp.model.entity.Project;
 import com.bimapp.view.interfaces.ProjectsViewInterface;
+
+import java.util.List;
 
 /**
  * Created by Håkon on 20.03.2018.
@@ -22,10 +25,6 @@ public class ProjectsView implements ProjectsViewInterface {
 
     }
 
-    @Override
-    public void SetListener(ShowProjectsViewListener projectsViewListener) {
-        mListener = projectsViewListener;
-    }
 
     @Override
     public View getRootView() {
@@ -35,5 +34,30 @@ public class ProjectsView implements ProjectsViewInterface {
     @Override
     public Bundle getViewState() {
         return null;
+    }
+
+    /**
+     * from ProjectsViewInterface. sets the implementation for this listener.
+     * @param projectsView the implementation of the ShowProjectsViewListener interface
+     */
+    @Override
+    public void registerListener(ShowProjectsViewListener projectsView) {
+        mListener = projectsView;
+    }
+    /**
+     * from ProjectsViewInterface. removes the implementation for this listener.
+     **/
+    @Override
+    public void unregisterListener() {
+        mListener = null;
+    }
+
+    /**
+     * Adds the projects from the network to the projects view.
+     * @param projects a List of projects.
+     */
+    @Override
+    public void setProjects(List<Project> projects) {
+
     }
 }
