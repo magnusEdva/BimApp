@@ -1,7 +1,7 @@
 package com.bimapp;
 
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager; // Should this be android.app.FragmentManager?
+import android.support.v4.app.FragmentManager;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -76,7 +76,7 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
 
                         switch (id){
                             case R.id.nav_projects:
-                                fragment = (Fragment) new FragmentViewProject();
+                                fragment = (Fragment) new FragmentViewProject(); // new ProjectsFragment();
                                 fragmentTransaction.replace(R.id.fragments_container, fragment);
                                 fragmentTransaction.addToBackStack(null);
 

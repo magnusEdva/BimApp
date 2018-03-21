@@ -20,11 +20,11 @@ import java.util.List;
 
 public class ProjectsView implements ProjectsViewInterface {
 
-    private ListView mRootView;
+    private View mRootView;
     private ShowProjectsViewListener mListener;
 
     public ProjectsView(LayoutInflater inflater, ViewGroup container){
-        mRootView = (ListView) inflater.inflate(R.layout.fragment_projects_view, container);
+        mRootView = inflater.inflate(R.layout.fragment_projects_view, container);
     }
 
 
@@ -61,7 +61,7 @@ public class ProjectsView implements ProjectsViewInterface {
     @Override
     public void setProjects(List<Project> projects) {
 
-        ArrayAdapter<Project> arrayAdapter = new ArrayAdapter<Project>(this.getRootView().getContext(), R.layout.project_simpler_layout,projects);
+        ArrayAdapter<Project> arrayAdapter = new ArrayAdapter<Project>(this.getRootView().getContext(), android.R.layout.simple_list_item_1,projects);
         ListView listView = (ListView) mRootView.findViewById(R.id.project_list);
         listView.setAdapter(arrayAdapter);
 

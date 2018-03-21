@@ -63,6 +63,6 @@ public class Project implements Entity {
 
     @Override
     public String toString(){
-        return name;
+        return bimsyncProjectName;
     }
 }

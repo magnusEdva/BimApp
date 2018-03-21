@@ -39,13 +39,15 @@ public class FragmentViewProject extends Fragment implements ProjectsFragmentInt
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         mApplication = (BimApp) this.getActivity().getApplication();
+        mProjectsManager = new ProjectEntityManager(mApplication);
+        mProjectsManager.getProjects(this);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mProjectsManager = new ProjectEntityManager(mApplication);
-        //mProjectsManager.getProjects();
+
 
         mProjectsView = new ProjectsView(inflater,container);
         // Inflate the layout for this fragment
