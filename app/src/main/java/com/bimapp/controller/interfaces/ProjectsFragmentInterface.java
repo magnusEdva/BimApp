@@ -12,11 +12,14 @@ public interface ProjectsFragmentInterface {
 
 
     interface ProjectsListener {
-        void gotProjects(List<Project> projects);
+        void gotProjects(List<Project> projects, ProjectsFragmentInterface callback);
+        void getProjects(ProjectsFragmentInterface callback);
 
     }
 
     void registerListener(ProjectsListener listener);
 
     void unRegisterListener();
+
+    void setProjects(List<Project> projects);
 }
