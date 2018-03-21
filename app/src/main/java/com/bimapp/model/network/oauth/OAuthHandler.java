@@ -311,8 +311,6 @@ public class OAuthHandler {
 
         @Override
         public void onErrorResponse(VolleyError error) {
-
-            Log.d("VolleyError", error.getMessage());
             if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                 Toast.makeText(mContext,
                         ("fuck you apparently"),
