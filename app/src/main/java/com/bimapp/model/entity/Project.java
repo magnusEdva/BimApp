@@ -15,13 +15,29 @@ import java.util.Map;
  */
 
 public class Project implements Entity {
-    String projectId;
-    String bimsyncProjectName;
-    String name;
-    String bimsyncProjectId;
+    private String projectId;
+    private String bimsyncProjectName;
+    private String name;
+    private String bimsyncProjectId;
 
     public Project(JSONObject project) {
         construct(project);
+    }
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public String getBimsyncProjectName() {
+        return bimsyncProjectName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getBimsyncProjectId() {
+        return bimsyncProjectId;
     }
 
     @Override
