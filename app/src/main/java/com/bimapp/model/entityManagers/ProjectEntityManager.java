@@ -5,6 +5,7 @@ import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
 import com.bimapp.model.entity.EntityListConstructor;
 import com.bimapp.model.entity.Project;
+import com.bimapp.model.network.APICall;
 import com.bimapp.model.network.Callback;
 import com.bimapp.model.network.NetworkConnManager;
 
@@ -62,7 +63,7 @@ public class ProjectEntityManager implements ProjectsFragmentInterface.FragmentP
     }
 
     public void getProjects(ProjectsFragmentInterface controllerCallback) {
-        NetworkConnManager.networkRequest(mContext, Request.Method.GET, NetworkConnManager.APICall.GETProjects,
+        NetworkConnManager.networkRequest(mContext, Request.Method.GET, APICall.GETProjects(),
                 new ProjectCallback(controllerCallback), null);
     }
 

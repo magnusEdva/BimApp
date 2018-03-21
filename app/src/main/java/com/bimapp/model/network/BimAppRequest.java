@@ -24,9 +24,9 @@ import java.util.Map;
 class BimAppRequest {
 
 
-    static void GET(final BimApp mContext, int method, NetworkConnManager.APICall call,
+    static void GET(final BimApp mContext, int method, String url,
                     final Callback callback, @Nullable final Entity params) {
-        String url = call.getURL();
+
         StringRequest getUserRequest = new StringRequest(
                 method,
                 url,
@@ -69,7 +69,7 @@ class BimAppRequest {
             }
         };
 
-        mContext.addToRequestQueue(getUserRequest, call.name());
+        mContext.addToRequestQueue(getUserRequest, url);
 
     }
 
