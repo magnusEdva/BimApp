@@ -20,8 +20,27 @@ public class Project implements Entity {
     private String name;
     private String bimsyncProjectId;
 
+    /**
+     * Used when building a project from network.
+     * @param project is JSONObject containing a project.
+     */
     public Project(JSONObject project) {
         construct(project);
+    }
+
+    /**
+     * Used to build a Project from a series of String. Useful for acquiring
+     * ActiveProject from storage.
+     * @param projectId String with a valid projectId.
+     * @param bimsyncProjectName  String with a valid projectName corresponding to the IDs.
+     * @param bimsyncProjectId String with the BimsyncProjectId corresponding to the project Id
+     * @param name String with the project name corresponding to the project Id.
+     */
+    public Project(String projectId, String bimsyncProjectName, String bimsyncProjectId, String name){
+        this.projectId = projectId;
+        this.bimsyncProjectName = bimsyncProjectName;
+        this.bimsyncProjectId = bimsyncProjectId;
+        this.name = name;
     }
 
     public String getProjectId() {
