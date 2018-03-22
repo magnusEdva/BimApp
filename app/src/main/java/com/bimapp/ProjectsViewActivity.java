@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
+import com.bimapp.controller.FragmentTopic;
 import com.bimapp.controller.FragmentViewProject;
 import com.bimapp.model.entity.EntityListConstructor;
 import com.bimapp.model.entity.Project;
@@ -87,7 +88,7 @@ public class ProjectsViewActivity extends AppCompatActivity implements ProjectsF
                                 fragmentTransaction.commit();
                                 break;
                             case R.id.nav_issues:
-                                fragment = new UserFragment();
+                                fragment = new FragmentTopic();
                                 fragmentTransaction.replace(R.id.fragments_container, fragment);
                                 fragmentTransaction.addToBackStack(null);
                                 fragmentTransaction.commit();

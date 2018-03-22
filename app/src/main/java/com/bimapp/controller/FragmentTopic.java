@@ -3,7 +3,8 @@ package com.bimapp.controller;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import com.bimapp.R;
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entityManagers.TopicsEntityManager;
+import com.bimapp.view.TopicsView;
+import com.bimapp.view.TopicsViewInterface;
 
 import java.util.List;
 
@@ -21,7 +24,8 @@ import java.util.List;
  * Use the {@link FragmentTopic#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentTopic extends Fragment implements TopicsFragmentInterface {
+public class FragmentTopic extends Fragment
+        implements TopicsFragmentInterface , TopicsViewInterface.TopicsViewToPresenter{
 
     // Interface for the view, setListener makes this the callback.
     // private TopicViewInterface mTopicViewInterface;
@@ -29,6 +33,8 @@ public class FragmentTopic extends Fragment implements TopicsFragmentInterface {
     // Used to get topics from the model. Could potentially be implemented in this class,
     // but probably better to separate them.
     private TopicsEntityManager mTopicsEntityManager;
+
+    private TopicsViewInterface mTopicsView;
 
     // Getting the application
     private BimApp mApplication;
@@ -61,9 +67,9 @@ public class FragmentTopic extends Fragment implements TopicsFragmentInterface {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Instatiate the view
-        // mTopicsView = new TopicsView(inflater, container);
+        mTopicsView = new TopicsView(inflater, container);
         // Set this as the callback from the view
-        // mTopicsView.registerListener(this);
+        mTopicsView.registerListener(this);
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_fragment_topic, container, false);
@@ -89,7 +95,12 @@ public class FragmentTopic extends Fragment implements TopicsFragmentInterface {
     @Override
     public void setTopics(List<Topic> topics) {
         // This method shall do a callback to the view when it has recieved topics
-        // mTopicsView.setTopics(topics);
+        mTopicsView.setTopics(topics);
+    }
+
+    @Override
+    public void onSelectedItem(Topic topic) {
+        Log.d("Topic title", topic.getmTitle());
     }
 
     // Implement override method from the view that tells this controller which topic was selected
