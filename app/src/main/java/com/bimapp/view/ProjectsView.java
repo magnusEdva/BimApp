@@ -62,7 +62,7 @@ public class ProjectsView implements ProjectsViewInterface{
     public void setProjects(final List<Project> projects) {
 
         ArrayAdapter<Project> arrayAdapter = new ArrayAdapter<Project>(this.getRootView().getContext(), android.R.layout.simple_list_item_1,projects);
-        ListView listView = (ListView) mRootView.findViewById(R.id.project_list);
+        ListView listView = mRootView.findViewById(R.id.project_list);
         listView.setAdapter(arrayAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
