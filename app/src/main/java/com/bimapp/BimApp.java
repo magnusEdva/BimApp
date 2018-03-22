@@ -142,7 +142,7 @@ public class BimApp extends Application {
     public @Nullable Project getActiveProject() {
         if (mActiveProject == null) {
             SharedPreferences preferences = getSharedPreferences("settings", MODE_PRIVATE);
-            String projectId = preferences.getString("ActiveProject", null);
+            String projectId = preferences.getString("ProjectId", null);
             String Name = preferences.getString("Name", null);
             String BimSyncProjectId = preferences.getString("BimyncProjectId", null);
             String BimSyncProjetName = preferences.getString("BimsyncProjectName", null);
