@@ -5,6 +5,7 @@ import android.app.Application;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.bimapp.model.entity.Project;
 import com.bimapp.model.network.Callback;
 import com.bimapp.model.network.oauth.OAuthHandler;
 
@@ -13,9 +14,20 @@ import com.bimapp.model.network.oauth.OAuthHandler;
  */
 
 public class BimApp extends Application{
-
-
+    /**
+     * This is the reference to the selected project. It is stored in
+     * a SharedPreference upon selection, and used with the API for
+     * acquiring the expected results.
+     */
+    private Project mActiveProject;
+    /**
+     * This object is responsible for all Token handling.
+     * Across the entire application.
+     */
     private OAuthHandler mOAuth;
+    /**
+     * This is the network queue.
+     */
     private RequestQueue requestQueue;
 
     @Override
@@ -59,5 +71,9 @@ public class BimApp extends Application{
     }
     public void cancelRequestQueue(String tag){
         requestQueue.cancelAll(tag);
+    }
+
+    public void setActiveProject(Project project){
+
     }
 }
