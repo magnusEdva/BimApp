@@ -75,11 +75,13 @@ public class FragmentViewProject extends Fragment implements ProjectsFragmentInt
     /**
      * Callback method from the view.
      * Starts new activity/fragment based on which project was selected.
-     * @param id the id of the selected project
+     * @param project the selected project
      */
     @Override
-    public void onSelectedItem(String id) {
-        Log.d("ID : ", id);
+    public void onSelectedItem(Project project) {
+
+        mApplication.setActiveProject(project);
+        Log.d("ID : ", project.getProjectId());
 
     }
 
