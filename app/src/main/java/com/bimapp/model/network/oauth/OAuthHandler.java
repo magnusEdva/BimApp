@@ -71,6 +71,7 @@ public class OAuthHandler {
 
     /**
      * is 0 if there is no pending token refresh or 1 if there is.
+     * set to 0 when the refresh token returns onSuccess().
      */
     private int refreshCycleCheck;
 
