@@ -20,13 +20,14 @@ import com.bimapp.view.interfaces.ProjectsViewInterface;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass to show a list of projects in a ListView.
  * Activities that contain this fragment must implement the
  * {@link FragmentViewProject.OnFragmentInteractionListener} interface
  * to handle interaction events.
  * create an instance of this fragment.
  */
-public class FragmentViewProject extends Fragment implements ProjectsFragmentInterface, ProjectsViewInterface.ShowProjectsViewListener{
+public class FragmentViewProject extends Fragment
+        implements ProjectsFragmentInterface, ProjectsViewInterface.ShowProjectsViewListener{
 
     /*
     The implementation of the View
@@ -46,11 +47,17 @@ public class FragmentViewProject extends Fragment implements ProjectsFragmentInt
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
 
-
+        /*
+        Instantiates the actual view. The view handles everything about the layout.
+         */
         mProjectsView = new ProjectsView(inflater,container);
+        /**
+        Sets this as the callback from the view. See {@link onSelectedItem} method for where the callback goes.
+         */
         mProjectsView.registerListener(this);
         // Inflate the layout for this fragment
 
@@ -74,7 +81,8 @@ public class FragmentViewProject extends Fragment implements ProjectsFragmentInt
 
     /**
      * Callback method from the view.
-     * Starts new activity/fragment based on which project was selected.
+     * Starts new activity/fragment based on which project was selected. (Currently just logs it)
+     * Also sets the active project in the application.
      * @param project the selected project
      */
     @Override
