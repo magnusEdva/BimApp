@@ -17,7 +17,7 @@ public class EntityListConstructor {
     /**
      * aqcuires a Project [] from JSONArray
      * @param projectsJSON contains properly formatted Project entities.
-     * @return Actual Project[] of @param PojectsJSON
+     * @return Actual Project[] of @param projectsJSON
      */
     public static List<Project> Projects(JSONArray projectsJSON){
         List<Project> projects = new ArrayList<>();
@@ -32,6 +32,11 @@ public class EntityListConstructor {
         return projects;
     }
 
+    /**
+     * Aquires a Topics [] from JSONArray
+     * @param topicsJSON contains properly formatted Topic entities
+     * @return actual Topics[] of @param topicsJSON
+     */
     public static List<Topic> Topics(JSONArray topicsJSON){
         List<Topic> topics = new ArrayList<>();
 
@@ -44,4 +49,6 @@ public class EntityListConstructor {
         }
         return topics;
     }
+
+    //TODO Add methods for other entities
 }
