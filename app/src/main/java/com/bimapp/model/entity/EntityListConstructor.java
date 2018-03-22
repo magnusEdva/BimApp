@@ -32,7 +32,7 @@ public class EntityListConstructor {
         return projects;
     }
 
-    public static List<Topic> constructTopics(JSONArray topicsJSON){
+    public static List<Topic> Topics(JSONArray topicsJSON){
         List<Topic> topics = new ArrayList<>();
 
         for(int i = 0; i < topicsJSON.length(); i++){
