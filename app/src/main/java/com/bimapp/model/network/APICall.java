@@ -37,4 +37,8 @@ public class APICall {
         return BuildBaseURL() + "/projects/" + project.getProjectId() + "/topics";
     }
 
+    public static String POSTTopics(Project project){
+        return BuildBaseURL() + "/projects/" + project.getProjectId() + "/topics";
+    }
+
 }

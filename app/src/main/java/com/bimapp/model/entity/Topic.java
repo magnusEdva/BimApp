@@ -1,6 +1,7 @@
 package com.bimapp.model.entity;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.bimapp.model.entity.Entity;
 
@@ -54,6 +55,15 @@ public class Topic implements Entity {
 
     public Topic(JSONObject obj) {
         construct(obj);
+    }
+
+    public Topic(@NonNull String title, @Nullable String topicType, @Nullable String topicStatus,
+                 @Nullable String assignedTo, @Nullable String description) {
+        mTitle = title;
+        mTopicType = topicType;
+        mTopicStatus = topicStatus;
+        mAssignedTo = assignedTo;
+        mDescription = description;
     }
 
     public String getmGuid() {
@@ -155,21 +165,25 @@ public class Topic implements Entity {
      */
     @Override
     public Map<String, String> getParams(@NonNull Map<String, String> map) {
-        map.put("guid", mGuid);
-        map.put("topic_type", mTopicType);
-        map.put("topic_status", mTopicStatus);
+        if (mTopicType != null)
+            map.put("topic_type", mTopicType);
+        if (mTopicStatus != null)
+            map.put("topic_status", mTopicStatus);
         //TODO map.put("reference_links", mReferenceLinks);
         map.put("title", mTitle);
-        map.put("priority", mPriority);
-        map.put("index", mIndex.toString());
-        map.put("creation_date", mCreationDate);
-        map.put("creation_author", mCreationAuthor);
-        map.put("modified_author", mModifiedAuthor);
-        map.put("assigned_to", mAssignedTo);
-        map.put("stage", mStage);
-        map.put("description", mDescription);
+        if (mPriority != null)
+            map.put("priority", mPriority);
+        if (mIndex != null)
+            map.put("index", mIndex.toString());
+        if (mAssignedTo != null)
+            map.put("assigned_to", mAssignedTo);
+        if (mStage != null)
+            map.put("stage", mStage);
+        if (mDescription != null)
+            map.put("description", mDescription);
         //TODO map.put("bim_snippet, mBimSnippet);
-        map.put("due_date", mDueDate);
+        if (mDueDate != null)
+            map.put("due_date", mDueDate);
         return map;
     }
 
