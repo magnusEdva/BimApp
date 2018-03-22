@@ -116,7 +116,7 @@ public class OAuthHandler {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if(error != null) {
+                        if (error != null) {
                             new CallbackHandler().onErrorResponse(error);
                             error.printStackTrace();
                         }
@@ -257,7 +257,7 @@ public class OAuthHandler {
         expiresAt = getExpiresAt();
 
         return accessToken != null && refreshToken != null
-                && expiresAt > System.currentTimeMillis() + 100000;
+                && expiresAt >= System.currentTimeMillis() + 100000;
 
     }
 
@@ -273,16 +273,34 @@ public class OAuthHandler {
 
     }
 
+    /**
+     * Checks login under user
+     *
+     * @return whether the app has a valid token or not.
+     */
     public boolean isLoggedIn() {
         if (isValidAccessToken()) {
             return true;
         } else if (getRefreshToken() == null) {
             return false;
-        }else if (getRefreshToken() != null) {
+        } else if (getRefreshToken() != null) {
             getAccessToken(getRefreshToken(), OAuthHandler.GRANT_TYPE_REFRESH_TOKEN);
+            return false;
+        }
+        return false;
+    }
+
+    /**
+     * checks initialLogin. Used only at app creation.
+     */
+    public boolean hasTokens() {
+        if (isValidAccessToken()) {
+            return true;
+        } else if (getRefreshToken() != null) {
             return true;
         }
         return false;
+
     }
 
     private class CallbackHandler implements OAuthCallback {

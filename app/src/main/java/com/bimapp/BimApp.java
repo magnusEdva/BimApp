@@ -87,10 +87,19 @@ public class BimApp extends Application {
     }
 
     /**
-     * @return true if logged in or false otherwise.
+     * If AccessToken is timed out the method will attempt to renew it.
+     * @return true if valid access token or false otherwise.
      */
     public boolean checkLogIn() {
         return mOAuth.isLoggedIn();
+    }
+
+    /**
+     *if AccessToken is timed out the method will not attempt to renew it.
+     * @return true if logged in or false otherwise.
+     */
+    public boolean checkTokensAtStartup(){
+        return mOAuth.hasTokens();
     }
 
     public RequestQueue getRequestQueue() {
