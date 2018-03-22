@@ -97,26 +97,6 @@ public class FragmentViewProject extends Fragment
 
         mApplication.setActiveProject(project);
         Log.d("ID : ", project.getProjectId());
-    /**
-        Topic topic = new Topic("Post Test", null,null,null, "Posted from my android emulator");
-        NetworkConnManager.networkRequest(mApplication, Request.Method.POST, APICall.POSTTopics(project), new Callback() {
-            @Override
-            public void onError(String response) {
-                Log.d("better error message? ", response);
-            }
-
-            @Override
-            public void onSuccess(String JSONResponse) {
-                try {
-                    JSONObject obj = new JSONObject(JSONResponse);
-                    Topic topic = new Topic(obj);
-                    Log.d("Topic: ", topic.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, topic);
-        **/
     }
 
     /**

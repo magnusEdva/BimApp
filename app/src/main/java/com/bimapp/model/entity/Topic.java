@@ -166,9 +166,9 @@ public class Topic implements Entity {
     @Override
     public Map<String, String> getParams(@NonNull Map<String, String> map) {
         if (mTopicType != null)
-            map.put("topic_type", mTopicType);
+            map.put("topic_type", "");
         if (mTopicStatus != null)
-            map.put("topic_status", mTopicStatus);
+            map.put("topic_status", "");
         //TODO map.put("reference_links", mReferenceLinks);
         map.put("title", mTitle);
         if (mPriority != null)
@@ -176,7 +176,7 @@ public class Topic implements Entity {
         if (mIndex != null)
             map.put("index", mIndex.toString());
         if (mAssignedTo != null)
-            map.put("assigned_to", mAssignedTo);
+            map.put("assigned_to", "");
         if (mStage != null)
             map.put("stage", mStage);
         if (mDescription != null)

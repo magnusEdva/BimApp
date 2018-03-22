@@ -7,12 +7,14 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.bimapp.BimApp;
 import com.bimapp.R;
 import com.bimapp.model.entity.Entity;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -45,24 +47,28 @@ class BimAppRequest {
         ) {
             @Override
             public String getBodyContentType() {
-                return mContext.getString(R.string.url_encode);
-
+                if (method == Method.GET)
+                    return mContext.getString(R.string.url_encode);
+                if (method == Method.POST)
+                    return "application/json";
+                return "";
             }
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + mContext.getAcessToken());
-                if(method == Method.GET)
+                if (method == Method.GET)
                     headers.put("Accept", "application/json");
-                else if(method == Method.POST)
+                else if (method == Method.POST)
                     headers.put("Content-type", "application/json");
                 return headers;
             }
+
             @Override
-            public Map<String,String> getParams(){
+            public Map<String, String> getParams() {
                 Map<String, String> tempParams = null;
-                if(params != null){
+                if (params != null) {
                     tempParams = new HashMap<>();
                     tempParams = params.getParams(tempParams);
                 }
@@ -75,8 +81,66 @@ class BimAppRequest {
              * @return error with actual string text.
              */
             @Override
-            protected VolleyError parseNetworkError(VolleyError volleyError){
-                if(volleyError.networkResponse != null && volleyError.networkResponse.data != null){
+            protected VolleyError parseNetworkError(VolleyError volleyError) {
+                if (volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
+                    VolleyError error = new VolleyError(new String(volleyError.networkResponse.data));
+                    volleyError = error;
+                }
+                Log.d("suck me", volleyError.getMessage());
+                return volleyError;
+            }
+        };
+
+        mContext.addToRequestQueue(getUserRequest, url);
+
+    }
+
+    static void POST(final BimApp mContext, final int method, String url,
+                            final Callback callback) {
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("title", "Test Post");
+            jsonBody.put("description", "Test Post");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest getUserRequest = new JsonObjectRequest(url, jsonBody, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(response.toString(), "");
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                }
+        ) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json";
+
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + mContext.getAcessToken());
+                if (method == Method.GET)
+                    headers.put("Accept", "application/json");
+                return headers;
+            }
+
+
+            /**
+             * parses Server errors into plain text.
+             * @param volleyError Error that is sent. in byte.
+             * @return error with actual string text.
+             */
+            @Override
+            protected VolleyError parseNetworkError(VolleyError volleyError) {
+                if (volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
                     VolleyError error = new VolleyError(new String(volleyError.networkResponse.data));
                     volleyError = error;
                 }
@@ -90,7 +154,7 @@ class BimAppRequest {
     }
 
     private static void onResponseString(String response, Callback callback) {
-            callback.onSuccess(response);
+        callback.onSuccess(response);
     }
 
 }
