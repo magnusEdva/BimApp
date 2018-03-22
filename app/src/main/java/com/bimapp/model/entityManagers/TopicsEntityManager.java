@@ -4,7 +4,6 @@ import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
 import com.bimapp.model.entity.EntityListConstructor;
-import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.network.APICall;
 import com.bimapp.model.network.Callback;
@@ -27,11 +26,11 @@ public class TopicsEntityManager {
         mContext = context;
     }
 
-    private class ProjectCallback implements Callback {
+    private class TopicsCallback implements Callback {
 
         ProjectsFragmentInterface mControllerCallback;
 
-        public ProjectCallback(ProjectsFragmentInterface controllerCallback) {
+        public TopicsCallback(ProjectsFragmentInterface controllerCallback) {
             mControllerCallback = controllerCallback;
         }
 
@@ -43,11 +42,11 @@ public class TopicsEntityManager {
 
         @Override
         public void onSuccess(String response) {
-            List<Project> projects = null;
+            List<Topic> topics = null;
 
             try {
                 JSONArray jsonArray = new JSONArray(response);
-                projects = EntityListConstructor.Projects(jsonArray);
+                topics = EntityListConstructor.Topics(jsonArray);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -59,17 +58,17 @@ public class TopicsEntityManager {
     }
 
 
-    public void gotProjects(List<Topic> topics) {
+    public void gotTopics(List<Topic> topics) {
         //controllerCallback.setProjects(topics);
     }
 
     public void getTopics(ProjectsFragmentInterface controllerCallback) {
         NetworkConnManager.networkRequest(mContext, Request.Method.GET,
                 APICall.GETTopics(mContext.getActiveProject()),
-                new TopicsEntityManager.ProjectCallback(controllerCallback), null);
+                new TopicsEntityManager.TopicsCallback(controllerCallback), null);
     }
 
-    public void getProject(String projectId) {
+    public void getTopic(String topicId) {
 
     }
 }
