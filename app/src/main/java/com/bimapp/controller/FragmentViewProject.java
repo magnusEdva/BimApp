@@ -20,11 +20,10 @@ import com.bimapp.view.interfaces.ProjectsViewInterface;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass to show a list of projects in a ListView.
+ * A simple {@link Fragment} subclass that creates a view that shows a list of projects in a ListView.
+ *
  * Activities that contain this fragment must implement the
- * {@link FragmentViewProject.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * create an instance of this fragment.
+ * {@link FragmentViewProject.OnFragmentInteractionListener} interface to handle interaction events.
  */
 public class FragmentViewProject extends Fragment
         implements ProjectsFragmentInterface, ProjectsViewInterface.ShowProjectsViewListener{
@@ -95,11 +94,12 @@ public class FragmentViewProject extends Fragment
 
     /**
      * From the ProjectsFragmentsInterface.
-     * This is the method the listener calls on to set the projects.
+     * Calls on a method in the view and gives the projects the view should show.
      * @param projects the projects to be listed
      */
     @Override
     public void setProjects(List<Project> projects) {
+        // TODO Maybe this should be done somewhat differently
         mProjectsView.setProjects(projects);
     }
 
