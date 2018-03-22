@@ -11,7 +11,7 @@ import java.util.List;
 public interface ProjectsViewInterface extends ViewMVP {
 
     interface ShowProjectsViewListener{
-        void onSelectedItem(String id);
+        void onSelectedItem(Project project);
     }
 
     void registerListener(ShowProjectsViewListener projectsView);

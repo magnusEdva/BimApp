@@ -67,7 +67,7 @@ public class ProjectsView implements ProjectsViewInterface{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mListener.onSelectedItem(projects.get((int) id).getBimsyncProjectId());
+                mListener.onSelectedItem(projects.get(position));
             }
         });
     }
