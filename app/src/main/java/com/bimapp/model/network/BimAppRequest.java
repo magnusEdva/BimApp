@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -13,8 +12,6 @@ import com.bimapp.BimApp;
 import com.bimapp.R;
 import com.bimapp.model.entity.Entity;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -70,7 +67,7 @@ class BimAppRequest {
                 Map<String, String> tempParams = null;
                 if (params != null) {
                     tempParams = new HashMap<>();
-                    tempParams = params.getParams(tempParams);
+                    tempParams = params.getStringParams(tempParams);
                 }
                 return tempParams;
             }
@@ -96,16 +93,9 @@ class BimAppRequest {
     }
 
     static void POST(final BimApp mContext, final int method, String url,
-                            final Callback callback) {
-        JSONObject jsonBody = new JSONObject();
-        try {
-            jsonBody.put("title", "Test Post");
-            jsonBody.put("description", "Test Post");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+                            final Callback callback, final Entity params) {
 
-        JsonObjectRequest getUserRequest = new JsonObjectRequest(url, jsonBody, new Response.Listener<JSONObject>() {
+        JsonObjectRequest getUserRequest = new JsonObjectRequest(url, params.getJsonParams(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d(response.toString(), "");

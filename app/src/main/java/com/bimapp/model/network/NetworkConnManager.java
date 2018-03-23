@@ -34,7 +34,7 @@ public class NetworkConnManager {
         if (params == null && method != Request.Method.GET) {
             //TODO fix
         }else if(context.checkLogIn()){
-            BimAppRequest.GET(context, method, url, new networkCallback(callback), params);
+            sendRequest(context, method, url, new networkCallback(callback), params);
         } else
             try {
                 Thread.sleep(100);
@@ -62,5 +62,16 @@ public class NetworkConnManager {
             otherCall.onSuccess(response);
         }
 
+    }
+
+    private static void sendRequest(BimApp context, int method, String url, Callback callback, Entity params){
+        switch (method){
+            case(Request.Method.GET):
+                BimAppRequest.GET(context, method, url, new networkCallback(callback), params);
+                break;
+            case(Request.Method.POST):
+                BimAppRequest.POST(context, method, url, new networkCallback(callback), params);
+                break;
+        }
     }
 }

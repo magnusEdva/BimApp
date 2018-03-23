@@ -46,10 +46,11 @@ public class BimApp extends Application {
     }
 
     /**
-     * deletes all tokens from storage. After calling this, the presenter should change to the login
+     * deletes all tokens and cache from storage. After calling this, the presenter should change to the login
      * view.
      */
     public void logOut() {
+        requestQueue.getCache().clear();
         mOAuth.deleteTokens();
     }
 

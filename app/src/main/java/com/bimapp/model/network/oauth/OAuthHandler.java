@@ -264,8 +264,8 @@ public class OAuthHandler {
 
     private void checkRefresh() {
         if (refreshCycleCheck == 0) {
-            getAccessToken(refreshToken, GRANT_TYPE_REFRESH_TOKEN);
             refreshCycleCheck++;
+            getAccessToken(refreshToken, GRANT_TYPE_REFRESH_TOKEN);
         } else {
             launchBrowser();
             refreshCycleCheck = 0;
@@ -295,12 +295,12 @@ public class OAuthHandler {
      * checks initialLogin. Used only at app creation.
      */
     public boolean hasTokens() {
-        if (isValidAccessToken()) {
-            return true;
-        } else if (getRefreshToken() != null) {
+        if (getRefreshToken() != null) {
+            getAccessToken(getRefreshToken(),GRANT_TYPE_REFRESH_TOKEN);
             return true;
         }
-        return false;
+        else
+            return false;
 
     }
 
@@ -336,7 +336,6 @@ public class OAuthHandler {
                         Toast.LENGTH_LONG).show();
                 error.printStackTrace();
             } else if (error instanceof AuthFailureError) {
-                error.printStackTrace();
                 checkRefresh();
             } else if (error instanceof ServerError) {
                 error.printStackTrace();

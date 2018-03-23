@@ -34,9 +34,17 @@ public class User implements Entity {
      * @return null value
      */
     @Override
-    public Map<String, String> getParams(@NonNull Map<String, String> map) {
-        // Should never ADD a user, don't need to do anything here
-        return null;
+    public Map<String, String> getStringParams(@NonNull Map<String, String> map) {
+            throw new UnsupportedOperationException();
+    }
+
+    /**
+     * not used
+     * @return only throws exception.
+     */
+    @Override
+    public JSONObject getJsonParams() {
+            throw new UnsupportedOperationException();
     }
 
     /**

@@ -164,7 +164,7 @@ public class Topic implements Entity {
      * @return map containing all of this topics variables.
      */
     @Override
-    public Map<String, String> getParams(@NonNull Map<String, String> map) {
+    public Map<String, String> getStringParams(@NonNull Map<String, String> map) {
         if (mTopicType != null)
             map.put("topic_type", "");
         if (mTopicStatus != null)
@@ -184,6 +184,36 @@ public class Topic implements Entity {
         //TODO map.put("bim_snippet, mBimSnippet);
         if (mDueDate != null)
             map.put("due_date", mDueDate);
+        return map;
+    }
+
+    @Override
+    public JSONObject getJsonParams() {
+        JSONObject map = new JSONObject();
+        try{
+            if (mTopicType != null)
+                map.put("topic_type", "");
+            if (mTopicStatus != null)
+                map.put("topic_status", "");
+            //TODO map.put("reference_links", mReferenceLinks);
+            map.put("title", mTitle);
+            if (mPriority != null)
+                map.put("priority", mPriority);
+            if (mIndex != null)
+                map.put("index", mIndex.toString());
+            if (mAssignedTo != null)
+                map.put("assigned_to", "");
+            if (mStage != null)
+                map.put("stage", mStage);
+            if (mDescription != null)
+                map.put("description", mDescription);
+            //TODO map.put("bim_snippet, mBimSnippet);
+            if (mDueDate != null)
+                map.put("due_date", mDueDate);
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
         return map;
     }
 

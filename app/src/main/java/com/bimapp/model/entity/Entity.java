@@ -19,5 +19,7 @@ public interface Entity{
      * @param map @NonNull
      * @return same map with model parameters
      */
-    Map<String,String> getParams(@NonNull Map<String,String> map);
+    Map<String,String> getStringParams(@NonNull Map<String,String> map);
+
+    JSONObject getJsonParams();
 }

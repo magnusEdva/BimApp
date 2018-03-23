@@ -60,12 +60,21 @@ public class Project implements Entity {
     }
 
     @Override
-    public Map<String, String> getParams(@NonNull Map<String, String> map) {
+    public Map<String, String> getStringParams(@NonNull Map<String, String> map) {
         map.put("project_id", projectId);
         map.put("bimsync_project_name", bimsyncProjectName);
         map.put("name", name);
         map.put("bimsync_project_id", bimsyncProjectId);
         return map;
+    }
+
+    /**
+     * Don't need this here
+     * @return
+     */
+    @Override
+    public JSONObject getJsonParams() {
+        throw new UnsupportedOperationException();
     }
 
 
