@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true"
     >
     <LinearLayout
-        android:id="@+id/fragments_container"
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -20,6 +20,11 @@
             android:background="@color/colorPrimary"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/fragments_container">
+        </FrameLayout>
 
     </LinearLayout>
     <android.support.design.widget.NavigationView
