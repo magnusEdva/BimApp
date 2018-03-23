@@ -9,21 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.R;
 import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
 import com.bimapp.model.entity.Project;
-import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entityManagers.ProjectEntityManager;
-import com.bimapp.model.network.APICall;
-import com.bimapp.model.network.Callback;
-import com.bimapp.model.network.NetworkConnManager;
 import com.bimapp.view.ProjectsView;
 import com.bimapp.view.interfaces.ProjectsViewInterface;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -31,9 +23,9 @@ import java.util.List;
  * A simple {@link Fragment} subclass that creates a view that shows a list of projects in a ListView.
  *
  * Activities that contain this fragment must implement the
- * {@link FragmentViewProject.OnFragmentInteractionListener} interface to handle interaction events.
+ * {@link OnFragmentProjectInteractionListener} interface to handle interaction events.
  */
-public class FragmentViewProject extends Fragment
+public class FragmentProject extends Fragment
         implements ProjectsFragmentInterface, ProjectsViewInterface.ShowProjectsViewListener{
 
     /*
@@ -42,6 +34,7 @@ public class FragmentViewProject extends Fragment
     private ProjectsViewInterface mProjectsView;
     private ProjectEntityManager mProjectsManager;
     private BimApp mApplication;
+    private OnFragmentProjectInteractionListener mCallback;
 
 
     @Override
@@ -68,16 +61,15 @@ public class FragmentViewProject extends Fragment
         mProjectsView.registerListener(this);
         // Inflate the layout for this fragment
 
-        return inflater.inflate(R.layout.fragment_projects_view, container, false);
+        return mProjectsView.getRootView();
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mCallback = (OnFragmentProjectInteractionListener) context;
+
     }
 
     @Override
@@ -96,6 +88,7 @@ public class FragmentViewProject extends Fragment
     public void onSelectedItem(Project project) {
 
         mApplication.setActiveProject(project);
+        mCallback.onFragmentProjectInteraction(project);
         Log.d("ID : ", project.getProjectId());
     }
 
@@ -106,7 +99,6 @@ public class FragmentViewProject extends Fragment
      */
     @Override
     public void setProjects(List<Project> projects) {
-        // TODO Maybe this should be done somewhat differently
         mProjectsView.setProjects(projects);
     }
 
@@ -121,8 +113,8 @@ public class FragmentViewProject extends Fragment
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentProjectInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentProjectInteraction(Project project);
     }
 }

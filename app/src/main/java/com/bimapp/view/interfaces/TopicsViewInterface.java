@@ -1,4 +1,4 @@
-package com.bimapp.view;
+package com.bimapp.view.interfaces;
 
 import com.bimapp.model.entity.Topic;
 import com.bimapp.view.interfaces.ViewMVP;

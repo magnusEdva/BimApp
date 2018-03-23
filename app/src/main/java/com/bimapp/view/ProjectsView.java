@@ -24,7 +24,7 @@ public class ProjectsView implements ProjectsViewInterface{
     private ShowProjectsViewListener mListener;
 
     public ProjectsView(LayoutInflater inflater, ViewGroup container){
-        mRootView = inflater.inflate(R.layout.fragment_projects_view, container);
+        mRootView = inflater.inflate(R.layout.view_topics, container, false);
     }
 
 
@@ -62,7 +62,7 @@ public class ProjectsView implements ProjectsViewInterface{
     public void setProjects(final List<Project> projects) {
 
         ArrayAdapter<Project> arrayAdapter = new ArrayAdapter<Project>(this.getRootView().getContext(), android.R.layout.simple_list_item_1,projects);
-        ListView listView = mRootView.findViewById(R.id.project_list);
+        ListView listView = mRootView.findViewById(R.id.projects_list);
         listView.setAdapter(arrayAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

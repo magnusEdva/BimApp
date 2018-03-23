@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import com.bimapp.R;
 import com.bimapp.model.entity.Topic;
+import com.bimapp.view.interfaces.TopicsViewInterface;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class TopicsView implements TopicsViewInterface {
     private TopicsViewToPresenter mListener;
 
     public TopicsView(LayoutInflater inflater, ViewGroup container) {
-        mRootView = inflater.inflate(R.layout.fragment_topics_view, container);
+        mRootView = inflater.inflate(R.layout.view_projects, container,false);
     }
 
     @Override

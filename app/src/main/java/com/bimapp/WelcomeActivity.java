@@ -8,9 +8,6 @@ import android.view.View;
 import com.bimapp.model.network.Callback;
 import com.bimapp.model.network.oauth.OAuthHandler;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 /**
  * Created by Håkon on 09.03.2018.
  */
@@ -21,7 +18,7 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
+        setContentView(R.layout.view_login);
         mApplication = (BimApp) this.getApplicationContext();
 
         if(mApplication.checkLogIn())

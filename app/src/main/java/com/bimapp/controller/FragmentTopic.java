@@ -10,12 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bimapp.BimApp;
-import com.bimapp.R;
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entityManagers.TopicsEntityManager;
 import com.bimapp.view.TopicsView;
-import com.bimapp.view.TopicsViewInterface;
+import com.bimapp.view.interfaces.TopicsViewInterface;
 
 import java.util.List;
 
@@ -72,7 +71,7 @@ public class FragmentTopic extends Fragment
         mTopicsView.registerListener(this);
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fragment_topic, container, false);
+        return mTopicsView.getRootView();
     }
 
     @Override
