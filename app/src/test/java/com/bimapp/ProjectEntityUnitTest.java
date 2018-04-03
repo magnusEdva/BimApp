@@ -40,10 +40,10 @@ public class ProjectEntityUnitTest {
     }
 
     @After
-    public void reset(){}
+    public void reset(){project = null;}
 
     @Test
-    public void JsonConstructorWorks() throws Exception {
+    public void JsonConstructor() throws Exception {
         project = new Project(projectJSON);
 
         assertEquals(projectId, project.getProjectId());
@@ -53,7 +53,7 @@ public class ProjectEntityUnitTest {
     }
 
     @Test
-    public void StringConstructorWorks() throws Exception{
+    public void StringConstructor() throws Exception{
         project = new Project(projectId, bimsyncProjectName, bimsyncProjectId, name);
 
         assertEquals(projectId, project.getProjectId());

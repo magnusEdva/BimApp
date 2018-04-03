@@ -20,6 +20,9 @@ public class User implements Entity {
     private String id;
     private String name;
 
+    public static final String ID = "id";
+    public static final String NAME = "name";
+
     /**
      *
      * @param obj contains parameter keys "id" and "name", specifies a user object.
@@ -53,8 +56,8 @@ public class User implements Entity {
      */
     private void construct(JSONObject object) {
         try {
-            id = object.getString("id");
-            name = object.getString("name");
+            id = object.getString(ID);
+            name = object.getString(NAME);
         } catch (JSONException e){
             e.printStackTrace();
         }
