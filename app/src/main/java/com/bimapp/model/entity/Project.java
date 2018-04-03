@@ -15,6 +15,12 @@ import java.util.Map;
  */
 
 public class Project implements Entity {
+    public static final String PROJECT_ID = "project_id";
+    public static final String BIMSYNC_PROJECT_NAME = "bimsync_project_name";
+    public static final String NAME = "name";
+    public static final String BIMSYNC_PROJECT_ID = "bimsync_project_id";
+
+
     private String projectId;
     private String bimsyncProjectName;
     private String name;
@@ -59,13 +65,14 @@ public class Project implements Entity {
         return bimsyncProjectId;
     }
 
+    /**
+     * don't need this here.
+     * @param map @NonNull
+     * @return always throws exception
+     */
     @Override
     public Map<String, String> getStringParams(@NonNull Map<String, String> map) {
-        map.put("project_id", projectId);
-        map.put("bimsync_project_name", bimsyncProjectName);
-        map.put("name", name);
-        map.put("bimsync_project_id", bimsyncProjectId);
-        return map;
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -80,10 +87,10 @@ public class Project implements Entity {
 
     private void construct(JSONObject object) {
         try {
-            projectId = object.getString("project_id");
-            name = object.getString("name");
-            bimsyncProjectName = object.getString("bimsync_project_name");
-            bimsyncProjectId = object.getString("bimsync_project_id");
+            projectId = object.getString(PROJECT_ID);
+            name = object.getString(NAME);
+            bimsyncProjectName = object.getString(BIMSYNC_PROJECT_NAME);
+            bimsyncProjectId = object.getString(BIMSYNC_PROJECT_ID);
         } catch (JSONException e) {
             e.printStackTrace();
         }
