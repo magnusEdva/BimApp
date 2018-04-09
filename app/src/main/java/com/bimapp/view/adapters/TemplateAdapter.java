@@ -14,9 +14,17 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
 
     Template mTemplate;
 
+    /**
+     * Provide a reference to the views for each item
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder{
+        public String mTitle;
+        private String mDescription;
+        private Integer mColor;
+        private Integer mIcon;
 
-        public ViewHolder(View itemView) {
+        // Holds Views, arranges them
+        public ViewHolder(View itemView, Template template) {
             super(itemView);
         }
     }
@@ -27,9 +35,18 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // TextView to display "Title", then PlainTextView to type in title, arranged horizontally. Add to ViewHolder
+
+        // Then same with mDescription
+
+        // Then same with mColor
+
+        // Then same with mIcon
+
+        // Finally return ViewHolder
         View v = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.view_newtopic,parent,false);
 
-        return new ViewHolder(v);
+        return new ViewHolder(v, mTemplate);
     }
 
     @Override
