@@ -30,7 +30,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_dashboard_list, parent, false);
+                .inflate(R.layout.view_dashboard, parent, false);
         return new ViewHolder(view);
     }
 
@@ -74,5 +74,10 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
         }
+    }
+
+    public void setTemplates(List<Template> templates){
+        mValues.clear();
+        mValues.addAll(templates);
     }
 }

@@ -13,6 +13,7 @@ import com.bimapp.controller.DashboardAdapter;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.view.interfaces.DashboardViewInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,8 +31,10 @@ public class DashBoardView implements DashboardViewInterface {
 
     public DashBoardView(@NonNull LayoutInflater inflater,
                          @NonNull ViewGroup container) {
-
         mRootView = inflater.inflate((R.layout.fragment_dashboard_list), container, false);
+        RecyclerView listView = mRootView.findViewById(R.id.dashboard_list);
+        mAdapter = new DashboardAdapter(new ArrayList<Template>(),this );
+        listView.setAdapter(mAdapter);
 
     }
 
@@ -62,9 +65,9 @@ public class DashBoardView implements DashboardViewInterface {
     }
 
     @Override
-    public void setTemplates(List<Template> template) {
+    public void setTemplates(List<Template> templates) {
 
-        RecyclerView recyclerView = mRootView.findViewById(R.id.list);
+        mAdapter.setTemplates(templates);
 
     }
 }
