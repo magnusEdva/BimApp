@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.android.volley.Request;
+import com.bimapp.controller.FragmentDashboard;
 import com.bimapp.controller.FragmentProject;
 import com.bimapp.controller.FragmentTopic;
 import com.bimapp.model.entity.Project;
@@ -93,6 +94,12 @@ public class ProjectsViewActivity extends AppCompatActivity
                                 fragmentTransaction.addToBackStack(null);
                                 fragmentTransaction.commit();
                                 break;
+                            case R.id.nav_dashboard:
+                                fragment = new FragmentDashboard();
+                                fragmentTransaction.replace(R.id.fragments_container, fragment);
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.commit();
+                                break;
                             case R.id.nav_log_out:
                                 mApplication.logOut();
                                 Intent intent = new Intent(ProjectsViewActivity.this, WelcomeActivity.class);
@@ -104,6 +111,12 @@ public class ProjectsViewActivity extends AppCompatActivity
                     }
                 }
         );
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment fragment = new FragmentDashboard();
+        fragmentTransaction.replace(R.id.fragments_container, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
