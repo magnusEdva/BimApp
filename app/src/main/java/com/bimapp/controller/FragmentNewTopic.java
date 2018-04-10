@@ -52,9 +52,7 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         mApplication = (BimApp) this.getActivity().getApplication();
-        MOCKTEMPLATES MOCK = new MOCKTEMPLATES();
-        Template t = new Template(MOCK.templateOne);
-        mNewTopicView.makeNewTopic(t);
+
     }
 
     @Override
@@ -64,6 +62,9 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
         mNewTopicView = new NewTopicView(inflater,container);
         mNewTopicView.registerListener(this);
         // Inflate the layout for this fragment
+        MOCKTEMPLATES MOCK = new MOCKTEMPLATES();
+        Template t = new Template(MOCK.templateOne);
+        mNewTopicView.makeNewTopic(t);
         return mNewTopicView.getRootView();
     }
 

@@ -1,6 +1,7 @@
 package com.bimapp.view.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
      */
     public static class ViewHolder extends RecyclerView.ViewHolder{
         public String mTitle;
+        public TextView mTitleText;
         private String mDescription;
         private Integer mColor;
         private Integer mIcon;
@@ -36,10 +38,11 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
+        Log.d("Got", "here first");
         LinearLayout linearLayout = parent.findViewById(R.id.newtopic_layout);
         // TextView to display "Title", then PlainTextView to type in title, arranged horizontally. Add to ViewHolder
         TextView title = parent.findViewById(R.id.newtopic_title);
+        title.setText("Title");
         EditText title_actual = parent.findViewById(R.id.newtopic_actual_title);
 
         linearLayout.addView(title);
@@ -58,6 +61,8 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+        Log.d("Got", "here");
+        holder.mTitleText.setText(mTemplate.getTitle());
 
 
     }
