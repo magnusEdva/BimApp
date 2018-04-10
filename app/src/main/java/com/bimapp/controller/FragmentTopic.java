@@ -59,7 +59,7 @@ public class FragmentTopic extends Fragment
         super.onCreate(savedInstanceState);
         mApplication = (BimApp) this.getActivity().getApplication();
         mTopicsEntityManager = new TopicsEntityManager(mApplication);
-        mTopicsEntityManager.getTopics(this);
+
     }
 
     @Override
@@ -69,7 +69,7 @@ public class FragmentTopic extends Fragment
         mTopicsView = new TopicsView(inflater, container);
         // Set this as the callback from the view
         mTopicsView.registerListener(this);
-
+        mTopicsEntityManager.getTopics(this);
         // Inflate the layout for this fragment
         return mTopicsView.getRootView();
     }
