@@ -22,6 +22,7 @@ import com.bimapp.controller.FragmentNewTopic;
 import com.bimapp.controller.FragmentProject;
 import com.bimapp.controller.FragmentTopic;
 import com.bimapp.model.entity.Project;
+import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.User;
 import com.bimapp.model.network.APICall;
 import com.bimapp.model.network.Callback;
@@ -33,7 +34,7 @@ import org.json.JSONObject;
 
 public class ProjectsViewActivity extends AppCompatActivity
         implements
-        Callback, FragmentProject.OnFragmentProjectInteractionListener {
+        Callback, FragmentProject.OnFragmentProjectInteractionListener, FragmentDashboard.DashboardListener {
 
     private BimApp mApplication;
     private DrawerLayout mDrawerLayout;
@@ -159,5 +160,15 @@ public class ProjectsViewActivity extends AppCompatActivity
     public void onFragmentProjectInteraction(Project project) {
         Log.d("Clicked on project: ", project.getName());
 
+    }
+
+    @Override
+    public void onDashboardItemClick(Template template) {
+        final FragmentManager fragmentManager = ProjectsViewActivity.this.getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment fragment = new FragmentNewTopic();
+        fragmentTransaction.replace(R.id.fragments_container, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }

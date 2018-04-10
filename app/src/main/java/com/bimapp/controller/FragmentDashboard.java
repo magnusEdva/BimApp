@@ -33,6 +33,7 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
 
     private int mColumnCount = 1;
     private DashboardViewInterface mDashboardView;
+    private DashboardListener mListener;
 
 
     /**
@@ -64,7 +65,7 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mDashboardView = new DashBoardView(inflater,container);
+        mDashboardView = new DashBoardView(inflater, container);
         mDashboardView.registerListener(this);
         MOCKTEMPLATES MOCK = new MOCKTEMPLATES();
         List<Template> temps = new ArrayList<>();
@@ -80,6 +81,10 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof DashboardListener)
+            mListener = (DashboardListener) context;
+        else
+            throw new UnsupportedOperationException();
     }
 
     @Override
@@ -90,16 +95,21 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
 
     @Override
     public void onSelectedItem(Template template) {
-        Log.d("click", template.getTitle());
+        mListener.onDashboardItemClick(template);
     }
 
-    public class MOCKTEMPLATES{
+    public interface DashboardListener {
+        public void onDashboardItemClick(Template template);
+    }
+
+
+    public class MOCKTEMPLATES {
         JSONObject templateOne;
 
         JSONObject templateTwo;
 
-        public  MOCKTEMPLATES(){
-            try{
+        public MOCKTEMPLATES() {
+            try {
                 templateTwo = new JSONObject();
                 templateOne = new JSONObject();
 
@@ -113,7 +123,7 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
                 templateTwo.put(Template.DESCRIPTION, "description Two BLA BLA BLA BLA LBA BLA BLA BLA");
                 templateTwo.put(Template.COLOR, Color.RED);
                 templateTwo.put(Template.ICON, 2);
-            }catch (JSONException e){
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
