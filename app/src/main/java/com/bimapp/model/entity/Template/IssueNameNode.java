@@ -2,27 +2,27 @@ package com.bimapp.model.entity.Template;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.LinearLayout;
 
 /**
- * Node which contains String default content.
+ * Node to represent the IssueName field of an Issue
  */
+public class IssueNameNode extends TemplateNode {
 
-public class StringNode extends TemplateNode {
 
-    private String mDefaultContent;
-
-    public StringNode(String title, boolean visible, String defaultContent) {
+    public IssueNameNode(String title, boolean visible) {
         super(title, visible);
-        mDefaultContent = defaultContent;
+
     }
 
     @Override
     public Object getContent() {
-        return mDefaultContent;
+        return null;
     }
 
     @Override
     public View makeView(Context context) {
+        LinearLayout linearLayout = new LinearLayout(context);
         return null;
     }
 }

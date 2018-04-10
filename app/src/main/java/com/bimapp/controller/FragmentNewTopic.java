@@ -11,12 +11,16 @@ import android.view.ViewGroup;
 
 import com.bimapp.BimApp;
 import com.bimapp.model.entity.Template.Template;
+import com.bimapp.model.entity.Template.TemplateNode;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.view.NewTopicView;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,8 +55,7 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        mApplication = (BimApp) this.getActivity().getApplication();
-
+        // mApplication = (BimApp) this.getActivity().getApplication();
     }
 
     @Override
@@ -62,12 +65,31 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
 
         MOCKTEMPLATES MOCK = new MOCKTEMPLATES();
         Template t = new Template(MOCK.templateOne);
-        mNewTopicView = new NewTopicView(inflater,container, t);
+        List<View> viewList = createNodeViews(t);
+        mNewTopicView = new NewTopicView(inflater,container, viewList);
         mNewTopicView.registerListener(this);
         // Inflate the layout for this fragment
         mNewTopicView.makeNewTopic(t);
         return mNewTopicView.getRootView();
     }
+
+    /**
+     * Creates a list of views from a list of TemplateNodes
+     * @param template The template containing the nodes
+     * @return A list of views made from nodes
+     * //TODO Make method to show all
+     */
+    private List<View> createNodeViews(Template template){
+        List<View> viewList = new ArrayList<>();
+        for (TemplateNode tn: template.getNodes()) {
+            tn.makeView(this.getContext());
+            if (tn.isVisible())
+                viewList.add(tn.getView());
+        }
+        return viewList;
+    }
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

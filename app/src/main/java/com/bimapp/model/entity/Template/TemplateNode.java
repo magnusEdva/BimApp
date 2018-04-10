@@ -1,5 +1,8 @@
 package com.bimapp.model.entity.Template;
 
+import android.content.Context;
+import android.view.View;
+
 /**
  * Individual nodes in the Templates List.
  */
@@ -17,6 +20,11 @@ public abstract class TemplateNode {
      */
     private boolean mVisible;
 
+    /**
+     * The view associated with this node
+     */
+    private View mView;
+
 
 
     public TemplateNode(String title, boolean visible){
@@ -32,5 +40,15 @@ public abstract class TemplateNode {
         return mVisible;
     }
 
+    public View getView(){
+        return mView;
+    }
+
     public abstract Object getContent();
+
+    /**
+     * Each type of node must construct a view associated with this node.
+     * @return the View that matches the node.
+     */
+    public abstract View makeView(Context context);
 }

@@ -21,6 +21,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
 
     private Template mTemplate;
     private List<TemplateNode>  mList;
+    private List<View> mViewList;
     private final NewTopicViewInterface mListener;
 
     /**
@@ -28,7 +29,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
      */
     public static class ViewHolder extends RecyclerView.ViewHolder{
         public final LinearLayout mLayout;
-        public final View mView;
+        public View mView;
 
 
         public final TextView mIssueName;
@@ -44,24 +45,26 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         }
     }
 
-    public TemplateAdapter (Template template, NewTopicViewInterface listener){
-        mTemplate = template;
+    public TemplateAdapter (List<View> viewList, NewTopicViewInterface listener){
+        mViewList = viewList;
         mListener = listener;
-        mList = new ArrayList<>();
-        mList.addAll(mTemplate.getNodes());
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        switch (viewType) {
+            case 0:
+        }
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.newtopic_list, parent,false);
         return new ViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
-        holder.mIssueName.setText(mList.get(position).getTitle());
+        holder.mView = mViewList.get(position);
     }
 
     @Override
