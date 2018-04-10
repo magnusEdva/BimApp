@@ -25,14 +25,20 @@ public class NewTopicView implements NewTopicViewInterface {
     private View mRootView;
     private NewTopicToPresenter mListener;
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private TemplateAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     // Do I need the inflater for later? Probably
     private LayoutInflater mInflater;
 
-    public NewTopicView(LayoutInflater inflater, ViewGroup container){
+    public NewTopicView(LayoutInflater inflater, ViewGroup container, Template template){
         mInflater = inflater;
         mRootView = mInflater.inflate(R.layout.view_newtopic,container,false);
+        // RecyclerView is really overkill for the purpose of this view. Implemented as a training exercise.
+        mRecyclerView = mRootView.findViewById(R.id.newTopicRecycleView);
+        mLayoutManager = new LinearLayoutManager(mRootView.getContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new TemplateAdapter(template, this);
+        mRecyclerView.setAdapter(mAdapter);
 
 
     }
@@ -63,13 +69,9 @@ public class NewTopicView implements NewTopicViewInterface {
      */
     @Override
     public void makeNewTopic(Template template) {
-        // RecyclerView is really overkill for the purpose of this view. Implemented as a training exercise.
-        mRecyclerView = mRootView.findViewById(R.id.newTopicRecycleView);
-        mLayoutManager = new LinearLayoutManager(mRootView.getContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new TemplateAdapter(template);
-        mRecyclerView.setAdapter(mAdapter);
 
+
+        mAdapter.setTemplate(template);
         //TextView
         Topic topic = new Topic(template.getTitle(),null,null,null,null);
         //template.getTitle();

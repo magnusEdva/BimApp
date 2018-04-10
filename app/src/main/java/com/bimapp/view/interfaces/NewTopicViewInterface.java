@@ -12,4 +12,5 @@ public interface NewTopicViewInterface extends ViewMVP {
     void registerListener(NewTopicToPresenter newTopicToPresenter);
     void unregisterListener();
     void makeNewTopic(Template template);
+
 }

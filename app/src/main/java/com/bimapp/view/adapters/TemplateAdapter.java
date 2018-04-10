@@ -12,70 +12,66 @@ import android.widget.TextView;
 import com.bimapp.R;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Template.TemplateNode;
+import com.bimapp.view.interfaces.NewTopicViewInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHolder> {
 
-    Template mTemplate;
-    List<TemplateNode>  mList;
+    private Template mTemplate;
+    private List<TemplateNode>  mList;
+    private final NewTopicViewInterface mListener;
 
     /**
      * Provide a reference to the views for each item
      */
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        public String mTitle;
-        public TextView mTitleText;
-        private String mDescription;
-        private Integer mColor;
-        private Integer mIcon;
-        // Holds Views, arranges them
-        public ViewHolder(View itemView, Template template) {
+        public final LinearLayout mLayout;
+        public final View mView;
+
+
+        public final TextView mIssueName;
+        public final EditText mIssueNameInput;
+
+
+        public ViewHolder(View itemView) {
             super(itemView);
+            mLayout = itemView.findViewById(R.id.newtopic_list);
+            mView = itemView;
+            mIssueName = itemView.findViewById(R.id.issue_name);
+            mIssueNameInput = itemView.findViewById(R.id.issue_name_input);
         }
     }
 
-    public TemplateAdapter (Template template){
+    public TemplateAdapter (Template template, NewTopicViewInterface listener){
         mTemplate = template;
+        mListener = listener;
         mList = new ArrayList<>();
         mList.addAll(mTemplate.getNodes());
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d("Got", "here first");
-        LinearLayout linearLayout = parent.findViewById(R.id.newtopic_layout);
-        // TextView to display "Title", then PlainTextView to type in title, arranged horizontally. Add to ViewHolder
-        TextView title = parent.findViewById(R.id.newtopic_title);
-        title.setText("Title");
-        EditText title_actual = parent.findViewById(R.id.newtopic_actual_title);
-
-        linearLayout.addView(title);
-        linearLayout.addView(title_actual);
-        // Then same with mDescription
-
-        // Then same with mColor
-
-        // Then same with mIcon
-
-        // Finally return ViewHolder
-        
-        return new ViewHolder(linearLayout, mTemplate);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.newtopic_list, parent,false);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        Log.d("Got", "here");
-        holder.mTitleText.setText(mTemplate.getTitle());
-
-
+        holder.mIssueName.setText(mList.get(position).getTitle());
     }
 
     @Override
     public int getItemCount() {
         return mList.size();
+    }
+
+    public void setTemplate(Template template){
+        mList.clear();
+        mList.addAll(template.getNodes());
     }
 
 }

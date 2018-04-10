@@ -59,11 +59,12 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Instantiate the view
-        mNewTopicView = new NewTopicView(inflater,container);
-        mNewTopicView.registerListener(this);
-        // Inflate the layout for this fragment
+
         MOCKTEMPLATES MOCK = new MOCKTEMPLATES();
         Template t = new Template(MOCK.templateOne);
+        mNewTopicView = new NewTopicView(inflater,container, t);
+        mNewTopicView.registerListener(this);
+        // Inflate the layout for this fragment
         mNewTopicView.makeNewTopic(t);
         return mNewTopicView.getRootView();
     }
