@@ -34,6 +34,7 @@ public class NewTopicView implements NewTopicViewInterface {
         mInflater = inflater;
         mRootView = mInflater.inflate(R.layout.view_newtopic,container,false);
 
+
     }
 
     @Override
@@ -68,9 +69,6 @@ public class NewTopicView implements NewTopicViewInterface {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new TemplateAdapter(template);
         mRecyclerView.setAdapter(mAdapter);
-
-        LinearLayout ll = new LinearLayout(mRootView.getContext(),null);
-        // ll.addView(mRootView);
 
         //TextView
         Topic topic = new Topic(template.getTitle(),null,null,null,null);
