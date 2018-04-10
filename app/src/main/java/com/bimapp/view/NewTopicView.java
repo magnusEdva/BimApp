@@ -1,36 +1,26 @@
 package com.bimapp.view;
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextPaint;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.bimapp.R;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.view.adapters.TemplateAdapter;
-import com.bimapp.view.interfaces.NewTopicInterface;
+import com.bimapp.view.interfaces.NewTopicViewInterface;
 
 /**
  * View associated with posting a new topic.
  *
  * What fields of the topic is visible/already filled out should be defined in the {@link Template} given
- * as argument in the makeNewTopic method, which is from the Presenter.
+ * as argument in the setTemplate method, which is from the Presenter.
  */
-public class NewTopicView implements NewTopicInterface {
+public class NewTopicView implements NewTopicViewInterface {
 
     private View mRootView;
     private NewTopicToPresenter mListener;
@@ -43,6 +33,7 @@ public class NewTopicView implements NewTopicInterface {
     public NewTopicView(LayoutInflater inflater, ViewGroup container){
         mInflater = inflater;
         mRootView = mInflater.inflate(R.layout.view_newtopic,container,false);
+
     }
 
     @Override

@@ -1,14 +1,22 @@
 package com.bimapp.controller;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bimapp.R;
+import com.bimapp.BimApp;
+import com.bimapp.model.entity.Template.Template;
+import com.bimapp.model.entity.Topic;
+import com.bimapp.view.NewTopicView;
+import com.bimapp.view.interfaces.NewTopicViewInterface;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,20 +24,47 @@ import com.bimapp.R;
  * {@link FragmentNewTopic.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class FragmentNewTopic extends Fragment {
+public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.NewTopicToPresenter{
 
+    public interface NewTopicFragmentInterface{
+        interface FragmentNewTopicListener{
+            void getTemplate(NewTopicFragmentInterface callback);
+        }
+        void setTemplate(Template template);
+    }
+
+    private NewTopicViewInterface mNewTopicView;
+    private BimApp mApplication;
     private OnFragmentInteractionListener mListener;
+
+
+    @Override
+    public void onPostTopic(Topic topic) {
+
+    }
+
 
     public FragmentNewTopic() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        mApplication = (BimApp) this.getActivity().getApplication();
+        MOCKTEMPLATES MOCK = new MOCKTEMPLATES();
+        Template t = new Template(MOCK.templateOne);
+        mNewTopicView.makeNewTopic(t);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Instantiate the view
+        mNewTopicView = new NewTopicView(inflater,container);
+        mNewTopicView.registerListener(this);
         // Inflate the layout for this fragment
-        return null; //inflater.inflate(R.layout.fragment_fragment_new_topic, container, false);
+        return mNewTopicView.getRootView();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -42,12 +77,13 @@ public class FragmentNewTopic extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
+
+        /*if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
-        }
+        }*/
     }
 
     @Override
@@ -69,5 +105,31 @@ public class FragmentNewTopic extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public class MOCKTEMPLATES{
+        JSONObject templateOne;
+
+        JSONObject templateTwo;
+
+        public  MOCKTEMPLATES(){
+            try{
+                templateTwo = new JSONObject();
+                templateOne = new JSONObject();
+
+                templateOne.put(Template.TITLE, "title");
+                templateOne.put(Template.DESCRIPTION, "description BLA BLA BLA BLA LBA BLA BLA BLA");
+                templateOne.put(Template.COLOR, Color.GREEN);
+                templateOne.put(Template.ICON, 1);
+
+
+                templateTwo.put(Template.TITLE, "Title Two");
+                templateTwo.put(Template.DESCRIPTION, "description Two BLA BLA BLA BLA LBA BLA BLA BLA");
+                templateTwo.put(Template.COLOR, Color.RED);
+                templateTwo.put(Template.ICON, 2);
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
     }
 }

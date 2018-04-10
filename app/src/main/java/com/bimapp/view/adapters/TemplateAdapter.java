@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -35,8 +36,14 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // TextView to display "Title", then PlainTextView to type in title, arranged horizontally. Add to ViewHolder
 
+        LinearLayout linearLayout = parent.findViewById(R.id.newtopic_layout);
+        // TextView to display "Title", then PlainTextView to type in title, arranged horizontally. Add to ViewHolder
+        TextView title = parent.findViewById(R.id.newtopic_title);
+        EditText title_actual = parent.findViewById(R.id.newtopic_actual_title);
+
+        linearLayout.addView(title);
+        linearLayout.addView(title_actual);
         // Then same with mDescription
 
         // Then same with mColor
@@ -44,9 +51,8 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         // Then same with mIcon
 
         // Finally return ViewHolder
-        View v = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.view_newtopic,parent,false);
-
-        return new ViewHolder(v, mTemplate);
+        
+        return new ViewHolder(linearLayout, mTemplate);
     }
 
     @Override

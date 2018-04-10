@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.bimapp.controller.FragmentDashboard;
+import com.bimapp.controller.FragmentNewTopic;
 import com.bimapp.controller.FragmentProject;
 import com.bimapp.controller.FragmentTopic;
 import com.bimapp.model.entity.Project;
@@ -96,6 +97,12 @@ public class ProjectsViewActivity extends AppCompatActivity
                                 break;
                             case R.id.nav_dashboard:
                                 fragment = new FragmentDashboard();
+                                fragmentTransaction.replace(R.id.fragments_container, fragment);
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.commit();
+                                break;
+                            case R.id.nav_new_topic:
+                                fragment = new FragmentNewTopic();
                                 fragmentTransaction.replace(R.id.fragments_container, fragment);
                                 fragmentTransaction.addToBackStack(null);
                                 fragmentTransaction.commit();
