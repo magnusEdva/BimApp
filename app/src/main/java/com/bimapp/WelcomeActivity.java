@@ -43,6 +43,7 @@ public class WelcomeActivity extends AppCompatActivity {
     public void openProjectsView(){
         Intent intent = new Intent(this, ProjectsViewActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private class networkCallback implements Callback{

@@ -36,13 +36,14 @@ public class FragmentProject extends Fragment
     private BimApp mApplication;
     private OnFragmentProjectInteractionListener mCallback;
 
+    private LayoutInflater inflater;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         mApplication = (BimApp) this.getActivity().getApplication();
         mProjectsManager = new ProjectEntityManager(mApplication);
-        mProjectsManager.getProjects(this);
+
 
     }
 
@@ -50,7 +51,6 @@ public class FragmentProject extends Fragment
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-
         /*
         Instantiates the actual view. The view handles everything about the layout.
          */
@@ -60,8 +60,14 @@ public class FragmentProject extends Fragment
          */
         mProjectsView.registerListener(this);
         // Inflate the layout for this fragment
-
+        mProjectsManager.getProjects(this);
         return mProjectsView.getRootView();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
     }
 
 

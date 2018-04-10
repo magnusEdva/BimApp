@@ -40,6 +40,11 @@ public class ProjectsViewActivity extends AppCompatActivity
     private DrawerLayout mDrawerLayout;
     private User user;
 
+    private Fragment mDashboardFragment;
+    private Fragment mNewTopicFragment;
+    private Fragment mTopicFragment;
+    private Fragment mPojectsFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,12 +55,17 @@ public class ProjectsViewActivity extends AppCompatActivity
         //user and sets the user variable through a callback method
         // Should be moved to some BimApp setting on login
         NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
-        APICall.GETUser(), this, null);
+                APICall.GETUser(), this, null);
 
+
+        mDashboardFragment = new FragmentDashboard();
+        mTopicFragment = new FragmentTopic();
+        mNewTopicFragment = new FragmentNewTopic();
+        mPojectsFragment = new FragmentProject();
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
 
         //Setting toolbar as the actionbar.
@@ -69,7 +79,6 @@ public class ProjectsViewActivity extends AppCompatActivity
         // Defines the drawer
         mDrawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        final FragmentManager fragmentManager = ProjectsViewActivity.this.getSupportFragmentManager();
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -80,38 +89,23 @@ public class ProjectsViewActivity extends AppCompatActivity
                         mDrawerLayout.closeDrawers();
                         int id = item.getItemId();
 
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        Fragment fragment = null;
-
-                        switch (id){
+                        switch (id) {
                             case R.id.nav_projects:
-                                fragment =  new FragmentProject(); // new ProjectsFragment();
-                                fragmentTransaction.replace(R.id.fragments_container, fragment);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();
+                                openFragment(mPojectsFragment, "fragment_projects");
                                 break;
                             case R.id.nav_issues:
-                                fragment = new FragmentTopic();
-                                fragmentTransaction.replace(R.id.fragments_container, fragment);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();
+                                openFragment(mTopicFragment, "fragment_topics");
                                 break;
                             case R.id.nav_dashboard:
-                                fragment = new FragmentDashboard();
-                                fragmentTransaction.replace(R.id.fragments_container, fragment);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();
+                                openFragment(mDashboardFragment, "fragment_dashboard");
                                 break;
                             case R.id.nav_new_topic:
-                                fragment = new FragmentNewTopic();
-                                fragmentTransaction.replace(R.id.fragments_container, fragment);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();
+                                openFragment(mNewTopicFragment, "fragment_new_topic");
                                 break;
                             case R.id.nav_log_out:
                                 mApplication.logOut();
                                 Intent intent = new Intent(ProjectsViewActivity.this, WelcomeActivity.class);
-                                //TODO Make sure that when this is called, the BackStack is cleared somehow!
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
                                 break;
                         }
@@ -119,17 +113,12 @@ public class ProjectsViewActivity extends AppCompatActivity
                     }
                 }
         );
-
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment fragment = new FragmentDashboard();
-        fragmentTransaction.replace(R.id.fragments_container, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        openFragment(mDashboardFragment, "fragment_dashboard");
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem){
-        switch (menuItem.getItemId()){
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
@@ -158,17 +147,47 @@ public class ProjectsViewActivity extends AppCompatActivity
 
     @Override
     public void onFragmentProjectInteraction(Project project) {
-        Log.d("Clicked on project: ", project.getName());
+        openFragment(mDashboardFragment, "fragment_dashboard");
 
     }
 
     @Override
     public void onDashboardItemClick(Template template) {
-        final FragmentManager fragmentManager = ProjectsViewActivity.this.getSupportFragmentManager();
+        openFragment(mNewTopicFragment, "fragment_new_topic");
+    }
+
+    /**
+     * only to be used in openFragment
+     */
+    final FragmentManager fragmentManager = ProjectsViewActivity.this.getSupportFragmentManager();
+
+    /**
+     * responsible for opening all the fragments this activity possess
+     *
+     * @param fragment instantiated Fragment to be opened
+     */
+    public void openFragment(Fragment fragment, String name) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment fragment = new FragmentNewTopic();
-        fragmentTransaction.replace(R.id.fragments_container, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        for (Fragment f : fragmentManager.getFragments()) {
+            if(!f.isDetached())
+                fragmentTransaction.detach(f);
+        }
+
+        if (fragmentManager.findFragmentByTag(name) == null)
+            fragmentTransaction.add(R.id.fragments_container, fragment, name);
+        else
+            fragmentTransaction.attach(fragment);
+
+        if (name.equals("fragment_dashboard"))
+            clearBackStack();
+        else
+            fragmentTransaction.addToBackStack(name);
+
+            fragmentTransaction.commit();
+    }
+
+    public void clearBackStack() {
+        Boolean cleared = true;
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }
