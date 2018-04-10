@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bimapp.R;
-import com.bimapp.controller.DashboardAdapter;
+import com.bimapp.view.adapters.DashboardAdapter;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.view.interfaces.DashboardViewInterface;
 
