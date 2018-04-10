@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bimapp.R;
@@ -30,7 +31,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.view_dashboard, parent, false);
+                .inflate(R.layout.dashboard_list, parent, false);
         return new ViewHolder(view);
     }
 
@@ -39,6 +40,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
         holder.template = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getTitle());
         holder.mContentView.setText(mValues.get(position).getDescription());
+        holder.mLayout.setBackgroundColor(holder.template.getColor());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,6 +60,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        public final LinearLayout mLayout;
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
@@ -65,6 +68,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
 
         public ViewHolder(View view) {
             super(view);
+            mLayout = view.findViewById(R.id.dashboard_list_main_layout);
             mView = view;
             mIdView = view.findViewById(R.id.id);
             mContentView = view.findViewById(R.id.content);

@@ -105,7 +105,7 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
 
                 templateOne.put(Template.TITLE, "title");
                 templateOne.put(Template.DESCRIPTION, "description BLA BLA BLA BLA LBA BLA BLA BLA");
-                templateOne.put(Template.COLOR, Color.GREEN);
+                templateOne.put(Template.COLOR, Color.BLUE);
                 templateOne.put(Template.ICON, 1);
 
 
