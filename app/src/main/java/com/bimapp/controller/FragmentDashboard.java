@@ -91,6 +91,7 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
     public void onDetach() {
         super.onDetach();
         mDashboardView.unregisterListener();
+        mListener = null;
     }
 
     @Override

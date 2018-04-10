@@ -11,10 +11,15 @@ import android.widget.TextView;
 
 import com.bimapp.R;
 import com.bimapp.model.entity.Template.Template;
+import com.bimapp.model.entity.Template.TemplateNode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHolder> {
 
     Template mTemplate;
+    List<TemplateNode>  mList;
 
     /**
      * Provide a reference to the views for each item
@@ -25,7 +30,6 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         private String mDescription;
         private Integer mColor;
         private Integer mIcon;
-
         // Holds Views, arranges them
         public ViewHolder(View itemView, Template template) {
             super(itemView);
@@ -34,6 +38,8 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
 
     public TemplateAdapter (Template template){
         mTemplate = template;
+        mList = new ArrayList<>();
+        mList.addAll(mTemplate.getNodes());
     }
 
     @Override
@@ -69,7 +75,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mList.size();
     }
 
 }
