@@ -1,5 +1,7 @@
 package com.bimapp.model.entity.Template;
 
+import android.view.View;
+
 /**
  * Node which contains a bool of whether the
  * Node is a mandatory field in template or not.
@@ -21,5 +23,10 @@ public class BoolNode extends TemplateNode{
     @Override
     public Object getContent() {
         return mMandatory;
+    }
+
+    @Override
+    public View makeView() {
+        return null;
     }
 }
