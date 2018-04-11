@@ -43,7 +43,7 @@ public class ProjectsViewActivity extends AppCompatActivity
     private Fragment mDashboardFragment;
     private Fragment mNewTopicFragment;
     private Fragment mTopicFragment;
-    private Fragment mPojectsFragment;
+    private Fragment mProjectsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +58,10 @@ public class ProjectsViewActivity extends AppCompatActivity
                 APICall.GETUser(), this, null);
 
 
-        mDashboardFragment = new FragmentDashboard();
-        mTopicFragment = new FragmentTopic();
-        mNewTopicFragment = new FragmentNewTopic();
-        mPojectsFragment = new FragmentProject();
+        mDashboardFragment  = new FragmentDashboard();
+        mTopicFragment      = new FragmentTopic();
+        mNewTopicFragment   = new FragmentNewTopic();
+        mProjectsFragment   = new FragmentProject();
     }
 
     @Override
@@ -91,7 +91,7 @@ public class ProjectsViewActivity extends AppCompatActivity
 
                         switch (id) {
                             case R.id.nav_projects:
-                                openFragment(mPojectsFragment, "fragment_projects");
+                                openFragment(mProjectsFragment, "fragment_projects");
                                 break;
                             case R.id.nav_issues:
                                 openFragment(mTopicFragment, "fragment_topics");
@@ -131,6 +131,10 @@ public class ProjectsViewActivity extends AppCompatActivity
 
     }
 
+    /**
+     * Network callback for fetching a user.
+     * @param response String in a JSON format containing a user.
+     */
     @Override
     public void onSuccess(String response) {
         JSONObject obj = null;
@@ -145,12 +149,20 @@ public class ProjectsViewActivity extends AppCompatActivity
         textView.setText(user.getName());
     }
 
+    /**
+     * User clicked on a project in the projects fragment.
+     * @param project that was clicked on.
+     */
     @Override
     public void onFragmentProjectInteraction(Project project) {
         openFragment(mDashboardFragment, "fragment_dashboard");
 
     }
 
+    /**
+     * User clicked on a template in the dashboard Fragment.
+     * @param template that was clicked on.
+     */
     @Override
     public void onDashboardItemClick(Template template) {
         openFragment(mNewTopicFragment, "fragment_new_topic");
@@ -186,8 +198,10 @@ public class ProjectsViewActivity extends AppCompatActivity
             fragmentTransaction.commit();
     }
 
+    /**
+     * clears the Fragment back stack all the way to the top.
+     */
     public void clearBackStack() {
-        Boolean cleared = true;
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }
