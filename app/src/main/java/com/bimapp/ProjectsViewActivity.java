@@ -105,7 +105,7 @@ public class ProjectsViewActivity extends AppCompatActivity
                             case R.id.nav_log_out:
                                 mApplication.logOut();
                                 Intent intent = new Intent(ProjectsViewActivity.this, WelcomeActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 break;
                         }

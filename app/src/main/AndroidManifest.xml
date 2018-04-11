@@ -30,7 +30,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ProjectsViewActivity"></activity>
-        <activity android:name=".controller.DashBoard"></activity>
     </application>
 
 </manifest>

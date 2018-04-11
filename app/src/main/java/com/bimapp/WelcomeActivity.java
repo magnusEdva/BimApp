@@ -21,13 +21,17 @@ public class WelcomeActivity extends AppCompatActivity {
         setContentView(R.layout.view_login);
         mApplication = (BimApp) this.getApplicationContext();
 
-        if(mApplication.checkLogIn())
+        if(mApplication.checkLogIn()) {
             openProjectsView();
+
+        }
+
     }
 
     public void buttonOnClick(View v){
 
         mApplication.getMOAuth().launchBrowser();
+        finish();
 
     }
 
@@ -42,8 +46,9 @@ public class WelcomeActivity extends AppCompatActivity {
 
     public void openProjectsView(){
         Intent intent = new Intent(this, ProjectsViewActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        finish();
+
     }
 
     private class networkCallback implements Callback{

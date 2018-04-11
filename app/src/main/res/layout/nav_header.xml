@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:name="@+id/nav_header"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
+    android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    android:padding="16dp"
+    android:padding="32dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     android:orientation="vertical"
     android:gravity="bottom">
@@ -12,8 +12,7 @@
     <TextView
         android:id="@+id/nav_header_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="My header title"
+        android:layout_height="match_parent"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
 </LinearLayout>
