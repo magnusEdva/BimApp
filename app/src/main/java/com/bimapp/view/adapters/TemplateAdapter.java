@@ -1,7 +1,6 @@
 package com.bimapp.view.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bimapp.R;
+import com.bimapp.model.entity.Template.BoolNode;
+import com.bimapp.model.entity.Template.IssueNameNode;
+import com.bimapp.model.entity.Template.StringNode;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Template.TemplateNode;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
@@ -21,8 +23,26 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
 
     private Template mTemplate;
     private List<TemplateNode>  mList;
-    private List<View> mViewList;
     private final NewTopicViewInterface mListener;
+
+    /**
+     * Enum to separate node types
+     */
+    private static enum NODE_TYPE {
+        ISSUE_NAME(1),
+        DESCRIPTION(2),
+        BOOL_NODE(3);
+
+        private int i;
+
+        private NODE_TYPE(int i){
+            this.i = i;
+        }
+
+        public int getInt(){
+            return i;
+        }
+    }
 
     /**
      * Provide a reference to the views for each item
@@ -32,39 +52,95 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         public View mView;
 
 
-        public final TextView mIssueName;
-        public final EditText mIssueNameInput;
+        public TextView item_description;
+        public EditText item_input;
 
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, int viewType) {
             super(itemView);
+            switch (viewType){
+                case 1: // Issue NAME
+                    item_description = itemView.findViewById(R.id.issue_name);
+                    item_input = itemView.findViewById(R.id.issue_name_input);
+                    break;
+                case 2: // Issue Description
+                    item_description = itemView.findViewById(R.id.issue_description);
+                    item_input = itemView.findViewById(R.id.issue_description_input);
+                    break;
+                case 3:
+                    item_description = itemView.findViewById(R.id.issue_description);
+                    item_input = itemView.findViewById(R.id.issue_description_input);
+                    break;
+                    default:
+                        item_description = itemView.findViewById(R.id.issue_description);
+                        item_input = itemView.findViewById(R.id.issue_description_input);
+                        break;
+            }
             mLayout = itemView.findViewById(R.id.newtopic_list);
             mView = itemView;
-            mIssueName = itemView.findViewById(R.id.issue_name);
-            mIssueNameInput = itemView.findViewById(R.id.issue_name_input);
         }
     }
 
-    public TemplateAdapter (List<View> viewList, NewTopicViewInterface listener){
-        mViewList = viewList;
+    public TemplateAdapter (Template template, NewTopicViewInterface listener){
+        mList = template.getNodes();
         mListener = listener;
+    }
+
+    /**
+     * Checks the templateList for what view should be assosciated with that position
+     * @param position the position to
+     * @return
+     */
+    @Override
+    public int getItemViewType(int position){
+        Class c = mList.get(position).getClass();
+        if (c.isInstance(IssueNameNode.class)){
+            return NODE_TYPE.ISSUE_NAME.getInt();
+        }else if(c.isInstance(StringNode.class))
+            return NODE_TYPE.DESCRIPTION.getInt();
+        else if (c.isInstance(BoolNode.class))
+            return NODE_TYPE.BOOL_NODE.getInt();
+        else
+        return 0;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
+        View view;
+        ViewHolder viewHolder;
+
         switch (viewType) {
-            case 0:
+            case 1: // Issue NAME
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.issue_name, parent,false);
+                viewHolder = new ViewHolder(view, viewType);
+                return viewHolder;
+            case 2: // Issue DESCRIPTION
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.issue_status, parent, false);
+                viewHolder = new ViewHolder(view, viewType);
+                return viewHolder;
+                default:
+                    view = LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.issue_status, parent, false);
+                    viewHolder = new ViewHolder(view, viewType);
+                    return viewHolder;
         }
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.newtopic_list, parent,false);
-        return new ViewHolder(view);
     }
 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mView = mViewList.get(position);
+        switch (holder.getItemViewType()){
+            case 1: // IssueName
+                holder.item_description.setText("Issue name");
+                holder.item_input.setText("Type issue name here!");
+            default: // Issue Description
+                holder.item_description.setText("Default");
+                holder.item_input.setText("Default text");
+
+        }
     }
 
     @Override
@@ -73,6 +149,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     }
 
     public void setTemplate(Template template){
+        if (!mList.isEmpty())
         mList.clear();
         mList.addAll(template.getNodes());
     }
