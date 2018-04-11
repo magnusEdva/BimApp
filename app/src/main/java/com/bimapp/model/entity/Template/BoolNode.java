@@ -1,5 +1,6 @@
 package com.bimapp.model.entity.Template;
 
+import android.content.Context;
 import android.view.View;
 
 /**
@@ -25,8 +26,4 @@ public class BoolNode extends TemplateNode{
         return mMandatory;
     }
 
-    @Override
-    public View makeView() {
-        return null;
-    }
 }

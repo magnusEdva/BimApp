@@ -21,8 +21,4 @@ public class StringNode extends TemplateNode {
         return mDefaultContent;
     }
 
-    @Override
-    public View makeView(Context context) {
-        return null;
-    }
 }

@@ -46,6 +46,7 @@ public class Template implements Entity {
 
             mNodes.add(new BoolNode("Add Image", true, true));
             mNodes.add(new StringNode("Assigned to", false, "someEmail"));
+            mNodes.add(new IssueNameNode("Issue name", true));
 
         }catch (JSONException e){
             e.printStackTrace();
