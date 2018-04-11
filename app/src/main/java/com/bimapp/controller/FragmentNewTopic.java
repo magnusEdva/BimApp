@@ -65,28 +65,11 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
 
         MOCKTEMPLATES MOCK = new MOCKTEMPLATES();
         Template t = new Template(MOCK.templateOne);
-        List<View> viewList = createNodeViews(t);
-        mNewTopicView = new NewTopicView(inflater,container, viewList);
+        mNewTopicView = new NewTopicView(inflater,container, t);
         mNewTopicView.registerListener(this);
         // Inflate the layout for this fragment
         mNewTopicView.makeNewTopic(t);
         return mNewTopicView.getRootView();
-    }
-
-    /**
-     * Creates a list of views from a list of TemplateNodes
-     * @param template The template containing the nodes
-     * @return A list of views made from nodes
-     * //TODO Make method to show all
-     */
-    private List<View> createNodeViews(Template template){
-        List<View> viewList = new ArrayList<>();
-        for (TemplateNode tn: template.getNodes()) {
-            tn.makeView(this.getContext());
-            if (tn.isVisible())
-                viewList.add(tn.getView());
-        }
-        return viewList;
     }
 
 
