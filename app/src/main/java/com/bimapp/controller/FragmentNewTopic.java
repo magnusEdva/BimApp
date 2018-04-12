@@ -29,15 +29,7 @@ import org.json.JSONObject;
 public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.NewTopicToPresenter, NewTopicFragmentInterface {
 
 
-    /**
-     * Override method from the interface {@link com.bimapp.controller.interfaces.NewTopicFragmentInterface}
-     * Gets called when the {@link TopicsEntityManager} has finished posting a topic
-     */
-    @Override
-    public void postedTopic(boolean success) {
-        if (mListener != null)
-        mListener.onPostingTopic(success);
-    }
+
 
     public interface NewTopicFragmentInterface{
         interface FragmentNewTopicListener{
@@ -116,30 +108,41 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onPostingTopic(boolean success);
-        //void onSubmit();
     }
 
+    /**
+     * Override method from the interface {@link com.bimapp.controller.interfaces.NewTopicFragmentInterface}
+     * Gets called when the {@link TopicsEntityManager} has finished posting a topic
+     */
+    @Override
+    public void postedTopic(boolean success) {
+        if (mListener != null)
+            mListener.onPostingTopic(success);
+    }
+
+    /**
+     * Class to create templates for testing purposes
+     */
     public class MOCKTEMPLATES{
         JSONObject templateOne;
 
         JSONObject templateTwo;
 
-        public  MOCKTEMPLATES(){
+        MOCKTEMPLATES(){
             try{
                 templateTwo = new JSONObject();
                 templateOne = new JSONObject();
 
-                templateOne.put(Template.TITLE, "title");
-                templateOne.put(Template.DESCRIPTION, "description BLA BLA BLA BLA LBA BLA BLA BLA");
+                templateOne.put(Template.TITLE, "Test-template 1");
+                templateOne.put(Template.DESCRIPTION, "Template to show concept");
                 templateOne.put(Template.COLOR, Color.GREEN);
                 templateOne.put(Template.ICON, 1);
 
 
-                templateTwo.put(Template.TITLE, "Title Two");
-                templateTwo.put(Template.DESCRIPTION, "description Two BLA BLA BLA BLA LBA BLA BLA BLA");
-                templateTwo.put(Template.COLOR, Color.RED);
+                templateTwo.put(Template.TITLE, "New safety-inspection item");
+                templateTwo.put(Template.DESCRIPTION, "Daily safety inspection onsite. Please document all issues with images and a description");
+                templateTwo.put(Template.COLOR, Color.YELLOW);
                 templateTwo.put(Template.ICON, 2);
             }catch (JSONException e){
                 e.printStackTrace();
