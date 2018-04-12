@@ -20,9 +20,11 @@ import com.android.volley.Request;
 import com.bimapp.controller.FragmentDashboard;
 import com.bimapp.controller.FragmentNewTopic;
 import com.bimapp.controller.FragmentProject;
+import com.bimapp.controller.FragmentTopic;
 import com.bimapp.controller.FragmentTopicList;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Template.Template;
+import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.User;
 import com.bimapp.model.network.APICall;
 import com.bimapp.model.network.Callback;
@@ -34,7 +36,8 @@ import org.json.JSONObject;
 
 public class ProjectsViewActivity extends AppCompatActivity
         implements
-        Callback, FragmentProject.OnFragmentProjectInteractionListener, FragmentDashboard.DashboardListener {
+        Callback, FragmentProject.OnFragmentProjectInteractionListener, FragmentDashboard.DashboardListener,
+        FragmentTopicList.TopicSelectionInterface{
 
     private BimApp mApplication;
     private DrawerLayout mDrawerLayout;
@@ -42,8 +45,10 @@ public class ProjectsViewActivity extends AppCompatActivity
 
     private Fragment mDashboardFragment;
     private Fragment mNewTopicFragment;
-    private Fragment mTopicFragment;
+    private Fragment mTopicListFragment;
     private Fragment mProjectsFragment;
+    private Fragment mTopicFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +64,10 @@ public class ProjectsViewActivity extends AppCompatActivity
 
 
         mDashboardFragment  = new FragmentDashboard();
-        mTopicFragment      = new FragmentTopicList();
+        mTopicListFragment  = FragmentTopicList.newInstance(this);
         mNewTopicFragment   = new FragmentNewTopic();
         mProjectsFragment   = new FragmentProject();
+        mTopicFragment      = new FragmentTopic();
     }
 
     @Override
@@ -94,7 +100,7 @@ public class ProjectsViewActivity extends AppCompatActivity
                                 openFragment(mProjectsFragment, "fragment_projects");
                                 break;
                             case R.id.nav_issues:
-                                openFragment(mTopicFragment, "fragment_topics");
+                                openFragment(mTopicListFragment, "fragment_topics");
                                 break;
                             case R.id.nav_dashboard:
                                 openFragment(mDashboardFragment, "fragment_dashboard");
@@ -168,6 +174,11 @@ public class ProjectsViewActivity extends AppCompatActivity
         openFragment(mNewTopicFragment, "fragment_new_topic");
     }
 
+    @Override
+    public void onTopicSelected(Topic topic) {
+        openFragment(mTopicFragment, "fragment_topic");
+    }
+
     /**
      * only to be used in openFragment
      */
@@ -204,4 +215,6 @@ public class ProjectsViewActivity extends AppCompatActivity
     public void clearBackStack() {
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
+
+
 }

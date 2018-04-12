@@ -35,6 +35,7 @@ public class FragmentTopicList extends Fragment
 
     private TopicsViewInterface mTopicsView;
 
+    private TopicSelectionInterface mListener;
     // Getting the application
     private BimApp mApplication;
 
@@ -47,10 +48,11 @@ public class FragmentTopicList extends Fragment
      * this fragment using the provided parameters.
      * @return A new instance of fragment FragmentTopicList.
      */
-    public static FragmentTopicList newInstance() {
+    public static FragmentTopicList newInstance(TopicSelectionInterface listener) {
         FragmentTopicList fragment = new FragmentTopicList();
         Bundle args = new Bundle();
         fragment.setArguments(args);
+        fragment.setListener(listener);
         return fragment;
     }
 
@@ -99,8 +101,14 @@ public class FragmentTopicList extends Fragment
 
     @Override
     public void onSelectedItem(Topic topic) {
-        Log.d("Topic title", topic.getmTitle());
+        mListener.onTopicSelected(topic);
     }
 
-    // Implement override method from the view that tells this controller which topic was selected
+    private void setListener(TopicSelectionInterface listener){
+        mListener = listener;
+    }
+
+    public interface TopicSelectionInterface{
+        void onTopicSelected(Topic topic);
+    }
 }
