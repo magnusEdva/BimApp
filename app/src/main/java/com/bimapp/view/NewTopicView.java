@@ -35,7 +35,7 @@ public class NewTopicView implements NewTopicViewInterface {
     public NewTopicView(LayoutInflater inflater, ViewGroup container, Template template){
         mInflater = inflater;
         mRootView = mInflater.inflate(R.layout.view_newtopic,container,false);
-        // RecyclerView is really overkill for the purpose of this view. Implemented as a training exercise.
+        // RecyclerView might be overkill for the purpose of this view. Implemented as a training exercise.
         mRecyclerView = mRootView.findViewById(R.id.newTopicRecycleView);
         mLayoutManager = new LinearLayoutManager(mRootView.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);

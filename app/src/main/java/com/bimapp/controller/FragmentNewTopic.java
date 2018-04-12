@@ -63,12 +63,14 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
                              Bundle savedInstanceState) {
         // Instantiate the view
 
+        // Templates for testing. Need to be passed from activity which template should be shown.
         MOCKTEMPLATES MOCK = new MOCKTEMPLATES();
         Template t = new Template(MOCK.templateOne);
+
         mNewTopicView = new NewTopicView(inflater,container, t);
         mNewTopicView.registerListener(this);
         // Inflate the layout for this fragment
-        mNewTopicView.makeNewTopic(t);
+    //    mNewTopicView.makeNewTopic(t);
         return mNewTopicView.getRootView();
     }
 

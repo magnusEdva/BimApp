@@ -16,7 +16,6 @@ import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Template.TemplateNode;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHolder> {
@@ -52,28 +51,28 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         public View mView;
 
 
-        public TextView item_description;
-        public EditText item_input;
+        public TextView mItem_description;
+        public EditText mItem_input;
 
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
             switch (viewType){
                 case 1: // Issue NAME
-                    item_description = itemView.findViewById(R.id.issue_name);
-                    item_input = itemView.findViewById(R.id.issue_name_input);
+                    this.mItem_description = (TextView) itemView.findViewById(R.id.issue_name);
+                    this.mItem_input = itemView.findViewById(R.id.issue_name_input);
                     break;
                 case 2: // Issue Description
-                    item_description = itemView.findViewById(R.id.issue_description);
-                    item_input = itemView.findViewById(R.id.issue_description_input);
+                    this.mItem_description = itemView.findViewById(R.id.issue_description);
+                    this.mItem_input = itemView.findViewById(R.id.issue_description_input);
                     break;
                 case 3:
-                    item_description = itemView.findViewById(R.id.issue_description);
-                    item_input = itemView.findViewById(R.id.issue_description_input);
+                    this.mItem_description = itemView.findViewById(R.id.issue_description);
+                    this.mItem_input = itemView.findViewById(R.id.issue_description_input);
                     break;
                     default:
-                        item_description = itemView.findViewById(R.id.issue_description);
-                        item_input = itemView.findViewById(R.id.issue_description_input);
+                        this.mItem_description = itemView.findViewById(R.id.issue_description);
+                        this.mItem_input = itemView.findViewById(R.id.issue_description_input);
                         break;
             }
             mLayout = itemView.findViewById(R.id.newtopic_list);
@@ -134,11 +133,11 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         switch (holder.getItemViewType()){
             case 1: // IssueName
-                holder.item_description.setText("Issue name");
-                holder.item_input.setText("Type issue name here!");
+                holder.mItem_description.setText("Issue name");
+                holder.mItem_input.setText("Type issue name here!");
             default: // Issue Description
-                holder.item_description.setText("Default");
-                holder.item_input.setText("Default text");
+                    holder.mItem_description.setText("Default");
+                holder.mItem_input.setText("Default text");
 
         }
     }
