@@ -51,22 +51,19 @@ public class FragmentProject extends Fragment
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        /*
-        Instantiates the actual view. The view handles everything about the layout.
-         */
-        mProjectsView = new ProjectsView(inflater,container);
+        if(mProjectsView == null)
+            mProjectsView = new ProjectsView(inflater,container);
         /**
         Sets this as the callback from the view. See {@link onSelectedItem} method for where the callback goes.
          */
         mProjectsView.registerListener(this);
-        // Inflate the layout for this fragment
-        mProjectsManager.getProjects(this);
         return mProjectsView.getRootView();
     }
 
     @Override
     public void onResume(){
         super.onResume();
+        mProjectsManager.getProjects(this);
 
     }
 
@@ -75,7 +72,6 @@ public class FragmentProject extends Fragment
     public void onAttach(Context context) {
         super.onAttach(context);
         mCallback = (OnFragmentProjectInteractionListener) context;
-
     }
 
     @Override

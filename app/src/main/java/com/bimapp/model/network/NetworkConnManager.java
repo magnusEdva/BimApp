@@ -37,8 +37,8 @@ public class NetworkConnManager {
             sendRequest(context, method, url, new networkCallback(callback), params);
         } else
             try {
-                Thread.sleep(100);
-                Log.d("asleep","kindoff");
+                Thread.sleep(1000);
+                Log.d("NetworkConnManager","Trying to get new code");
                 networkRequest(context, method, url,callback, params);
             } catch (InterruptedException e) {
                 e.printStackTrace();

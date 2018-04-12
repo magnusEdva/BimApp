@@ -1,5 +1,7 @@
 package com.bimapp.model.entityManagers;
 
+import android.util.Log;
+
 import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
@@ -47,7 +49,8 @@ public class ProjectEntityManager implements ProjectsFragmentInterface.FragmentP
 
         @Override
         public void onError(String response) {
-            // TODO Error handling
+
+            Log.d("ProjectEntityManager", response);
 
         }
 

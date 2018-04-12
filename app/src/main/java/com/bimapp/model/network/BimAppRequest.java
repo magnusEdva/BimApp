@@ -11,6 +11,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.bimapp.BimApp;
 import com.bimapp.R;
 import com.bimapp.model.entity.Entity;
+import com.bimapp.model.network.oauth.OAuthHandler;
 
 import org.json.JSONObject;
 
@@ -39,6 +40,9 @@ class BimAppRequest {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        onErrorResponse(error);
+                        error.printStackTrace();
+                        mContext.refreshToken(mContext.getAcessToken(), OAuthHandler.GRANT_TYPE_REFRESH_TOKEN);
                     }
                 }
         ) {
@@ -83,7 +87,7 @@ class BimAppRequest {
                     VolleyError error = new VolleyError(new String(volleyError.networkResponse.data));
                     volleyError = error;
                 }
-                Log.d("suck me", volleyError.getMessage());
+                Log.d("ParseNetworkError", volleyError.getMessage());
                 return volleyError;
             }
         };
@@ -104,6 +108,7 @@ class BimAppRequest {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.getMessage());
                     }
                 }
         ) {
@@ -134,7 +139,7 @@ class BimAppRequest {
                     VolleyError error = new VolleyError(new String(volleyError.networkResponse.data));
                     volleyError = error;
                 }
-                Log.d("suck me", volleyError.getMessage());
+                Log.d("ParseNetworkError", volleyError.getMessage());
                 return volleyError;
             }
         };

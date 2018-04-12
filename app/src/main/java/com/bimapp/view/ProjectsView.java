@@ -18,13 +18,13 @@ import java.util.List;
  * Created by Håkon on 20.03.2018.
  */
 
-public class ProjectsView implements ProjectsViewInterface{
+public class ProjectsView implements ProjectsViewInterface {
 
     private View mRootView;
     private ShowProjectsViewListener mListener;
 
-    public ProjectsView(LayoutInflater inflater, ViewGroup container){
-        mRootView = inflater.inflate(R.layout.view_topics, container, false);
+    public ProjectsView(LayoutInflater inflater, ViewGroup container) {
+        mRootView = inflater.inflate(R.layout.view_projects, container, false);
     }
 
 
@@ -40,12 +40,14 @@ public class ProjectsView implements ProjectsViewInterface{
 
     /**
      * from ProjectsViewInterface. sets the implementation for this listener.
+     *
      * @param projectsView the implementation of the ShowProjectsViewListener interface
      */
     @Override
     public void registerListener(ShowProjectsViewListener projectsView) {
         mListener = projectsView;
     }
+
     /**
      * from ProjectsViewInterface. removes the implementation for this listener.
      **/
@@ -56,20 +58,21 @@ public class ProjectsView implements ProjectsViewInterface{
 
     /**
      * Adds the projects from the network to the projects view.
+     *
      * @param projects a List of projects.
      */
     @Override
     public void setProjects(final List<Project> projects) {
+            ArrayAdapter<Project> arrayAdapter = new ArrayAdapter<Project>(this.getRootView().getContext(), android.R.layout.simple_list_item_1, projects);
+            ListView listView = mRootView.findViewById(R.id.projects_list);
+            listView.setAdapter(arrayAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    mListener.onSelectedItem(projects.get(position));
+                }
+            });
 
-        ArrayAdapter<Project> arrayAdapter = new ArrayAdapter<Project>(this.getRootView().getContext(), android.R.layout.simple_list_item_1,projects);
-        ListView listView = mRootView.findViewById(R.id.projects_list);
-        listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mListener.onSelectedItem(projects.get(position));
-            }
-        });
     }
 
 }
