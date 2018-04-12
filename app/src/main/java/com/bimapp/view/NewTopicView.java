@@ -32,13 +32,12 @@ public class NewTopicView implements NewTopicViewInterface {
     private RecyclerView mRecyclerView;
     private TemplateAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    // Do I need the inflater for later? Probably
-    private LayoutInflater mInflater;
+
     private Button mSubmit;
 
     public NewTopicView(LayoutInflater inflater, ViewGroup container, final Template template){
-        mInflater = inflater;
-        mRootView = mInflater.inflate(R.layout.view_newtopic,container,false);
+
+        mRootView = inflater.inflate(R.layout.view_newtopic,container,false);
         // RecyclerView might be overkill for the purpose of this view. Implemented as a training exercise.
         mRecyclerView = mRootView.findViewById(R.id.newTopicRecycleView);
         mLayoutManager = new LinearLayoutManager(mRootView.getContext());
@@ -51,7 +50,8 @@ public class NewTopicView implements NewTopicViewInterface {
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                makeNewTopic(template);
+                // TODO Make sure that all required fields are filled in
+                makeNewTopic();
             }
         });
 
@@ -80,11 +80,12 @@ public class NewTopicView implements NewTopicViewInterface {
     }
 
     /**
-     * Method started from the Presenter of this view.
-     * @param template
+     * Method to construct a topic from the user input.
+     * contains a callback to the presenter, tells it that a topic has been made.
+     *
+     * // TODO Implement a return boolean to validate
      */
-    @Override
-    public void makeNewTopic(Template template) {
+    public void makeNewTopic() {
         // Get the fields!
         EditText status_input = mRootView.findViewById(R.id.issue_status_input);
         String status = status_input.getText().toString();
