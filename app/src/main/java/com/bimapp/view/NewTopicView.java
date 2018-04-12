@@ -10,15 +10,12 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import com.bimapp.R;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.view.adapters.TemplateAdapter;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
-
-import java.util.List;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
@@ -95,7 +92,7 @@ public class NewTopicView implements NewTopicViewInterface {
      */
     public void makeNewTopic() {
         // Get the fields!
-        EditText status_input = mRootView.findViewById(R.id.issue_status_input);
+        EditText status_input = mRootView.findViewById(R.id.topic_status_input);
         String status = status_input.getText().toString();
 
         EditText name_input = mRootView.findViewById(R.id.issue_name_input);
