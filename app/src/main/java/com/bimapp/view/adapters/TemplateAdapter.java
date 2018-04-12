@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bimapp.R;
 import com.bimapp.model.entity.Template.BoolNode;
-import com.bimapp.model.entity.Template.IssueNameNode;
+import com.bimapp.model.entity.Template.TopicTitleNode;
 import com.bimapp.model.entity.Template.StringNode;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Template.TemplateNode;
@@ -103,7 +103,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     @Override
     public int getItemViewType(int position) {
         Object c = mList.get(position);
-        if (c instanceof IssueNameNode) {
+        if (c instanceof TopicTitleNode) {
             return NODE_TYPE.ISSUE_NAME.getInt();
         } else if (c instanceof StringNode)
             return NODE_TYPE.DESCRIPTION.getInt();

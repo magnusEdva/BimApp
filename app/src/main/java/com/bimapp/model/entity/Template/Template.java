@@ -3,7 +3,6 @@ package com.bimapp.model.entity.Template;
 import android.support.annotation.NonNull;
 
 import com.bimapp.model.entity.Entity;
-import com.bimapp.model.entity.Topic;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,7 +45,7 @@ public class Template implements Entity {
 
             mNodes.add(new BoolNode("Add Image", true, true));
             mNodes.add(new StringNode("Assigned to", false, "someEmail"));
-            mNodes.add(new IssueNameNode("Issue name", true));
+            mNodes.add(new TopicTitleNode("Issue name", true));
 
         }catch (JSONException e){
             e.printStackTrace();
