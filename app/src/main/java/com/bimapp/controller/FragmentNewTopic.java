@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bimapp.BimApp;
+import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
+import com.bimapp.controller.interfaces.TopicsFragmentInterface;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Template.TemplateNode;
 import com.bimapp.model.entity.Topic;
@@ -30,7 +32,13 @@ import java.util.List;
  * {@link FragmentNewTopic.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.NewTopicToPresenter{
+public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.NewTopicToPresenter, NewTopicFragmentInterface {
+
+
+    @Override
+    public void postedTopic() {
+
+    }
 
     public interface NewTopicFragmentInterface{
         interface FragmentNewTopicListener{
@@ -48,7 +56,7 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
     public void onPostTopic(Topic topic) {
         TopicsEntityManager manager = new TopicsEntityManager(mApplication);
         Log.d("Post Topic", "Made an entityManger");
-        // manager.
+        manager.postTopic(this, topic);
     }
 
 
@@ -59,7 +67,7 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        // mApplication = (BimApp) this.getActivity().getApplication();
+        mApplication = (BimApp) this.getActivity().getApplication();
     }
 
     @Override
@@ -74,7 +82,6 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
         mNewTopicView = new NewTopicView(inflater,container, t);
         mNewTopicView.registerListener(this);
         // Inflate the layout for this fragment
-    //    mNewTopicView.makeNewTopic(t);
         return mNewTopicView.getRootView();
     }
 
