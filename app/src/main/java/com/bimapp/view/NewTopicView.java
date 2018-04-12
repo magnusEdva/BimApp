@@ -93,19 +93,25 @@ public class NewTopicView implements NewTopicViewInterface {
     public void makeNewTopic() {
         // Get the fields!
         EditText status_input = mRootView.findViewById(R.id.topic_status_input);
-        String status = status_input.getText().toString();
+        String topic_status = status_input.getText().toString();
 
-        EditText name_input = mRootView.findViewById(R.id.issue_name_input);
-        String name = name_input.getText().toString();
+        EditText title_input = mRootView.findViewById(R.id.topic_title_input);
+        String title = title_input.getText().toString();
 
-        EditText description_input = mRootView.findViewById(R.id.issue_description_input);
+        EditText assignedTo_input = mRootView.findViewById(R.id.topic_assigned_to_input);
+        String assignedTo = assignedTo_input.getText().toString();
+
+        EditText description_input = mRootView.findViewById(R.id.topic_description_input);
         String description = description_input.getText().toString();
 
+        EditText topicType_input = mRootView.findViewById(R.id.topic_type_input);
+        String topicType = topicType_input.getText().toString();
+
         // Make new topic from fields
-        Topic topic = new Topic(name,null,status,null,description);
+        Topic topic = new Topic(title,topicType,topic_status,assignedTo,description);
 
         // Tell fragment that topic has been posted
-        Log.d("Posting topic", "Name of topic " + name );
+        Log.d("Posting topic", "Name of topic " + title );
         mListener.onPostTopic(topic);
     }
 }

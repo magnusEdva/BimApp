@@ -43,9 +43,12 @@ public class Template implements Entity {
             mColor = jsonTemplate.getInt(COLOR);
             mIcon = jsonTemplate.getInt(ICON);
 
-            mNodes.add(new BoolNode("Add Image", true, true));
-            mNodes.add(new StringNode("Assigned to", false, "someEmail"));
-            mNodes.add(new TopicTitleNode("Issue name", true));
+            mNodes.add(new TopicTitleNode("", true));
+            mNodes.add(new TopicAssignedToNode("eriksen.hakon@gmail.com", true));
+            mNodes.add(new TopicStatusNode("Open", false));
+            mNodes.add(new TopicDescriptionNode("This is the filled in description", true));
+            mNodes.add(new TopicTypeNode("", false));
+
 
         }catch (JSONException e){
             e.printStackTrace();
