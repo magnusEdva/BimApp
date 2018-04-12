@@ -38,4 +38,6 @@ public class FragmentTopic extends Fragment {
         return inflater.inflate(R.layout.view_topic, container, false);
     }
 
+
+
 }
