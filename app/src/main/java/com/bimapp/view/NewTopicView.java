@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -18,6 +19,8 @@ import com.bimapp.view.adapters.TemplateAdapter;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
 import java.util.List;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
  * View associated with posting a new topic.
@@ -52,6 +55,10 @@ public class NewTopicView implements NewTopicViewInterface {
             public void onClick(View v) {
                 // TODO Make sure that all required fields are filled in
                 makeNewTopic();
+                // Does this work?
+                InputMethodManager inputMethodManager = (InputMethodManager) mRootView.getContext().
+                        getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromInputMethod(mRootView.getWindowToken(), 0);
             }
         });
 
@@ -83,7 +90,7 @@ public class NewTopicView implements NewTopicViewInterface {
      * Method to construct a topic from the user input.
      * contains a callback to the presenter, tells it that a topic has been made.
      *
-     * // TODO Implement a return boolean to validate
+     * // TODO Implement a return boolean to validate?
      */
     public void makeNewTopic() {
         // Get the fields!
