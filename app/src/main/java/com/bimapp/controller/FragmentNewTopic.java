@@ -2,7 +2,6 @@ package com.bimapp.controller;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,9 +11,7 @@ import android.view.ViewGroup;
 
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
-import com.bimapp.controller.interfaces.TopicsFragmentInterface;
 import com.bimapp.model.entity.Template.Template;
-import com.bimapp.model.entity.Template.TemplateNode;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entityManagers.TopicsEntityManager;
 import com.bimapp.view.NewTopicView;
@@ -22,9 +19,6 @@ import com.bimapp.view.interfaces.NewTopicViewInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,9 +29,14 @@ import java.util.List;
 public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.NewTopicToPresenter, NewTopicFragmentInterface {
 
 
+    /**
+     * Override method from the interface {@link com.bimapp.controller.interfaces.NewTopicFragmentInterface}
+     * Gets called when the {@link TopicsEntityManager} has finished posting a topic
+     */
     @Override
-    public void postedTopic() {
-
+    public void postedTopic(boolean success) {
+        if (mListener != null)
+        mListener.onPostingTopic(success);
     }
 
     public interface NewTopicFragmentInterface{
@@ -49,13 +48,15 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
 
     private NewTopicViewInterface mNewTopicView;
     private BimApp mApplication;
+
+    // This is the listener for the activity
     private OnFragmentInteractionListener mListener;
 
 
     @Override
     public void onPostTopic(Topic topic) {
-        TopicsEntityManager manager = new TopicsEntityManager(mApplication);
-        Log.d("Post Topic", "Made an entityManger");
+        TopicsEntityManager manager = new TopicsEntityManager(mApplication, this);
+        Log.d("FragmentNewTopic", "Made an entityManger");
         manager.postTopic(this, topic);
     }
 
@@ -87,23 +88,15 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
 
 
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
-        /*if (context instanceof OnFragmentInteractionListener) {
+        if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
-        }*/
+        }
     }
 
     @Override
@@ -124,7 +117,8 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onPostingTopic(boolean success);
+        //void onSubmit();
     }
 
     public class MOCKTEMPLATES{

@@ -2,7 +2,6 @@ package com.bimapp.model.entityManagers;
 
 import com.android.volley.Request;
 import com.bimapp.BimApp;
-import com.bimapp.controller.FragmentNewTopic;
 import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
 import com.bimapp.model.entity.EntityListConstructor;
@@ -23,17 +22,12 @@ import java.util.List;
 public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopicsListener, NewTopicFragmentInterface.NewTopicFragmentListener {
 
     private BimApp mContext;
+    private NewTopicFragmentInterface mListener;
 
     @Override
     public void postTopic(Topic topic) {
-        NewTopicFragmentInterface listener = new NewTopicFragmentInterface() {
-            @Override
-            public void postedTopic() {
 
-            }
-        };
-
-        postTopic(listener, topic);
+        postTopic(mListener, topic);
 
     }
 
@@ -56,12 +50,16 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
         }
 
         public void makeToast(boolean success){
-
+            mListener.postedTopic(success);
         }
     }
 
     public TopicsEntityManager(BimApp context) {
         mContext = context;
+    }
+    public TopicsEntityManager(BimApp context, NewTopicFragmentInterface listener) {
+        mContext = context;
+        mListener = listener;
     }
 
     private class TopicsCallback implements Callback {
@@ -98,11 +96,10 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
     }
 
     public void postTopic(NewTopicFragmentInterface controllerCallback, Topic topic){
+
+        //Uncomment the following to actually post things!
         NetworkConnManager.networkRequest(mContext, Request.Method.POST,
                 APICall.POSTTopics(mContext.getActiveProject()), new TopicPostCallback(controllerCallback),topic);
 
     }
-
-    //TODO Implement a method that lets the activity know what this fragment did!
-
 }

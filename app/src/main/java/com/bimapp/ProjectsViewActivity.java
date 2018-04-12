@@ -1,6 +1,7 @@
 package com.bimapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -15,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.bimapp.controller.FragmentDashboard;
@@ -37,7 +39,7 @@ import org.json.JSONObject;
 public class ProjectsViewActivity extends AppCompatActivity
         implements
         Callback, FragmentProject.OnFragmentProjectInteractionListener, FragmentDashboard.DashboardListener,
-        FragmentTopicList.TopicSelectionInterface{
+        FragmentTopicList.TopicSelectionInterface, FragmentNewTopic.OnFragmentInteractionListener{
 
     private BimApp mApplication;
     private DrawerLayout mDrawerLayout;
@@ -215,6 +217,18 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     public void clearBackStack() {
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+
+    @Override
+    public void onPostingTopic(boolean success) {
+
+        if (success){
+            Toast.makeText(mApplication, "Successfully posted topic", Toast.LENGTH_SHORT).show();
+        } else{
+            Toast.makeText(mApplication, "Didn't post topic", Toast.LENGTH_SHORT).show();
+        }
+        openFragment(mDashboardFragment,"fragment_dashboard");
     }
 
 
