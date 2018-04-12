@@ -54,11 +54,12 @@ public class NewTopicView implements NewTopicViewInterface {
             @Override
             public void onClick(View v) {
                 // TODO Make sure that all required fields are filled in
-                makeNewTopic();
+
                 // Does this work?
                 InputMethodManager inputMethodManager = (InputMethodManager) mRootView.getContext().
                         getSystemService(INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromInputMethod(mRootView.getWindowToken(), 0);
+                inputMethodManager.hideSoftInputFromWindow(mRootView.getWindowToken(), 0);
+                makeNewTopic();
             }
         });
 
