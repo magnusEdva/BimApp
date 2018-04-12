@@ -3,9 +3,12 @@ package com.bimapp.view;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.bimapp.R;
@@ -31,8 +34,9 @@ public class NewTopicView implements NewTopicViewInterface {
     private RecyclerView.LayoutManager mLayoutManager;
     // Do I need the inflater for later? Probably
     private LayoutInflater mInflater;
+    private Button mSubmit;
 
-    public NewTopicView(LayoutInflater inflater, ViewGroup container, Template template){
+    public NewTopicView(LayoutInflater inflater, ViewGroup container, final Template template){
         mInflater = inflater;
         mRootView = mInflater.inflate(R.layout.view_newtopic,container,false);
         // RecyclerView might be overkill for the purpose of this view. Implemented as a training exercise.
@@ -42,8 +46,18 @@ public class NewTopicView implements NewTopicViewInterface {
         mAdapter = new TemplateAdapter(template, this);
         mRecyclerView.setAdapter(mAdapter);
 
+        // Instantiate submit button and define what it shall do when clicked.
+        mSubmit = mRootView.findViewById(R.id.issue_submit);
+        mSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                makeNewTopic(template);
+            }
+        });
 
     }
+
+
 
     @Override
     public View getRootView() {
@@ -71,13 +85,21 @@ public class NewTopicView implements NewTopicViewInterface {
      */
     @Override
     public void makeNewTopic(Template template) {
+        // Get the fields!
+        EditText status_input = mRootView.findViewById(R.id.issue_status_input);
+        String status = status_input.getText().toString();
 
+        EditText name_input = mRootView.findViewById(R.id.issue_name_input);
+        String name = name_input.getText().toString();
 
-        mAdapter.setTemplate(template);
-        //TextView
-        Topic topic = new Topic(template.getTitle(),null,null,null,null);
-        //template.getTitle();
+        EditText description_input = mRootView.findViewById(R.id.issue_description_input);
+        String description = description_input.getText().toString();
 
+        // Make new topic from fields
+        Topic topic = new Topic(name,null,status,null,description);
+
+        // Tell fragment that topic has been posted
+        Log.d("Posting topic", "Name of topic " + name );
         mListener.onPostTopic(topic);
     }
 }

@@ -74,11 +74,11 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                     this.mItem_description = itemView.findViewById(R.id.issue_description);
                     this.mItem_input = itemView.findViewById(R.id.issue_description_input);
                     break;
-                case 3:
-                    this.mItem_description = itemView.findViewById(R.id.issue_description);
-                    this.mItem_input = itemView.findViewById(R.id.issue_description_input);
+                case 3: // Issue Status
+                    this.mItem_description = itemView.findViewById(R.id.issue_status);
+                    this.mItem_input = itemView.findViewById(R.id.issue_status_input);
                     break;
-                default:
+                default: // Defaults to Issue status
                     this.mItem_description = itemView.findViewById(R.id.issue_status);
                     this.mItem_input = itemView.findViewById(R.id.issue_status_input);
                     break;
@@ -102,12 +102,12 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
      */
     @Override
     public int getItemViewType(int position) {
-        Class c = mList.get(position).getClass();
-        if (c.isInstance(IssueNameNode.class)) {
+        Object c = mList.get(position);
+        if (c instanceof IssueNameNode) {
             return NODE_TYPE.ISSUE_NAME.getInt();
-        } else if (c.isInstance(StringNode.class))
+        } else if (c instanceof StringNode)
             return NODE_TYPE.DESCRIPTION.getInt();
-        else if (c.isInstance(BoolNode.class))
+        else if (c instanceof BoolNode)
             return NODE_TYPE.BOOL_NODE.getInt();
         else
             return 0;
@@ -127,9 +127,12 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 break;
             case 2: // Issue DESCRIPTION
                 view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.issue_status, parent, false);
+                        .inflate(R.layout.issue_description, parent, false);
                 viewHolder = new ViewHolder(view, viewType);
                 break;
+            case 3: // Issue status
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.issue_status,parent,false);
             default:
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.issue_status, parent, false);
@@ -144,11 +147,18 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         switch (this.getItemViewType(position)) {
             case 1: // IssueName
-                holder.mItem_description.setText("Issue name");
-                holder.mItem_input.setText("Type issue name here!");
+                holder.mItem_description.setText(R.string.issue_name);
+                holder.mItem_input.setText(R.string.issue_name_input);
                 break;
+            case 2: // IssueDescription
+                holder.mItem_description.setText(R.string.issue_description);
+                holder.mItem_input.setText(R.string.description_inpu);
+                break;
+            case 3: // IssueStatus
+                holder.mItem_description.setText(R.string.issue_status);
+                holder.mItem_input.setText(R.string.issue_status);
             default: // Issue Description
-                holder.mItem_description.setText("Default");
+                holder.mItem_description.setText(mList.get(position).getTitle());
                 holder.mItem_input.setText("Default text");
                 break;
 

@@ -13,6 +13,7 @@ import com.bimapp.BimApp;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Template.TemplateNode;
 import com.bimapp.model.entity.Topic;
+import com.bimapp.model.entityManagers.TopicsEntityManager;
 import com.bimapp.view.NewTopicView;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
@@ -44,7 +45,8 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
 
     @Override
     public void onPostTopic(Topic topic) {
-
+        TopicsEntityManager manager = new TopicsEntityManager(mApplication);
+        // manager.
     }
 
 
