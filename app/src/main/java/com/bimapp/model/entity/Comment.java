@@ -67,12 +67,15 @@ public class Comment implements Entity {
 
     /**
      * constructs a comment from a correspong JSON file
+     *
      * @param obj JSON file
      */
     private void construct(JSONObject obj) {
         try {
-            mCommentsGUID = obj.getString(GUID);
-            mTopicGUID = obj.getString(TOPIC_GUID);
+            if (obj.has(GUID))
+                mCommentsGUID = obj.getString(GUID);
+            if (obj.has(TOPIC_GUID))
+                mTopicGUID = obj.getString(TOPIC_GUID);
             if (obj.has(VERBAL_STATUS))
                 mVerbalStatus = obj.getString(VERBAL_STATUS);
             if (obj.has(STATUS))
@@ -112,6 +115,10 @@ public class Comment implements Entity {
             e.printStackTrace();
         }
         return map;
+    }
+
+    public String toString() {
+        return mComment;
     }
 
 }
