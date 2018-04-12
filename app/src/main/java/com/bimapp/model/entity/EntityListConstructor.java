@@ -50,5 +50,20 @@ public class EntityListConstructor {
         return topics;
     }
 
-    //TODO Add methods for other entities
+    /**
+     * @param commentsJSON JSON [] containing comments
+     * @return Comment objects in a List
+     */
+    public static List<Comment> Comments(JSONArray commentsJSON){
+        List<Comment> comments = new ArrayList<>();
+
+        for(int i = 0; i < commentsJSON.length(); i++){
+            try {
+                comments.add(new Comment(commentsJSON.getJSONObject(i)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return comments;
+    }
 }

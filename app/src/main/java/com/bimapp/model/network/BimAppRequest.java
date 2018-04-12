@@ -29,9 +29,7 @@ class BimAppRequest {
                     final Callback callback, @Nullable final Entity params) {
 
         StringRequest getUserRequest = new StringRequest(
-                method,
-                url,
-                new Response.Listener<String>() {
+                method, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         onResponseString(response, callback);
@@ -48,32 +46,16 @@ class BimAppRequest {
         ) {
             @Override
             public String getBodyContentType() {
-                if (method == Method.GET)
-                    return mContext.getString(R.string.url_encode);
-                if (method == Method.POST)
-                    return "application/json";
-                return "";
+                return mContext.getString(R.string.url_encode);
             }
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + mContext.getAcessToken());
-                if (method == Method.GET)
-                    headers.put("Accept", "application/json");
-                else if (method == Method.POST)
-                    headers.put("Content-type", "application/json");
-                return headers;
-            }
+                headers.put("Accept", "application/json");
 
-            @Override
-            public Map<String, String> getParams() {
-                Map<String, String> tempParams = null;
-                if (params != null) {
-                    tempParams = new HashMap<>();
-                    tempParams = params.getStringParams(tempParams);
-                }
-                return tempParams;
+                return headers;
             }
 
             /**
@@ -97,18 +79,21 @@ class BimAppRequest {
     }
 
     static void POST(final BimApp mContext, final int method, String url,
-                            final Callback callback, final Entity params) {
+                     final Callback callback, final Entity params) {
 
         JsonObjectRequest getUserRequest = new JsonObjectRequest(url, params.getJsonParams(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d(response.toString(), "");
+                callback.onSuccess(response.toString());
             }
         },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
                         callback.onError(error.getMessage());
+
                     }
                 }
         ) {
@@ -122,8 +107,6 @@ class BimAppRequest {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + mContext.getAcessToken());
-                if (method == Method.GET)
-                    headers.put("Accept", "application/json");
                 return headers;
             }
 

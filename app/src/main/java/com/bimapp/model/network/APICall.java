@@ -1,6 +1,7 @@
 package com.bimapp.model.network;
 
 import com.bimapp.model.entity.Project;
+import com.bimapp.model.entity.Topic;
 
 /**
  * Created by zorri on 21/03/2018.
@@ -36,9 +37,11 @@ public class APICall {
     public static String GETTopics(Project project){
         return BuildBaseURL() + "/projects/" + project.getProjectId() + "/topics";
     }
-
     public static String POSTTopics(Project project){
         return BuildBaseURL() + "/projects/" + project.getProjectId() + "/topics";
+    }
+    public static String GETComments(Project project, Topic topic){
+        return BuildBaseURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getmGuid() + "/comments";
     }
 
 }

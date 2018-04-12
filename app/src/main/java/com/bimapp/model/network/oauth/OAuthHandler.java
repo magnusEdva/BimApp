@@ -258,7 +258,7 @@ public class OAuthHandler {
         expiresAt = getExpiresAt();
 
         return accessToken != null && refreshToken != null
-                && expiresAt >= System.currentTimeMillis() + 100000;
+                && expiresAt >= System.currentTimeMillis() + 1000000;
 
     }
 
