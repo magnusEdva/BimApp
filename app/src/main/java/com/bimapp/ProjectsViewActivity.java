@@ -20,7 +20,7 @@ import com.android.volley.Request;
 import com.bimapp.controller.FragmentDashboard;
 import com.bimapp.controller.FragmentNewTopic;
 import com.bimapp.controller.FragmentProject;
-import com.bimapp.controller.FragmentTopic;
+import com.bimapp.controller.FragmentTopicList;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.User;
@@ -59,7 +59,7 @@ public class ProjectsViewActivity extends AppCompatActivity
 
 
         mDashboardFragment  = new FragmentDashboard();
-        mTopicFragment      = new FragmentTopic();
+        mTopicFragment      = new FragmentTopicList();
         mNewTopicFragment   = new FragmentNewTopic();
         mProjectsFragment   = new FragmentProject();
     }

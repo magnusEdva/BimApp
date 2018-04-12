@@ -18,13 +18,13 @@ import java.util.List;
  * Created by Hakon on 22.03.2018.
  */
 
-public class TopicsView implements TopicsViewInterface {
+public class TopicsListView implements TopicsViewInterface {
 
     private View mRootView;
     private TopicsViewToPresenter mListener;
 
-    public TopicsView(LayoutInflater inflater, ViewGroup container) {
-        mRootView = inflater.inflate(R.layout.view_projects, container,false);
+    public TopicsListView(LayoutInflater inflater, ViewGroup container) {
+        mRootView = inflater.inflate(R.layout.view_topics_list, container,false);
     }
 
     @Override

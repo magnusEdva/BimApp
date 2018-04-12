@@ -331,21 +331,15 @@ public class OAuthHandler {
         @Override
         public void onErrorResponse(VolleyError error) {
             if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                Toast.makeText(mContext,
-                        ("fuck you apparently"),
-                        Toast.LENGTH_LONG).show();
                 error.printStackTrace();
             } else if (error instanceof AuthFailureError) {
                 checkRefresh();
             } else if (error instanceof ServerError) {
                 error.printStackTrace();
-                //TODO
             } else if (error instanceof NetworkError) {
                 error.printStackTrace();
-                //TODO
             } else if (error instanceof ParseError) {
                 error.printStackTrace();
-                //TODO
             }
         }
     }
