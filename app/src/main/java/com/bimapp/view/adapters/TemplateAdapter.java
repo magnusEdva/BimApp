@@ -16,12 +16,13 @@ import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Template.TemplateNode;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHolder> {
 
     private Template mTemplate;
-    private List<TemplateNode>  mList;
+    private List<TemplateNode> mList;
     private final NewTopicViewInterface mListener;
 
     /**
@@ -34,11 +35,11 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
 
         private int i;
 
-        private NODE_TYPE(int i){
+        private NODE_TYPE(int i) {
             this.i = i;
         }
 
-        public int getInt(){
+        public int getInt() {
             return i;
         }
     }
@@ -46,18 +47,25 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     /**
      * Provide a reference to the views for each item
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public final LinearLayout mLayout;
         public View mView;
 
 
-        public TextView mItem_description;
-        public EditText mItem_input;
+        public final TextView mItem_description;
+        public final EditText mItem_input;
 
+        public ViewHolder(View view) {
+            super(view);
+            mView = itemView;
+            mLayout = itemView.findViewById(R.id.newtopic_list);
+            this.mItem_description = itemView.findViewById(R.id.issue_description);
+            this.mItem_input = itemView.findViewById(R.id.issue_description_input);
+        }
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
-            switch (viewType){
+            switch (viewType) {
                 case 1: // Issue NAME
                     this.mItem_description = (TextView) itemView.findViewById(R.id.issue_name);
                     this.mItem_input = itemView.findViewById(R.id.issue_name_input);
@@ -70,37 +78,39 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                     this.mItem_description = itemView.findViewById(R.id.issue_description);
                     this.mItem_input = itemView.findViewById(R.id.issue_description_input);
                     break;
-                    default:
-                        this.mItem_description = itemView.findViewById(R.id.issue_description);
-                        this.mItem_input = itemView.findViewById(R.id.issue_description_input);
-                        break;
+                default:
+                    this.mItem_description = itemView.findViewById(R.id.issue_status);
+                    this.mItem_input = itemView.findViewById(R.id.issue_status_input);
+                    break;
             }
             mLayout = itemView.findViewById(R.id.newtopic_list);
             mView = itemView;
         }
     }
 
-    public TemplateAdapter (Template template, NewTopicViewInterface listener){
-        mList = template.getNodes();
+    public TemplateAdapter(Template template, NewTopicViewInterface listener) {
+        mList = new ArrayList<>();
+        mList.addAll(template.getNodes());
         mListener = listener;
     }
 
     /**
      * Checks the templateList for what view should be assosciated with that position
+     *
      * @param position the position to
      * @return
      */
     @Override
-    public int getItemViewType(int position){
+    public int getItemViewType(int position) {
         Class c = mList.get(position).getClass();
-        if (c.isInstance(IssueNameNode.class)){
+        if (c.isInstance(IssueNameNode.class)) {
             return NODE_TYPE.ISSUE_NAME.getInt();
-        }else if(c.isInstance(StringNode.class))
+        } else if (c.isInstance(StringNode.class))
             return NODE_TYPE.DESCRIPTION.getInt();
         else if (c.isInstance(BoolNode.class))
             return NODE_TYPE.BOOL_NODE.getInt();
         else
-        return 0;
+            return 0;
     }
 
     @Override
@@ -112,32 +122,35 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         switch (viewType) {
             case 1: // Issue NAME
                 view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.issue_name, parent,false);
+                        .inflate(R.layout.issue_name, parent, false);
                 viewHolder = new ViewHolder(view, viewType);
-                return viewHolder;
+                break;
             case 2: // Issue DESCRIPTION
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.issue_status, parent, false);
                 viewHolder = new ViewHolder(view, viewType);
-                return viewHolder;
-                default:
-                    view = LayoutInflater.from(parent.getContext())
-                            .inflate(R.layout.issue_status, parent, false);
-                    viewHolder = new ViewHolder(view, viewType);
-                    return viewHolder;
+                break;
+            default:
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.issue_status, parent, false);
+                viewHolder = new ViewHolder(view, viewType);
+                break;
         }
+        return viewHolder;
     }
 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        switch (holder.getItemViewType()){
+        switch (this.getItemViewType(position)) {
             case 1: // IssueName
                 holder.mItem_description.setText("Issue name");
                 holder.mItem_input.setText("Type issue name here!");
+                break;
             default: // Issue Description
-                    holder.mItem_description.setText("Default");
+                holder.mItem_description.setText("Default");
                 holder.mItem_input.setText("Default text");
+                break;
 
         }
     }
@@ -147,9 +160,9 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         return mList.size();
     }
 
-    public void setTemplate(Template template){
+    public void setTemplate(Template template) {
         if (!mList.isEmpty())
-        mList.clear();
+            mList.clear();
         mList.addAll(template.getNodes());
     }
 
