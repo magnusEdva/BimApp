@@ -42,7 +42,7 @@ public class NewTopicView implements NewTopicViewInterface {
         mRecyclerView = mRootView.findViewById(R.id.newTopicRecycleView);
         mLayoutManager = new LinearLayoutManager(mRootView.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new TemplateAdapter(template, this);
+        mAdapter = new TemplateAdapter(template, this); // Shouldn't need these params
         mRecyclerView.setAdapter(mAdapter);
 
         // Instantiate submit button and define what it shall do when clicked.
@@ -52,10 +52,11 @@ public class NewTopicView implements NewTopicViewInterface {
             public void onClick(View v) {
                 // TODO Make sure that all required fields are filled in
 
-                // Does this work?
+                // Hides the keyboard
                 InputMethodManager inputMethodManager = (InputMethodManager) mRootView.getContext().
                         getSystemService(INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(mRootView.getWindowToken(), 0);
+
                 makeNewTopic();
             }
         });
