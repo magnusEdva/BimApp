@@ -219,6 +219,6 @@ public class Topic implements Entity {
 
     @Override
     public String toString() {
-        return mTitle + " " + mDescription;
+        return mTitle;
     }
 }

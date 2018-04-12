@@ -176,6 +176,7 @@ public class ProjectsViewActivity extends AppCompatActivity
 
     @Override
     public void onTopicSelected(Topic topic) {
+        FragmentTopic.setTopic(topic);
         openFragment(mTopicFragment, "fragment_topic");
     }
 
