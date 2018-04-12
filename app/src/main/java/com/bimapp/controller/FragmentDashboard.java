@@ -114,15 +114,15 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
                 templateTwo = new JSONObject();
                 templateOne = new JSONObject();
 
-                templateOne.put(Template.TITLE, "title");
-                templateOne.put(Template.DESCRIPTION, "description BLA BLA BLA BLA LBA BLA BLA BLA");
-                templateOne.put(Template.COLOR, Color.BLUE);
+                templateOne.put(Template.TITLE, "Test-template 1");
+                templateOne.put(Template.DESCRIPTION, "Template to show concept");
+                templateOne.put(Template.COLOR, Color.GREEN);
                 templateOne.put(Template.ICON, 1);
 
 
-                templateTwo.put(Template.TITLE, "Title Two");
-                templateTwo.put(Template.DESCRIPTION, "description Two BLA BLA BLA BLA LBA BLA BLA BLA");
-                templateTwo.put(Template.COLOR, Color.RED);
+                templateTwo.put(Template.TITLE, "New safety-inspection item");
+                templateTwo.put(Template.DESCRIPTION, "Daily safety inspection onsite. Please document all issues with images and a description");
+                templateTwo.put(Template.COLOR, Color.YELLOW);
                 templateTwo.put(Template.ICON, 2);
             } catch (JSONException e) {
                 e.printStackTrace();
