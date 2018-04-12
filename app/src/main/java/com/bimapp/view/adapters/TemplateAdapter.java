@@ -21,16 +21,20 @@ import com.bimapp.view.interfaces.NewTopicViewInterface;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class used by {@link com.bimapp.view.NewTopicView} to show the correct view for each item
+ * in a template.
+ */
 public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHolder> {
 
     private Template mTemplate;
     private List<TemplateNode> mList;
-    private final NewTopicViewInterface mListener;
+    //private final NewTopicViewInterface mListener;
 
     /**
      * Enum to separate node types
      */
-    private static enum NODE_TYPE {
+    private enum NODE_TYPE {
         TITLE(1),
         DESCRIPTION(2),
         TOPIC_STATUS(3),
@@ -40,7 +44,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
 
         private int i;
 
-        private NODE_TYPE(int i) {
+        NODE_TYPE(int i) {
             this.i = i;
         }
 
@@ -50,7 +54,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     }
 
     /**
-     * Provide a reference to the views for each item
+     * ViewHolder class which provide a reference to the views for each item. Used by this Adapter.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final LinearLayout mLayout;
@@ -60,6 +64,11 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         public final TextView mItem_description;
         public final EditText mItem_input;
 
+        /**
+         * Constructor which makes a ViewHolder depending on what subtype the {@link TemplateNode} has
+         * @param itemView the view which should be populated by this
+         * @param viewType the viewType of the {@link TemplateNode}. See method getItemViewType for more info
+         */
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
             switch (viewType) {
@@ -93,17 +102,23 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         }
     }
 
+    /**
+     * Constructor
+     * @param template the template this adapter should conform to
+     * @param listener
+     */
     public TemplateAdapter(Template template, NewTopicViewInterface listener) {
-        mList = new ArrayList<>();
-        mList.addAll(template.getNodes());
-        mListener = listener;
+        mList =  template.getNodes();//new ArrayList<>();
+        // These aren't used?
+        //mList.addAll(template.getNodes());
+        //mListener = listener;
     }
 
     /**
      * Checks the templateList for what view should be associated with that position
      *
-     * @param position the position to
-     * @return
+     * @param position the position to find the viewType of
+     * @return an int, from the corresponding ENUM
      */
     @Override
     public int getItemViewType(int position) {
@@ -122,6 +137,13 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
             return 0;
     }
 
+    /**
+     * Method used by the manager(?.. or Adapter)to create a ViewHolder of the correct type
+     * with the correct layout inflated.
+     * @param parent the parent, which the view presented by this ViewHolder is a child of
+     * @param viewType the type of the view, see ENUM in this class
+     * @return a Viewholder which holds the view for this type.
+     */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -163,6 +185,11 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     }
 
 
+    /**
+     * Method which binds the items in the view to resources
+     * @param holder the ViewHolder which holds the view
+     * @param position the position of this view in the RecyclerView, corresponds to the position in the data set
+     */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         switch (this.getItemViewType(position)) {
