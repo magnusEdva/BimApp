@@ -1,5 +1,7 @@
 package com.bimapp.model.entityManagers;
 
+import android.util.Log;
+
 import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
@@ -24,13 +26,29 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
     private BimApp mContext;
     private NewTopicFragmentInterface mListener;
 
-    @Override
-    public void postTopic(Topic topic) {
 
-        postTopic(mListener, topic);
-
+    /**
+     * Constructor for the getTopics fragment
+     * @param context
+     */
+    public TopicsEntityManager(BimApp context) {
+        mContext = context;
     }
 
+    /**
+     * Constructor for postTopics fragment
+     * @param context
+     * @param listener
+     */
+    public TopicsEntityManager(BimApp context, NewTopicFragmentInterface listener) {
+        mContext = context;
+        mListener = listener;
+    }
+
+
+    /**
+     * Inner class which handles the Callbacks from Volley on a postTopic request
+     */
     private class TopicPostCallback implements Callback{
 
         NewTopicFragmentInterface mTopicsFragmentInterface;
@@ -41,11 +59,13 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
 
         @Override
         public void onError(String response) {
+            Log.d("TopicsEntityManager", "Unsuccessfully posted topic to server");
             makeToast(false);
         }
 
         @Override
         public void onSuccess(String JSONResponse) {
+            Log.d("TopicsEntityManager", "Successfully posted topic to server");
             makeToast(true);
         }
 
@@ -54,14 +74,10 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
         }
     }
 
-    public TopicsEntityManager(BimApp context) {
-        mContext = context;
-    }
-    public TopicsEntityManager(BimApp context, NewTopicFragmentInterface listener) {
-        mContext = context;
-        mListener = listener;
-    }
 
+    /**
+     * Inner class which handles the callbacks from Volley on a getTopics request
+     */
     private class TopicsCallback implements Callback {
 
         TopicsFragmentInterface mControllerCallback;
@@ -73,7 +89,6 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
         @Override
         public void onError(String response) {
             // TODO Error handling
-
         }
 
         @Override
@@ -89,15 +104,31 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
         }
     }
 
+    /**
+     * Callback method from {@link }
+     * @param topic The topic you want to post
+     */
+    @Override
+    public void postTopic(Topic topic) {
+        postTopic(mListener, topic);
+    }
+
+    /**
+     * Method to get topics from the server
+     * @param controllerCallback This is where the onSuccess/onError methods must be implemented
+     */
     public void getTopics(TopicsFragmentInterface controllerCallback) {
         NetworkConnManager.networkRequest(mContext, Request.Method.GET,
                 APICall.GETTopics(mContext.getActiveProject()),
                 new TopicsEntityManager.TopicsCallback(controllerCallback), null);
     }
 
+    /**
+     * Method to post topics to the server
+     * @param controllerCallback This is where the onSuccess/onError methods must be implemented
+     * @param topic The topic you want to post
+     */
     public void postTopic(NewTopicFragmentInterface controllerCallback, Topic topic){
-
-        //Uncomment the following to actually post things!
         NetworkConnManager.networkRequest(mContext, Request.Method.POST,
                 APICall.POSTTopics(mContext.getActiveProject()), new TopicPostCallback(controllerCallback),topic);
 
