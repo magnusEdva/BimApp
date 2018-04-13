@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.bimapp.R;
 import com.bimapp.model.entity.Template.Template;
@@ -105,8 +106,8 @@ public class NewTopicView implements NewTopicViewInterface {
         EditText description_input = mRootView.findViewById(R.id.topic_description_input);
         String description = description_input.getText().toString();
 
-        EditText topicType_input = mRootView.findViewById(R.id.topic_type_input);
-        String topicType = topicType_input.getText().toString();
+        Spinner topicType_input = mRootView.findViewById(R.id.topic_type_input);
+        String topicType = topicType_input.getSelectedItem().toString();
 
         // Make new topic from fields
         Topic topic = new Topic(title,topicType,topic_status,assignedTo,description);
