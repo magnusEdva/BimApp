@@ -25,7 +25,7 @@ public class NetworkConnManager {
      * Sends a GET request using the @Param call URL. Data is provided to the callbacks onSuccess.
      *
      * @param context      Required to aqcuire tokens.
-     * @param method       type of request.
+     * @param method       type of request. From Volley.Request
      * @param url          the url to be executed. Found in APICall
      * @param callback     implementation of the network.Callback interface.
      */

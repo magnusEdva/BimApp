@@ -26,10 +26,18 @@ public class TopicView implements TopicViewInterface{
 
     private CommentAdapter mCommentsAdapter;
 
+    private LinearLayoutManager linearLayoutManager;
+
     public TopicView(LayoutInflater inflater, ViewGroup container){
         mRootView = inflater.inflate(R.layout.view_topic, container, false);
         mTitleText = mRootView.findViewById(R.id.TitleText);
         RecyclerView commentsList = mRootView.findViewById(R.id.view_topic_comment_list);
+
+
+
+        linearLayoutManager = new LinearLayoutManager(mRootView.getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        commentsList.setLayoutManager(linearLayoutManager);
         mCommentsAdapter = new CommentAdapter();
         commentsList.setAdapter(mCommentsAdapter);
     }

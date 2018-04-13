@@ -45,11 +45,6 @@ class BimAppRequest {
                 }
         ) {
             @Override
-            public String getBodyContentType() {
-                return mContext.getString(R.string.url_encode);
-            }
-
-            @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + mContext.getAcessToken());
@@ -84,7 +79,6 @@ class BimAppRequest {
         JsonObjectRequest getUserRequest = new JsonObjectRequest(url, params.getJsonParams(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(response.toString(), "");
                 callback.onSuccess(response.toString());
             }
         },

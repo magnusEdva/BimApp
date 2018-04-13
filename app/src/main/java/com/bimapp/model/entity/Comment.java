@@ -1,11 +1,17 @@
 package com.bimapp.model.entity;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -23,6 +29,8 @@ public class Comment implements Entity {
     public static final String MODIFIED_DATE = "modified_date";
     public static final String MODIFIED_AUTHOR = "modified_author";
 
+    private static DateFormat formatter = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss.SSSZ");
+    private static DateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
     /**
      * Unique identifier for a comment.
      */
@@ -80,8 +88,12 @@ public class Comment implements Entity {
                 mVerbalStatus = obj.getString(VERBAL_STATUS);
             if (obj.has(STATUS))
                 mStatus = obj.getString(STATUS);
-            if (obj.has(DATE))
+            if (obj.has(DATE)) {
+                Log.d("DatoStreng",obj.getString(DATE));
+                Date date = formatter.parse(obj.getString(DATE));
+                Log.d("Dato?",FORMATTER.format(date));
                 mDate = obj.getString(DATE);
+            }
             if (obj.has(AUTHOR))
                 mAuthor = obj.getString(AUTHOR);
             if (obj.has(COMMENT))
@@ -91,6 +103,8 @@ public class Comment implements Entity {
             if (obj.has(MODIFIED_AUTHOR))
                 mModifiedAuthor = obj.getString(MODIFIED_AUTHOR);
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
 

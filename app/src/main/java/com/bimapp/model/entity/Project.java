@@ -1,11 +1,13 @@
 package com.bimapp.model.entity;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -88,16 +90,18 @@ public class Project implements Entity {
     private void construct(JSONObject object) {
         try {
             projectId = object.getString(PROJECT_ID);
-            name = object.getString(NAME);
+            name = new String(object.getString(NAME).getBytes("ISO-8859-1"), "UTF-8");
             bimsyncProjectName = object.getString(BIMSYNC_PROJECT_NAME);
             bimsyncProjectId = object.getString(BIMSYNC_PROJECT_ID);
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public String toString(){
-        return bimsyncProjectName;
+        return name + " (" +bimsyncProjectName + ")";
     }
 }
