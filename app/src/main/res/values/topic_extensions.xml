@@ -6,4 +6,8 @@
         <item>Warning</item>
         <item>Unknown</item>
     </string-array>
+    <string-array name="topic_status">
+        <item>Open</item>
+        <item>Closed</item>
+    </string-array>
 </resources>
