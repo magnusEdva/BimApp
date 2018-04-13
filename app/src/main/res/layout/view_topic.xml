@@ -69,4 +69,12 @@
             android:text="TextView" />
     </LinearLayout>
 
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/view_topic_comment_list"
+        app:layoutManager="LinearLayoutManager"
+        />
+
 </LinearLayout>

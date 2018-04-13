@@ -1,6 +1,8 @@
 package com.bimapp.view;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 import com.bimapp.R;
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Topic;
+import com.bimapp.view.adapters.CommentAdapter;
 import com.bimapp.view.interfaces.TopicViewInterface;
 
 import java.util.List;
@@ -21,9 +24,14 @@ public class TopicView implements TopicViewInterface{
 
     private TextView mTitleText;
 
+    private CommentAdapter mCommentsAdapter;
+
     public TopicView(LayoutInflater inflater, ViewGroup container){
         mRootView = inflater.inflate(R.layout.view_topic, container, false);
         mTitleText = mRootView.findViewById(R.id.TitleText);
+        RecyclerView commentsList = mRootView.findViewById(R.id.view_topic_comment_list);
+        mCommentsAdapter = new CommentAdapter();
+        commentsList.setAdapter(mCommentsAdapter);
     }
 
     @Override
@@ -53,9 +61,10 @@ public class TopicView implements TopicViewInterface{
 
     @Override
     public void setComments(List<Comment> comments){
-        for(Comment c : comments)
-            Log.d("comment:" , c.toString());
-
+        for(Comment c : comments){
+            Log.d("Comment: ", c.toString());
+        }
+        mCommentsAdapter.setComments(comments);
     }
 
 }

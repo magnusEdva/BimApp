@@ -96,6 +96,18 @@ public class Comment implements Entity {
 
     }
 
+    public String getDate() {
+        return mDate;
+    }
+
+    public String getAuthor() {
+        return mAuthor;
+    }
+
+    public String getComment() {
+        return mComment;
+    }
+
     /**
      * @param map @NonNull
      * @return

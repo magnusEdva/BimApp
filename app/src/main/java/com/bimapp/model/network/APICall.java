@@ -11,7 +11,7 @@ public class APICall {
 
     private static final String HOST_URL = "https://bcf.bimsync.com/bcf/";
 
-    private static final String VERSION_NUMBER = "beta";
+    private static final String VERSION_NUMBER = "2.1";
 
 
 
