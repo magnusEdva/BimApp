@@ -24,16 +24,20 @@ import com.bimapp.controller.FragmentNewTopic;
 import com.bimapp.controller.FragmentProject;
 import com.bimapp.controller.FragmentTopic;
 import com.bimapp.controller.FragmentTopicList;
+import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.User;
+import com.bimapp.model.entityManagers.ProjectEntityManager;
 import com.bimapp.model.network.APICall;
 import com.bimapp.model.network.Callback;
 import com.bimapp.model.network.NetworkConnManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 
 public class ProjectsViewActivity extends AppCompatActivity
@@ -64,6 +68,8 @@ public class ProjectsViewActivity extends AppCompatActivity
         NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
                 APICall.GETUser(), this, null);
 
+        if(mApplication.getActiveProject() == null)
+            setInitialActiveProject();
 
         mDashboardFragment  = new FragmentDashboard();
         mTopicListFragment  = FragmentTopicList.newInstance(this);
@@ -229,6 +235,18 @@ public class ProjectsViewActivity extends AppCompatActivity
             Toast.makeText(mApplication, "Didn't post topic", Toast.LENGTH_SHORT).show();
         }
         openFragment(mDashboardFragment,"fragment_dashboard");
+    }
+
+    public void setInitialActiveProject(){
+        ProjectEntityManager projectEntityManager = new ProjectEntityManager(mApplication);
+        projectEntityManager.getProjects(new ProjectsFragmentInterface() {
+            @Override
+            public void setProjects(List<Project> projects) {
+                if(projects != null && !projects.isEmpty()){
+                    mApplication.setActiveProject(projects.get(0));
+                }
+            }
+        });
     }
 
 

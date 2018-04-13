@@ -3,6 +3,7 @@ package com.bimapp.controller;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,14 +37,12 @@ public class FragmentProject extends Fragment
     private BimApp mApplication;
     private OnFragmentProjectInteractionListener mCallback;
 
-    private LayoutInflater inflater;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         mApplication = (BimApp) this.getActivity().getApplication();
         mProjectsManager = new ProjectEntityManager(mApplication);
-
 
     }
 
@@ -57,6 +56,7 @@ public class FragmentProject extends Fragment
         Sets this as the callback from the view. See {@link onSelectedItem} method for where the callback goes.
          */
         mProjectsView.registerListener(this);
+
         return mProjectsView.getRootView();
     }
 

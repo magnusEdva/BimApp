@@ -10,8 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bimapp.BimApp;
+import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
+import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Topic;
+import com.bimapp.model.entityManagers.ProjectEntityManager;
 import com.bimapp.model.entityManagers.TopicsEntityManager;
 import com.bimapp.view.TopicsListView;
 import com.bimapp.view.interfaces.TopicsViewInterface;
@@ -71,8 +74,8 @@ public class FragmentTopicList extends Fragment
         mTopicsView = new TopicsListView(inflater, container);
         // Set this as the callback from the view
         mTopicsView.registerListener(this);
-        mTopicsEntityManager.getTopics(this);
         // Inflate the layout for this fragment
+
         return mTopicsView.getRootView();
     }
 
@@ -80,6 +83,12 @@ public class FragmentTopicList extends Fragment
     public void onAttach(Context context){
         // Doesn't do anything at the moment, but we might find uses for it!
         super.onAttach(context);
+
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        mTopicsEntityManager.getTopics(this);
     }
 
     @Override
@@ -95,9 +104,11 @@ public class FragmentTopicList extends Fragment
      */
     @Override
     public void setTopics(List<Topic> topics) {
-        // This method shall do a callback to the view when it has recieved topics
-        mTopicsView.setTopics(topics);
+            mTopicsView.setTopics(topics);
+
     }
+
+
 
     @Override
     public void onSelectedItem(Topic topic) {
