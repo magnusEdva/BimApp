@@ -1,11 +1,14 @@
 package com.bimapp.view.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bimapp.R;
@@ -19,6 +22,7 @@ import com.bimapp.model.entity.Template.TopicTypeNode;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -59,42 +63,50 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final LinearLayout mLayout;
         public View mView;
-
-
         public final TextView mItem_description;
         public final EditText mItem_input;
+        public final Spinner mSpinner_input;
+        public ArrayAdapter<CharSequence> mAdapter;
 
         /**
          * Constructor which makes a ViewHolder depending on what subtype the {@link TemplateNode} has
          * @param itemView the view which should be populated by this
          * @param viewType the viewType of the {@link TemplateNode}. See method getItemViewType for more info
          */
-        public ViewHolder(View itemView, int viewType) {
+        public ViewHolder(View itemView, int viewType, Context context) {
             super(itemView);
             switch (viewType) {
                 case 1: // TITLE
                     this.mItem_description = itemView.findViewById(R.id.topic_title);
                     this.mItem_input = itemView.findViewById(R.id.topic_title_input);
+                    this.mSpinner_input = null;
                     break;
                 case 2: // DESCRIPTION
                     this.mItem_description = itemView.findViewById(R.id.topic_description);
                     this.mItem_input = itemView.findViewById(R.id.topic_description_input);
+                    this.mSpinner_input = null;
                     break;
                 case 3: // TOPIC_STATUS
                     this.mItem_description = itemView.findViewById(R.id.topic_status);
                     this.mItem_input = itemView.findViewById(R.id.topic_status_input);
+                    this.mSpinner_input = null;
                     break;
                 case 4: // TOPIC_TYPE
+                    mAdapter = ArrayAdapter.createFromResource(context,R.array.topic_type,R.layout.support_simple_spinner_dropdown_item);
+
                     this.mItem_description = itemView.findViewById(R.id.topic_type);
-                    this.mItem_input = itemView.findViewById(R.id.topic_type_input);
+                    this.mSpinner_input = itemView.findViewById(R.id.topic_type_input);
+                    this.mItem_input = null;
                     break;
                 case 5: // ASSIGNED_TO
                     this.mItem_description = itemView.findViewById(R.id.topic_assigned_to);
                     this.mItem_input = itemView.findViewById(R.id.topic_assigned_to_input);
+                    this.mSpinner_input = null;
                     break;
                 default: // Defaults to no view
                     this.mItem_description = itemView.findViewById(R.id.topic_status);
                     this.mItem_input = itemView.findViewById(R.id.topic_status_input);
+                    this.mSpinner_input = null;
                     break;
             }
             mLayout = itemView.findViewById(R.id.newtopic_list);
@@ -149,36 +161,38 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
 
         View view;
         ViewHolder viewHolder;
+        Context context = parent.getContext();
+
 
         switch (viewType) {
             case 1: // TITLE
-                view = LayoutInflater.from(parent.getContext())
+                view = LayoutInflater.from(context)
                         .inflate(R.layout.topic_title, parent, false);
-                viewHolder = new ViewHolder(view, viewType);
+                viewHolder = new ViewHolder(view, viewType, context);
                 break;
             case 2: // DESCRIPTION
-                view = LayoutInflater.from(parent.getContext())
+                view = LayoutInflater.from(context)
                         .inflate(R.layout.topic_description, parent, false);
-                viewHolder = new ViewHolder(view, viewType);
+                viewHolder = new ViewHolder(view, viewType,context);
                 break;
             case 3: // TOPIC_STATUS
-                view = LayoutInflater.from(parent.getContext())
+                view = LayoutInflater.from(context)
                         .inflate(R.layout.topic_status,parent,false);
-                viewHolder = new ViewHolder(view, viewType);
+                viewHolder = new ViewHolder(view, viewType, context);
                 break;
             case 4: // TOPIC_TYPE
-                view = LayoutInflater.from(parent.getContext())
+                view = LayoutInflater.from(context)
                         .inflate(R.layout.topic_type,parent,false);
-                viewHolder = new ViewHolder(view, viewType);
+                viewHolder = new ViewHolder(view, viewType,context);
                 break;
             case 5: // ASSIGNED_TO
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.topic_assignedto, parent, false);
-                viewHolder = new ViewHolder(view, viewType);
+                view = LayoutInflater.from(context).inflate(R.layout.topic_assignedto, parent, false);
+                viewHolder = new ViewHolder(view, viewType, context);
                 break;
             default:
-                view = LayoutInflater.from(parent.getContext())
+                view = LayoutInflater.from(context)
                         .inflate(R.layout.topic_status, parent, false);
-                viewHolder = new ViewHolder(view, viewType);
+                viewHolder = new ViewHolder(view, viewType, context);
                 break;
         }
         return viewHolder;
@@ -207,7 +221,8 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 break;
             case 4: // TOPIC_TYPE
                 holder.mItem_description.setText(R.string.topice_type);
-                holder.mItem_input.setText(mList.get(position).getContent().toString());
+                holder.mSpinner_input.setAdapter(holder.mAdapter);
+                //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 5: // Assigned to
                 holder.mItem_description.setText(R.string.assigned_to);

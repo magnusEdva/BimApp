@@ -12,6 +12,9 @@ import com.bimapp.model.entity.Project;
 import com.bimapp.model.network.Callback;
 import com.bimapp.model.network.oauth.OAuthHandler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Application class. Acquired with getApplicationContext. Casted to
  * BimApp.
