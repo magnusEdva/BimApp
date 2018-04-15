@@ -33,11 +33,10 @@ public class TopicView implements TopicViewInterface{
         mTitleText = mRootView.findViewById(R.id.TitleText);
         RecyclerView commentsList = mRootView.findViewById(R.id.view_topic_comment_list);
 
-
-
         linearLayoutManager = new LinearLayoutManager(mRootView.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         commentsList.setLayoutManager(linearLayoutManager);
+
         mCommentsAdapter = new CommentAdapter();
         commentsList.setAdapter(mCommentsAdapter);
     }
@@ -69,9 +68,6 @@ public class TopicView implements TopicViewInterface{
 
     @Override
     public void setComments(List<Comment> comments){
-        for(Comment c : comments){
-            Log.d("Comment: ", c.toString());
-        }
         mCommentsAdapter.setComments(comments);
     }
 
