@@ -1,15 +1,11 @@
 package com.bimapp.model.entity;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -27,6 +23,8 @@ public class Project implements Entity {
     private String bimsyncProjectName;
     private String name;
     private String bimsyncProjectId;
+
+    private IssueBoardExtensions mIssueBoardExtensions;
 
     /**
      * Used when building a project from network.
@@ -67,8 +65,16 @@ public class Project implements Entity {
         return bimsyncProjectId;
     }
 
+    public IssueBoardExtensions getIssueBoardExtensions() {
+        return mIssueBoardExtensions;
+    }
+
+    public void setIssueBoardExtensions(IssueBoardExtensions issueBoardExtensions){
+        mIssueBoardExtensions = issueBoardExtensions;
+    }
+
     /**
-     * don't need this here.
+     *
      * @param map @NonNull
      * @return always throws exception
      */
@@ -78,7 +84,7 @@ public class Project implements Entity {
     }
 
     /**
-     * Don't need this here
+     * Method to create new project. Not used in this app
      * @return
      */
     @Override
@@ -104,4 +110,6 @@ public class Project implements Entity {
     public String toString(){
         return name + " (" +bimsyncProjectName + ")";
     }
+
+
 }
