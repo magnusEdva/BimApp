@@ -26,10 +26,12 @@ import com.bimapp.controller.FragmentProject;
 import com.bimapp.controller.FragmentTopic;
 import com.bimapp.controller.FragmentTopicList;
 import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
+import com.bimapp.model.entity.IssueBoardExtensions;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.User;
+import com.bimapp.model.entityManagers.IssueBoardExtensionsEntityManager;
 import com.bimapp.model.entityManagers.ProjectEntityManager;
 import com.bimapp.model.network.APICall;
 import com.bimapp.model.network.Callback;
@@ -284,9 +286,18 @@ public class ProjectsViewActivity extends AppCompatActivity
         ProjectEntityManager projectEntityManager = new ProjectEntityManager(mApplication);
         projectEntityManager.getProjects(new ProjectsFragmentInterface() {
             @Override
-            public void setProjects(List<Project> projects) {
+            public void setProjects(final List<Project> projects) {
                 if (projects != null && !projects.isEmpty()) {
-                    mApplication.setActiveProject(projects.get(0));
+                    IssueBoardExtensionsEntityManager mExtensionManager
+                            = new IssueBoardExtensionsEntityManager(mApplication);
+                    mExtensionManager.getIssueBoardExtensions(projects.get(0),new IssueBoardExtensionsEntityManager.IssueBoardExtensionsProjectCallback(){
+                        @Override
+                        public void setExtensions(IssueBoardExtensions issueBoardExtensions) {
+                            projects.get(0).setIssueBoardExtensions(issueBoardExtensions);
+                            mApplication.setActiveProject(projects.get(0));
+                        }
+                    });
+
                 }
             }
         });

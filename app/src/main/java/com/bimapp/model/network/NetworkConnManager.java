@@ -1,11 +1,13 @@
 package com.bimapp.model.network;
 
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.android.volley.Request;
 import com.bimapp.BimApp;
+import com.bimapp.WelcomeActivity;
 import com.bimapp.model.entity.Entity;
 
 /**
@@ -33,6 +35,10 @@ public class NetworkConnManager {
             sendRequest(context, method, url, new networkCallback(callback), params);
         } else if(context.checkTokensAndRefresh()){
             sendRequest(context, method, url, new networkCallback(callback), params);
+        } else{
+            Intent intent = new Intent(context, WelcomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
         }
 
 
