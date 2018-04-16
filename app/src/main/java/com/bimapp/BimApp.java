@@ -99,10 +99,10 @@ public class BimApp extends Application {
     }
 
     /**
-     *if AccessToken is timed out the method will not attempt to renew it.
+     *if AccessToken is timed out the method will attempt to renew it.
      * @return true if logged in or false otherwise.
      */
-    public boolean checkTokensAtStartup(){
+    public boolean checkTokensAndRefresh(){
         return mOAuth.hasTokens();
     }
 
@@ -123,7 +123,7 @@ public class BimApp extends Application {
     }
 
     /**
-     * cancels all outgoing requests with the approprate tag.
+     * cancels all outgoing requests with the appropriate tag.
      *
      * @param tag of the requests to be canceled. Specified in addToRequestQueue
      */

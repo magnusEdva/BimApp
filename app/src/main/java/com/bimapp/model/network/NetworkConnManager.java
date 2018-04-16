@@ -3,14 +3,10 @@ package com.bimapp.model.network;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.model.entity.Entity;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Provider of all access to all API calls and methods.
@@ -22,7 +18,7 @@ public class NetworkConnManager {
     private NetworkConnManager() {}
 
     /**
-     * Sends a GET request using the @Param call URL. Data is provided to the callbacks onSuccess.
+     * Sends a request using the @Param call URL. Data is provided to the callbacks onSuccess.
      *
      * @param context      Required to aqcuire tokens.
      * @param method       type of request. From Volley.Request
@@ -35,14 +31,10 @@ public class NetworkConnManager {
             //TODO fix
         }else if(context.checkLogIn()){
             sendRequest(context, method, url, new networkCallback(callback), params);
-        } else
-            try {
-                Thread.sleep(1000);
-                Log.d("NetworkConnManager","Trying to get new code");
-                networkRequest(context, method, url,callback, params);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        } else if(context.checkTokensAndRefresh()){
+            sendRequest(context, method, url, new networkCallback(callback), params);
+        }
+
 
     }
 
@@ -63,6 +55,7 @@ public class NetworkConnManager {
         }
 
     }
+
 
     private static void sendRequest(BimApp context, int method, String url, Callback callback, Entity params){
         switch (method){

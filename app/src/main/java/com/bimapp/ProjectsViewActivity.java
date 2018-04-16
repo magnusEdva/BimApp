@@ -45,6 +45,12 @@ public class ProjectsViewActivity extends AppCompatActivity
         Callback, FragmentProject.OnFragmentProjectInteractionListener, FragmentDashboard.DashboardListener,
         FragmentTopicList.TopicSelectionInterface, FragmentNewTopic.OnFragmentInteractionListener{
 
+    public final static String DASHBOARD_FRAGMENT_TAG = "fragment_dashboard";
+    public final static String NEWTOPIC_FRAGMENT_TAG = "fragment_new_topic";
+    public final static String TOPICLIST_FRAGMENT_TAG = "fragment_topics";
+    public final static String PROJECTS_FRAGMENT_TAG = "fragment_projects";
+    public final static String TOPIC_FRAGMENT_TAG = "fragment_topic";
+
     private BimApp mApplication;
     private DrawerLayout mDrawerLayout;
     private User user;
@@ -223,6 +229,11 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     public void clearBackStack() {
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    public boolean backStackManager(String name){
+
+       return true;
     }
 
 

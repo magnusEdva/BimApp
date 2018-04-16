@@ -9,7 +9,7 @@ import com.bimapp.model.network.Callback;
 import com.bimapp.model.network.oauth.OAuthHandler;
 
 /**
- * Created by Håkon on 09.03.2018.
+ * Activity that manages the startup and login of the application.
  */
 
 public class WelcomeActivity extends AppCompatActivity {
@@ -21,7 +21,7 @@ public class WelcomeActivity extends AppCompatActivity {
         setContentView(R.layout.view_login);
         mApplication = (BimApp) this.getApplicationContext();
 
-        if(mApplication.checkTokensAtStartup()) {
+        if(mApplication.checkTokensAndRefresh()) {
             openProjectsView();
 
         }
@@ -38,8 +38,8 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        if(getIntent().getData() != null && getIntent().getData().getQueryParameter("code") != null) {
-            String code = getIntent().getData().getQueryParameter("code");
+        if(getIntent().getData() != null && getIntent().getData().getQueryParameter(OAuthHandler.OAUTH_REQUEST_CODE) != null) {
+            String code = getIntent().getData().getQueryParameter(OAuthHandler.OAUTH_REQUEST_CODE);
             mApplication.refreshToken(code, OAuthHandler.GRANT_TYPE_AUTHORIZATION_CODE, new networkCallback());
         }
     }

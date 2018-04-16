@@ -38,6 +38,8 @@ import static android.content.Context.MODE_PRIVATE;
  * namely getting the Authorization Code, getting the access token and the refresh token
  */
 public class OAuthHandler {
+
+    public final static String OAUTH_REQUEST_CODE = "code";
     /**
      * These strings are used to tell the class what kind of the authentication is being used
      * at this time.
@@ -258,7 +260,7 @@ public class OAuthHandler {
         expiresAt = getExpiresAt();
 
         return accessToken != null && refreshToken != null
-                && expiresAt >= System.currentTimeMillis() + 100000;
+                && expiresAt >= System.currentTimeMillis() + 10000;
 
     }
 
