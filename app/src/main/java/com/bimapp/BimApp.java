@@ -42,6 +42,7 @@ public class BimApp extends Application {
         super.onCreate();
         requestQueue = Volley.newRequestQueue(this);
         mOAuth = new OAuthHandler(this);
+        checkTokensAndRefresh();
     }
 
     public OAuthHandler getMOAuth() {

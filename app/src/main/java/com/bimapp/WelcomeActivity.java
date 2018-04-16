@@ -21,7 +21,7 @@ public class WelcomeActivity extends AppCompatActivity {
         setContentView(R.layout.view_login);
         mApplication = (BimApp) this.getApplicationContext();
 
-        if(mApplication.checkTokensAndRefresh()) {
+        if(mApplication.checkLogIn()) {
             openProjectsView();
 
         }
