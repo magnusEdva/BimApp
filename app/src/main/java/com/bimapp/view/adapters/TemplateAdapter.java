@@ -2,10 +2,12 @@ package com.bimapp.view.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -39,6 +41,10 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         TOPIC_STATUS(3),
         TOPIC_TYPE(4),
         ASSIGNED_TO(5),
+        LABELS(6),
+        DUE_DATE(7),
+        IMAGE(8),
+        COMMENT(9)
         ;
 
         private int i;
@@ -58,10 +64,11 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final LinearLayout mLayout;
         public View mView;
-        public final TextView mItem_description;
-        public final EditText mItem_input;
-        public final Spinner mSpinner_input;
+        public TextView mItem_description;
+        public EditText mItem_input;
+        public Spinner mSpinner_input;
         public ArrayAdapter<CharSequence> mAdapter;
+        public Button mItem_button;
 
         /**
          * Constructor which makes a ViewHolder depending on what subtype the {@link TemplateNode} has
@@ -95,6 +102,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                             , R.layout.support_simple_spinner_dropdown_item
                             , mContext.getActiveProject().getIssueBoardExtensions().getTopicType());
 
+
                     this.mItem_description = itemView.findViewById(R.id.topic_type);
                     this.mSpinner_input = itemView.findViewById(R.id.topic_type_input);
                     this.mItem_input = null;
@@ -107,6 +115,26 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                     this.mItem_input = null;
                     this.mSpinner_input = itemView.findViewById(R.id.topic_assigned_to_input);
                     break;
+                case 6: // LABELS
+                    mItem_description = itemView.findViewById(R.id.topic_labels);
+                    mItem_input = null;
+                    mSpinner_input =null;
+                    break;
+                case 7: // DUE_DATE
+                    mItem_description = itemView.findViewById(R.id.topic_due_date);
+                    mItem_input = itemView.findViewById(R.id.topic_due_date_input);
+                    mSpinner_input = null;
+                    break;
+                case 8: // IMAGE
+                    mItem_description =null;
+                    mItem_input = null;
+                    mSpinner_input = null;
+                    mItem_button = itemView.findViewById(R.id.topic_image_button);
+                    break;
+                case 9: // COMMENT
+                    mItem_description = itemView.findViewById(R.id.topic_comment);
+                    mItem_input = itemView.findViewById(R.id.topic_comment_input);
+                    break;
                 default: // Defaults to no view
                     this.mItem_description = itemView.findViewById(R.id.topic_description);
                     this.mItem_input = itemView.findViewById(R.id.topic_description_input);
@@ -116,6 +144,14 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
             mLayout = itemView.findViewById(R.id.newtopic_list);
             mView = itemView;
         }
+        public List<String> reorderList(List<String> strings, String defaultValue){
+            if(defaultValue == null || !strings.contains(defaultValue))
+                return strings;
+            strings.remove(defaultValue);
+            strings.add(0,defaultValue);
+            return strings;
+        }
+
     }
 
     /**
@@ -126,6 +162,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     public TemplateAdapter(Template template, NewTopicViewInterface listener) {
         mList =  template.getNodes();//new ArrayList<>();
 
+        mTemplate = template;
         // These aren't used?
         //mList.addAll(template.getNodes());
         //mListener = listener;
@@ -150,6 +187,12 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
             return NODE_TYPE.TOPIC_TYPE.getInt();
         else if (c.getTitle().equals(Template.ASSIGNED_TO))
             return NODE_TYPE.ASSIGNED_TO.getInt();
+        else if (c.getTitle().equals(Template.DUE_DATE))
+            return NODE_TYPE.DUE_DATE.getInt();
+        else if (c.getTitle().equals((Template.LABELS)))
+            return NODE_TYPE.LABELS.getInt();
+        else if (c.getTitle().equals(Template.IMAGE))
+            return NODE_TYPE.IMAGE.getInt();
         else
             return 0;
     }
@@ -194,6 +237,22 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 view = LayoutInflater.from(context).inflate(R.layout.topic_assignedto, parent, false);
                 viewHolder = new ViewHolder(view, viewType, context);
                 break;
+            case 6: // LABELS
+                view = LayoutInflater.from(context).inflate(R.layout.topic_labels,parent,false);
+                viewHolder = new ViewHolder(view, viewType, context);
+                break;
+            case 7: // DUE DATE
+                view = LayoutInflater.from(context).inflate(R.layout.topic_due_date,parent,false);
+                viewHolder = new ViewHolder(view, viewType, context);
+                break;
+            case 8: // IMAGE
+                view = LayoutInflater.from(context).inflate(R.layout.topic_image,parent,false);
+                viewHolder = new ViewHolder(view, viewType, context);
+                break;
+            case 9: // COMMENT
+                view = LayoutInflater.from(context).inflate(R.layout.topic_comment,parent,false);
+                viewHolder = new ViewHolder(view, viewType,context);
+                break;
             default:
                 view = LayoutInflater.from(context)
                         .inflate(R.layout.topic_description, parent, false);
@@ -235,8 +294,23 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 holder.mSpinner_input.setAdapter(holder.mAdapter);
                 //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
+            case 6: // LABELS
+                holder.mItem_description.setText(R.string.topic_label);
+                //holder.mItem_input.setText(mList.get(position).getContent().toString());
+                break;
+            case 7: // DUE DATE
+                holder.mItem_description.setText(R.string.due_date);
+                holder.mItem_input.setText(mList.get(position).getContent().toString());
+                break;
+            case 8: //IMAGE
+                holder.mItem_button.setText(R.string.add_image);
+                break;
+            case 9: // COMMENT
+                holder.mItem_description.setText("Comment");
+                holder.mItem_input.setText(mList.get(position).getContent().toString());
+                break;
             default: // Issue Description
-                holder.mItem_description.setText("Default");
+                holder.mItem_description.setText(mTemplate.getNodes().get(position).getTitle());
                 holder.mItem_input.setText("Default text");
                 break;
 
@@ -253,5 +327,6 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
             mList.clear();
         mList.addAll(template.getNodes());
     }
+
 
 }
