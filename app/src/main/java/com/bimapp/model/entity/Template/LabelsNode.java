@@ -13,6 +13,7 @@ public class LabelsNode extends TemplateNode {
 
     public LabelsNode(JSONObject node, String title) {
         super(node, title);
+        constructLabels(node);
     }
 
     private void constructLabels(JSONObject node){
