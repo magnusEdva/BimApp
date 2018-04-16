@@ -29,6 +29,8 @@ public class APICall {
         return BuildBaseURL() + "/current-user";
     }
 
+
+
     /**
      *
      * @param project from which the Topics are to be acquired
@@ -42,6 +44,9 @@ public class APICall {
     }
     public static String GETComments(Project project, Topic topic){
         return BuildBaseURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getmGuid() + "/comments";
+    }
+    public static String GETIssueBoardExtensions(Project project) {
+        return (BuildBaseURL() + "/projects/" + project.getProjectId() + "/extensions");
     }
 
 }
