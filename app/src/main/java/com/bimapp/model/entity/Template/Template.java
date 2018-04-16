@@ -33,7 +33,7 @@ public class Template implements Entity {
     public final static String ASSIGNED_TO = "assigned_to";
     public final static String DUE_DATE = "due_date";
     public final static String IMAGE = "image";
-    public final static String comment = "comment";
+    public final static String COMMENT = "comment";
 
 
     private String mName;
@@ -50,13 +50,13 @@ public class Template implements Entity {
         mNodes = new ArrayList<>();
         try {
             construct(jsonTemplate);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void setProperties(JSONObject jsonTemplate) {
-        if(jsonTemplate != null) {
+        if (jsonTemplate != null) {
             try {
                 setProperties(jsonTemplate.getJSONObject(PROPERTIES));
             } catch (JSONException e) {
@@ -85,7 +85,7 @@ public class Template implements Entity {
                         mNodes.add(new ImageNode(properties.getJSONObject(next), next));
                         break;
                     case LABELS:
-                        mNodes.add(new LabelsNode(properties.getJSONObject(next),next));
+                        mNodes.add(new LabelsNode(properties.getJSONObject(next), next));
                         break;
                     default:
                         mNodes.add(new defaultNode(properties.getJSONObject(next), next));
