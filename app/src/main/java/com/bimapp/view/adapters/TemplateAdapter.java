@@ -108,8 +108,8 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                     this.mSpinner_input = itemView.findViewById(R.id.topic_assigned_to_input);
                     break;
                 default: // Defaults to no view
-                    this.mItem_description = itemView.findViewById(R.id.topic_status);
-                    this.mItem_input = itemView.findViewById(R.id.topic_status_input);
+                    this.mItem_description = itemView.findViewById(R.id.topic_description);
+                    this.mItem_input = itemView.findViewById(R.id.topic_description_input);
                     this.mSpinner_input = null;
                     break;
             }
@@ -196,7 +196,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 break;
             default:
                 view = LayoutInflater.from(context)
-                        .inflate(R.layout.topic_status, parent, false);
+                        .inflate(R.layout.topic_description, parent, false);
                 viewHolder = new ViewHolder(view, viewType, context);
                 break;
         }

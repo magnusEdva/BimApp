@@ -189,9 +189,9 @@ public class Topic implements Entity {
         JSONObject map = new JSONObject();
         try{
             if (mTopicType != null)
-                map.put("topic_type", "");
+                map.put("topic_type", mTopicType);
             if (mTopicStatus != null)
-                map.put("topic_status", "");
+                map.put("topic_status", mTopicStatus);
             //TODO map.put("reference_links", mReferenceLinks);
             map.put("title", mTitle);
             if (mPriority != null)
@@ -199,7 +199,7 @@ public class Topic implements Entity {
             if (mIndex != null)
                 map.put("index", mIndex.toString());
             if (mAssignedTo != null)
-                map.put("assigned_to", "");
+                map.put("assigned_to", mAssignedTo);
             if (mStage != null)
                 map.put("stage", mStage);
             if (mDescription != null)
