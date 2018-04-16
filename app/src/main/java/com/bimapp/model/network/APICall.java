@@ -43,7 +43,7 @@ public class APICall {
         return BuildBaseURL() + "/projects/" + project.getProjectId() + "/topics";
     }
     public static String GETComments(Project project, Topic topic){
-        return BuildBaseURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getmGuid() + "/comments";
+        return BuildBaseURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/comments";
     }
     public static String GETIssueBoardExtensions(Project project) {
         return (BuildBaseURL() + "/projects/" + project.getProjectId() + "/extensions");

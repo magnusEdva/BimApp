@@ -63,19 +63,19 @@ public class Topic implements Entity {
         mDescription = description;
     }
 
-    public String getmGuid() {
+    public String getGuid() {
         return mGuid;
     }
 
-    public String getmTopicType() {
+    public String getTopicType() {
         return mTopicType;
     }
 
-    public String getmTopicStatus() {
+    public String getTopicStatus() {
         return mTopicStatus;
     }
 
-    public List<String> getmReferenceLinks() {
+    public List<String> getReferenceLinks() {
         return mReferenceLinks;
     }
 
@@ -83,39 +83,39 @@ public class Topic implements Entity {
         return mTitle;
     }
 
-    public String getmPriority() {
+    public String getPriority() {
         return mPriority;
     }
 
-    public Integer getmIndex() {
+    public Integer getIndex() {
         return mIndex;
     }
 
-    public String getmCreationDate() {
+    public String getCreationDate() {
         return mCreationDate;
     }
 
-    public String getmCreationAuthor() {
+    public String getCreationAuthor() {
         return mCreationAuthor;
     }
 
-    public String getmModifiedAuthor() {
+    public String getModifiedAuthor() {
         return mModifiedAuthor;
     }
 
-    public String getmAssignedTo() {
+    public String getAssignedTo() {
         return mAssignedTo;
     }
 
-    public String getmStage() {
+    public String getStage() {
         return mStage;
     }
 
-    public String getmDescription() {
+    public String getDescription() {
         return mDescription;
     }
 
-    public String getmDueDate() {
+    public String getDueDate() {
         return mDueDate;
     }
 

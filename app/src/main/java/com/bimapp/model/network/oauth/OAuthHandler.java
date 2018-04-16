@@ -38,6 +38,8 @@ import static android.content.Context.MODE_PRIVATE;
  * namely getting the Authorization Code, getting the access token and the refresh token
  */
 public class OAuthHandler {
+
+    public final static String OAUTH_REQUEST_CODE = "code";
     /**
      * These strings are used to tell the class what kind of the authentication is being used
      * at this time.
@@ -97,6 +99,10 @@ public class OAuthHandler {
      * @param callback  used when acquiring the first token.
      */
     public void getAccessToken(@NonNull final String code, @NonNull final String grantType, @Nullable final Callback callback) {
+        if (checkActiveRefresh())
+            return;
+
+        setActiveRefresh();
 
 
         String url = mContext.getString(R.string.api_token);
@@ -161,6 +167,21 @@ public class OAuthHandler {
         oAuthRequest.setShouldRetryServerErrors(true);
         mContext.addToRequestQueue(oAuthRequest, "token");
 
+    }
+
+    /**
+     * return true if there is an active Refresh
+     */
+    public boolean checkActiveRefresh() {
+        return (refreshCycleCheck != 0);
+    }
+
+    public void setActiveRefresh() {
+        refreshCycleCheck++;
+    }
+
+    public void setFinishedRefresh() {
+        refreshCycleCheck = 0;
     }
 
     /**
@@ -258,21 +279,10 @@ public class OAuthHandler {
         expiresAt = getExpiresAt();
 
         return accessToken != null && refreshToken != null
-                && expiresAt >= System.currentTimeMillis() + 100000;
+                && expiresAt >= System.currentTimeMillis() + 10000;
 
     }
 
-    private void checkRefresh() {
-        if (refreshCycleCheck == 0) {
-            refreshCycleCheck++;
-            getAccessToken(refreshToken, GRANT_TYPE_REFRESH_TOKEN);
-        } else {
-            launchBrowser();
-            refreshCycleCheck = 0;
-        }
-        Log.d("Auth error", "Tried to refresh");
-
-    }
 
     /**
      * Checks login under user
@@ -285,8 +295,9 @@ public class OAuthHandler {
         } else if (getRefreshToken() == null) {
             return false;
         } else if (getRefreshToken() != null) {
-            getAccessToken(getRefreshToken(), OAuthHandler.GRANT_TYPE_REFRESH_TOKEN);
-            return false;
+            if (!checkActiveRefresh())
+                getAccessToken(getRefreshToken(), OAuthHandler.GRANT_TYPE_REFRESH_TOKEN);
+            return true;
         }
         return false;
     }
@@ -296,10 +307,10 @@ public class OAuthHandler {
      */
     public boolean hasTokens() {
         if (getRefreshToken() != null) {
-            getAccessToken(getRefreshToken(),GRANT_TYPE_REFRESH_TOKEN);
+            if (!checkActiveRefresh())
+                getAccessToken(getRefreshToken(), GRANT_TYPE_REFRESH_TOKEN);
             return true;
-        }
-        else
+        } else
             return false;
 
     }
@@ -307,7 +318,7 @@ public class OAuthHandler {
     private class CallbackHandler implements OAuthCallback {
         @Override
         public void onSuccessResponse(String result) {
-            refreshCycleCheck = 0;
+
             JSONObject response;
 
             String access_token;
@@ -323,6 +334,7 @@ public class OAuthHandler {
 
                 storeAccesToken(access_token, Integer.parseInt(expires_in));
                 storeRefreshToken(refresh_token);
+                setFinishedRefresh();
             } catch (JSONException j) {
                 j.printStackTrace();
             }
@@ -333,7 +345,7 @@ public class OAuthHandler {
             if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                 error.printStackTrace();
             } else if (error instanceof AuthFailureError) {
-                checkRefresh();
+                error.printStackTrace();
             } else if (error instanceof ServerError) {
                 error.printStackTrace();
             } else if (error instanceof NetworkError) {

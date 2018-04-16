@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,11 +40,19 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
+
 
 public class ProjectsViewActivity extends AppCompatActivity
         implements
         Callback, FragmentProject.OnFragmentProjectInteractionListener, FragmentDashboard.DashboardListener,
-        FragmentTopicList.TopicSelectionInterface, FragmentNewTopic.OnFragmentInteractionListener{
+        FragmentTopicList.TopicSelectionInterface, FragmentNewTopic.OnFragmentInteractionListener {
+
+    public final static String DASHBOARD_FRAGMENT_TAG = "fragment_dashboard";
+    public final static String NEWTOPIC_FRAGMENT_TAG = "fragment_new_topic";
+    public final static String TOPICLIST_FRAGMENT_TAG = "fragment_topics";
+    public final static String PROJECTS_FRAGMENT_TAG = "fragment_projects";
+    public final static String TOPIC_FRAGMENT_TAG = "fragment_topic";
 
     private BimApp mApplication;
     private DrawerLayout mDrawerLayout;
@@ -68,14 +77,14 @@ public class ProjectsViewActivity extends AppCompatActivity
         NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
                 APICall.GETUser(), this, null);
 
-        if(mApplication.getActiveProject() == null)
+        if (mApplication.getActiveProject() == null)
             setInitialActiveProject();
 
-        mDashboardFragment  = new FragmentDashboard();
-        mTopicListFragment  = FragmentTopicList.newInstance(this);
-        mNewTopicFragment   = new FragmentNewTopic();
-        mProjectsFragment   = new FragmentProject();
-        mTopicFragment      = new FragmentTopic();
+        mDashboardFragment = new FragmentDashboard();
+        mTopicListFragment = FragmentTopicList.newInstance(this);
+        mNewTopicFragment = new FragmentNewTopic();
+        mProjectsFragment = new FragmentProject();
+        mTopicFragment = new FragmentTopic();
     }
 
     @Override
@@ -105,16 +114,16 @@ public class ProjectsViewActivity extends AppCompatActivity
 
                         switch (id) {
                             case R.id.nav_projects:
-                                openFragment(mProjectsFragment, "fragment_projects");
+                                openFragment(mProjectsFragment, PROJECTS_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_issues:
-                                openFragment(mTopicListFragment, "fragment_topics");
+                                openFragment(mTopicListFragment, TOPICLIST_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_dashboard:
-                                openFragment(mDashboardFragment, "fragment_dashboard");
+                                openFragment(mDashboardFragment, DASHBOARD_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_new_topic:
-                                openFragment(mNewTopicFragment, "fragment_new_topic");
+                                openFragment(mNewTopicFragment, NEWTOPIC_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_log_out:
                                 mApplication.logOut();
@@ -127,7 +136,7 @@ public class ProjectsViewActivity extends AppCompatActivity
                     }
                 }
         );
-        openFragment(mDashboardFragment, "fragment_dashboard");
+        openFragment(mDashboardFragment, DASHBOARD_FRAGMENT_TAG);
     }
 
     @Override
@@ -142,11 +151,13 @@ public class ProjectsViewActivity extends AppCompatActivity
 
     @Override
     public void onError(String response) {
-
+        NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
+                APICall.GETUser(), this, null);
     }
 
     /**
      * Network callback for fetching a user.
+     *
      * @param response String in a JSON format containing a user.
      */
     @Override
@@ -165,27 +176,29 @@ public class ProjectsViewActivity extends AppCompatActivity
 
     /**
      * User clicked on a project in the projects fragment.
+     *
      * @param project that was clicked on.
      */
     @Override
     public void onFragmentProjectInteraction(Project project) {
-        openFragment(mDashboardFragment, "fragment_dashboard");
+        openFragment(mDashboardFragment, DASHBOARD_FRAGMENT_TAG);
 
     }
 
     /**
      * User clicked on a template in the dashboard Fragment.
+     *
      * @param template that was clicked on.
      */
     @Override
     public void onDashboardItemClick(Template template) {
-        openFragment(mNewTopicFragment, "fragment_new_topic");
+        openFragment(mNewTopicFragment, NEWTOPIC_FRAGMENT_TAG);
     }
 
     @Override
     public void onTopicSelected(Topic topic) {
         FragmentTopic.setTopic(topic);
-        openFragment(mTopicFragment, "fragment_topic");
+        openFragment(mTopicFragment, TOPIC_FRAGMENT_TAG);
     }
 
     /**
@@ -200,49 +213,79 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     public void openFragment(Fragment fragment, String name) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        for (Fragment f : fragmentManager.getFragments()) {
-            if(!f.isDetached())
-                fragmentTransaction.detach(f);
-        }
 
-        if (fragmentManager.findFragmentByTag(name) == null)
-            fragmentTransaction.add(R.id.fragments_container, fragment, name);
-        else
-            fragmentTransaction.attach(fragment);
+        fragmentTransaction = backStackManager(name, fragmentTransaction);
 
-        if (name.equals("fragment_dashboard"))
-            clearBackStack();
-        else
-            fragmentTransaction.addToBackStack(name);
+        fragmentTransaction.replace(R.id.fragments_container, fragment, name);
 
-            fragmentTransaction.commit();
+
+        fragmentTransaction.commit();
     }
 
     /**
      * clears the Fragment back stack all the way to the top.
      */
     public void clearBackStack() {
-        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentManager.popBackStack(null, POP_BACK_STACK_INCLUSIVE);
+    }
+
+    /**
+     * clears up to and including the Fragment in the backstack with Tag tag
+     *
+     * @param tag to be cleared up to an inclusive
+     */
+    public void clearBackStackInclusive(String tag) {
+        fragmentManager.popBackStack(tag, POP_BACK_STACK_INCLUSIVE);
+    }
+
+    /**
+     * clears up to the Fragment in the backstack with Tag tag
+     *
+     * @param tag the tag to be popped.
+     */
+    public void clearBackStackExclusive(String tag) {
+        fragmentManager.popBackStack(tag, 0);
+    }
+
+    /**
+     * Manages the Fragment Backstack
+     * @param tag
+     * @param transaction
+     * @return
+     */
+    public FragmentTransaction backStackManager(String tag, FragmentTransaction transaction) {
+        switch (tag) {
+            case DASHBOARD_FRAGMENT_TAG:
+                clearBackStack();
+                break;
+            default:
+                if (fragmentManager.findFragmentByTag(tag) == null) {
+                    transaction.addToBackStack(tag);
+                } else
+                    clearBackStackExclusive(tag);
+                break;
+        }
+        return transaction;
     }
 
 
     @Override
     public void onPostingTopic(boolean success) {
 
-        if (success){
+        if (success) {
             Toast.makeText(mApplication, "Successfully posted topic", Toast.LENGTH_SHORT).show();
-        } else{
+        } else {
             Toast.makeText(mApplication, "Didn't post topic", Toast.LENGTH_SHORT).show();
         }
-        openFragment(mDashboardFragment,"fragment_dashboard");
+        openFragment(mDashboardFragment, DASHBOARD_FRAGMENT_TAG);
     }
 
-    public void setInitialActiveProject(){
+    public void setInitialActiveProject() {
         ProjectEntityManager projectEntityManager = new ProjectEntityManager(mApplication);
         projectEntityManager.getProjects(new ProjectsFragmentInterface() {
             @Override
             public void setProjects(List<Project> projects) {
-                if(projects != null && !projects.isEmpty()){
+                if (projects != null && !projects.isEmpty()) {
                     mApplication.setActiveProject(projects.get(0));
                 }
             }
