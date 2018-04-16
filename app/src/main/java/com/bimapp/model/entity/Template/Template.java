@@ -83,6 +83,10 @@ public class Template implements Entity {
                         break;
                     case IMAGE:
                         mNodes.add(new ImageNode(properties.getJSONObject(next), next));
+                        break;
+                    case LABELS:
+                        mNodes.add(new LabelsNode(properties.getJSONObject(next),next));
+                        break;
                     default:
                         mNodes.add(new defaultNode(properties.getJSONObject(next), next));
                         break;
