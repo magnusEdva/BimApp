@@ -9,7 +9,7 @@
         android:id="@+id/topic_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    <EditText
+    <Spinner
         android:id="@+id/topic_status_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

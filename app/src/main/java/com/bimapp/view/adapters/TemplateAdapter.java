@@ -88,13 +88,16 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                     this.mSpinner_input = null;
                     break;
                 case 3: // TOPIC_STATUS
+                    mAdapter = new ArrayAdapter(context
+                            , R.layout.support_simple_spinner_dropdown_item
+                            , mContext.getActiveProject().getIssueBoardExtensions().getTopicStatus());
                     this.mItem_description = itemView.findViewById(R.id.topic_status);
-                    this.mItem_input = itemView.findViewById(R.id.topic_status_input);
-                    this.mSpinner_input = null;
+                    this.mItem_input = null;
+                    this.mSpinner_input = itemView.findViewById(R.id.topic_status_input);
                     break;
                 case 4: // TOPIC_TYPE
                     mAdapter = new ArrayAdapter (context
-                            ,R.layout.support_simple_spinner_dropdown_item
+                            , R.layout.support_simple_spinner_dropdown_item
                             , mContext.getActiveProject().getIssueBoardExtensions().getTopicType());
 
                     this.mItem_description = itemView.findViewById(R.id.topic_type);
@@ -102,9 +105,12 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                     this.mItem_input = null;
                     break;
                 case 5: // ASSIGNED_TO
+                    mAdapter = new ArrayAdapter(context
+                            , R.layout.support_simple_spinner_dropdown_item
+                            , mContext.getActiveProject().getIssueBoardExtensions().getUserIdType());
                     this.mItem_description = itemView.findViewById(R.id.topic_assigned_to);
-                    this.mItem_input = itemView.findViewById(R.id.topic_assigned_to_input);
-                    this.mSpinner_input = null;
+                    this.mItem_input = null;
+                    this.mSpinner_input = itemView.findViewById(R.id.topic_assigned_to_input);
                     break;
                 default: // Defaults to no view
                     this.mItem_description = itemView.findViewById(R.id.topic_status);
@@ -221,7 +227,8 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 break;
             case 3: // IssueStatus
                 holder.mItem_description.setText(R.string.issue_status);
-                holder.mItem_input.setText(mList.get(position).getContent().toString());
+                holder.mSpinner_input.setAdapter(holder.mAdapter);
+                //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 4: // TOPIC_TYPE
                 holder.mItem_description.setText(R.string.topice_type);
@@ -230,7 +237,8 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 break;
             case 5: // Assigned to
                 holder.mItem_description.setText(R.string.assigned_to);
-                holder.mItem_input.setText(mList.get(position).getContent().toString());
+                holder.mSpinner_input.setAdapter(holder.mAdapter);
+                //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             default: // Issue Description
                 holder.mItem_description.setText("Default");

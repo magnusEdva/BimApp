@@ -18,7 +18,6 @@ public class IssueBoardExtensions {
     public static final String USER_ID_TYPE = "user_id_type";
 
     private ArrayList<String> mTopicType;
-
     private ArrayList<String> mTopicStatus;
     private ArrayList<String> mUserIdType;
 
@@ -57,12 +56,12 @@ public class IssueBoardExtensions {
             JSONArray status_array = issueBoardExtensions.getJSONArray(TOPIC_STATUS);
             mTopicStatus = new ArrayList<>();
             for (int i = 0; i < status_array.length();i++){
-                mTopicStatus.add(new String (type_array.getString(i)));
+                mTopicStatus.add(new String (status_array.getString(i)));
             }
             JSONArray user_array = issueBoardExtensions.getJSONArray(USER_ID_TYPE);
             mUserIdType = new ArrayList<>();
             for (int i = 0; i < user_array.length();i++){
-                mUserIdType.add(new String (type_array.getString(i)));
+                mUserIdType.add(new String (user_array.getString(i)));
             }
         } catch (JSONException e){
             e.printStackTrace();

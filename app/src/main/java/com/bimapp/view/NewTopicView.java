@@ -94,14 +94,14 @@ public class NewTopicView implements NewTopicViewInterface {
      */
     public void makeNewTopic() {
         // Get the fields!
-        EditText status_input = mRootView.findViewById(R.id.topic_status_input);
-        String topic_status = status_input.getText().toString();
+        Spinner status_input = mRootView.findViewById(R.id.topic_status_input);
+        String topic_status = status_input.getSelectedItem().toString();
 
         EditText title_input = mRootView.findViewById(R.id.topic_title_input);
         String title = title_input.getText().toString();
 
-        EditText assignedTo_input = mRootView.findViewById(R.id.topic_assigned_to_input);
-        String assignedTo = assignedTo_input.getText().toString();
+        Spinner assignedTo_input = mRootView.findViewById(R.id.topic_assigned_to_input);
+        String assignedTo = assignedTo_input.getSelectedItem().toString();
 
         EditText description_input = mRootView.findViewById(R.id.topic_description_input);
         String description = description_input.getText().toString();
