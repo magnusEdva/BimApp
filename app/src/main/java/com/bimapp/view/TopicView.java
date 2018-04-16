@@ -3,10 +3,10 @@ package com.bimapp.view;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.bimapp.R;
@@ -23,6 +23,10 @@ public class TopicView implements TopicViewInterface{
     private TopicListener mListener;
 
     private TextView mTitleText;
+    private TextView mAssignedToText;
+    private TextView mRequestedByText;
+    private Button mTypeButton;
+    private Button mStatusButton;
 
     private CommentAdapter mCommentsAdapter;
 
@@ -31,8 +35,12 @@ public class TopicView implements TopicViewInterface{
     public TopicView(LayoutInflater inflater, ViewGroup container){
         mRootView = inflater.inflate(R.layout.view_topic, container, false);
         mTitleText = mRootView.findViewById(R.id.TitleText);
-        RecyclerView commentsList = mRootView.findViewById(R.id.view_topic_comment_list);
+        mAssignedToText = mRootView.findViewById(R.id.view_topic_assigned_to);
+        mRequestedByText = mRootView.findViewById(R.id.view_topic_requested_by);
+        mTypeButton = mRootView.findViewById(R.id.view_topic_TypeButton);
+        mStatusButton = mRootView.findViewById(R.id.view_topic_StatusButton);
 
+        RecyclerView commentsList = mRootView.findViewById(R.id.view_topic_comment_list);
         linearLayoutManager = new LinearLayoutManager(mRootView.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         commentsList.setLayoutManager(linearLayoutManager);
@@ -64,6 +72,10 @@ public class TopicView implements TopicViewInterface{
     @Override
     public void setTopic(Topic topic) {
         mTitleText.setText(topic.getmTitle());
+        mRequestedByText.setText(topic.getCreationAuthor());
+        mAssignedToText.setText(topic.getAssignedTo());
+        mTypeButton.setText(topic.getTopicType());
+        mStatusButton.setText(topic.getTopicStatus());
     }
 
     @Override
