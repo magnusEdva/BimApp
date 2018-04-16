@@ -19,7 +19,7 @@ import java.util.Map;
  */
 
 public class Template implements Entity {
-    public final static String PROPERTIES = "properties";
+    private final static String PROPERTIES = "properties";
     public final static String TEMPLATE_NAME = "templateName";
     public final static String TEMPLATE_DESCRIPTION = "templateDescription";
     public final static String COLOR = "templateColor";
