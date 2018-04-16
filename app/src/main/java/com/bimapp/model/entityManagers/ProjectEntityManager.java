@@ -20,12 +20,17 @@ import java.util.List;
  * Created by Håkon on 20.03.2018.
  */
 
-public class ProjectEntityManager implements ProjectsFragmentInterface.FragmentProjectListener {
+public class ProjectEntityManager implements ProjectsFragmentInterface.FragmentProjectListener, ProjectsFragmentInterface {
 
     private BimApp mContext;
 
     public ProjectEntityManager(BimApp context) {
         mContext = context;
+    }
+
+    @Override
+    public void setProjects(List<Project> projects) {
+
     }
 
     /**
@@ -65,6 +70,7 @@ public class ProjectEntityManager implements ProjectsFragmentInterface.FragmentP
                 e.printStackTrace();
             }
             mControllerCallback.setProjects(projects);
+
         }
     }
 

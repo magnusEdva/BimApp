@@ -42,11 +42,12 @@ public class Project implements Entity {
      * @param bimsyncProjectId String with the BimsyncProjectId corresponding to the project Id
      * @param name String with the project name corresponding to the project Id.
      */
-    public Project(String projectId, String bimsyncProjectName, String bimsyncProjectId, String name){
+    public Project(String projectId, String bimsyncProjectName, String bimsyncProjectId, String name, IssueBoardExtensions issueBoardExtensions){
         this.projectId = projectId;
         this.bimsyncProjectName = bimsyncProjectName;
         this.bimsyncProjectId = bimsyncProjectId;
         this.name = name;
+        this.mIssueBoardExtensions = issueBoardExtensions;
     }
 
     public String getProjectId() {

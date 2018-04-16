@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.bimapp.BimApp;
 import com.bimapp.R;
 import com.bimapp.model.entity.Template.TopicAssignedToNode;
 import com.bimapp.model.entity.Template.TopicDescriptionNode;
@@ -21,8 +22,6 @@ import com.bimapp.model.entity.Template.TemplateNode;
 import com.bimapp.model.entity.Template.TopicTypeNode;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,6 +32,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
 
     private Template mTemplate;
     private List<TemplateNode> mList;
+
     //private final NewTopicViewInterface mListener;
 
     /**
@@ -75,6 +75,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
          */
         public ViewHolder(View itemView, int viewType, Context context) {
             super(itemView);
+            BimApp mContext = (BimApp) context.getApplicationContext();
             switch (viewType) {
                 case 1: // TITLE
                     this.mItem_description = itemView.findViewById(R.id.topic_title);
@@ -92,7 +93,9 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                     this.mSpinner_input = null;
                     break;
                 case 4: // TOPIC_TYPE
-                    mAdapter = ArrayAdapter.createFromResource(context,R.array.topic_type,R.layout.support_simple_spinner_dropdown_item);
+                    mAdapter = new ArrayAdapter (context
+                            ,R.layout.support_simple_spinner_dropdown_item
+                            , mContext.getActiveProject().getIssueBoardExtensions().getTopicType());
 
                     this.mItem_description = itemView.findViewById(R.id.topic_type);
                     this.mSpinner_input = itemView.findViewById(R.id.topic_type_input);
@@ -121,6 +124,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
      */
     public TemplateAdapter(Template template, NewTopicViewInterface listener) {
         mList =  template.getNodes();//new ArrayList<>();
+
         // These aren't used?
         //mList.addAll(template.getNodes());
         //mListener = listener;

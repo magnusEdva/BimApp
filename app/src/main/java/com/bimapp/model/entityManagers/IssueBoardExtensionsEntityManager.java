@@ -19,7 +19,7 @@ public class IssueBoardExtensionsEntityManager {
         public interface IssueBoardExtensionsProjectListener{
             public void getExtensions(IssueBoardExtensionsProjectCallback callback);
         }
-        public void onGetExtensions(IssueBoardExtensions issueBoardExtensions);
+        public void setExtensions(IssueBoardExtensions issueBoardExtensions);
 
     }
 
@@ -51,19 +51,19 @@ public class IssueBoardExtensionsEntityManager {
             IssueBoardExtensions issueBoardExtensions = null;
             try {
                 JSONObject jsonObject = new JSONObject(JSONResponse);
-                issueBoardExtensions.construct(jsonObject);
+                issueBoardExtensions = new IssueBoardExtensions(jsonObject);
             } catch (JSONException e){
                 e.printStackTrace();
             }
-            mProjectCallback.onGetExtensions(issueBoardExtensions);
+            mProjectCallback.setExtensions(issueBoardExtensions);
         }
     }
 
-    public void getIssueBoardExtensions(Project project, IssueBoardExtensionsCallback controllerCallback){
+    public void getIssueBoardExtensions(Project project, IssueBoardExtensionsProjectCallback controllerCallback){
         NetworkConnManager.networkRequest(mContext
                 , Request.Method.GET
                 , APICall.GETIssueBoardExtensions(project)
-                , controllerCallback
+                , new IssueBoardExtensionsCallback( controllerCallback)
                 ,null);
     }
 }
