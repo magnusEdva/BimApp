@@ -1,5 +1,6 @@
 package com.bimapp.model.entity.Template;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 
 import com.bimapp.model.entity.Entity;
@@ -8,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -17,12 +19,24 @@ import java.util.Map;
  */
 
 public class Template implements Entity {
+    public final static String PROPERTIES = "properties";
+    public final static String TEMPLATE_NAME = "templateName";
+    public final static String TEMPLATE_DESCRIPTION = "templateDescription";
+    public final static String COLOR = "templateColor";
+    //public final static String ICON = "icon";
+
     public final static String TITLE = "title";
     public final static String DESCRIPTION = "description";
-    public final static String COLOR = "color";
-    public final static String ICON = "icon";
+    public final static String TOPIC_STATUS = "topic_status";
+    public final static String TOPIC_TYPE = "topic_type";
+    public final static String LABELS = "labels";
+    public final static String ASSIGNED_TO = "assigned_to";
+    public final static String DUE_DATE = "due_date";
+    public final static String IMAGE = "image";
+    public final static String comment = "comment";
 
-    private String mTitle;
+
+    private String mName;
 
     private String mDescription;
 
@@ -32,31 +46,56 @@ public class Template implements Entity {
 
     private List<TemplateNode> mNodes;
 
-    public Template(JSONObject jsonTemplate){
+    public Template(JSONObject jsonTemplate) {
         mNodes = new ArrayList<>();
-        construct(jsonTemplate);
+        try {
+            construct(jsonTemplate);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
-    private void construct(JSONObject jsonTemplate){
-        try{
-            mTitle = jsonTemplate.getString(TITLE);
-            mDescription = jsonTemplate.getString(DESCRIPTION);
-            mColor = jsonTemplate.getInt(COLOR);
-            mIcon = jsonTemplate.getInt(ICON);
 
-            mNodes.add(new TopicTitleNode("", true));
-            mNodes.add(new TopicAssignedToNode("eriksen.hakon@gmail.com", true));
-            mNodes.add(new TopicStatusNode("Open", false));
-            mNodes.add(new TopicDescriptionNode("This is the filled in description", true));
-            mNodes.add(new TopicTypeNode("", false));
+    private void setProperties(JSONObject jsonTemplate) {
+        if(jsonTemplate != null) {
+            try {
+                setProperties(jsonTemplate.getJSONObject(PROPERTIES));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
+    public void construct(JSONObject properties) {
+        try {
+            Iterator<String> iterator = properties.keys();
+            String next;
+            while (iterator.hasNext()) {
+                next = iterator.next();
+                switch (next) {
+                    case TEMPLATE_NAME:
+                        mName = properties.getString(next);
+                        break;
+                    case TEMPLATE_DESCRIPTION:
+                        mDescription = properties.getString(next);
+                        break;
+                    case COLOR:
+                        mColor = Color.parseColor((properties.getString(next)));
+                        break;
+                    case IMAGE:
+                        mNodes.add(new ImageNode(properties.getJSONObject(next), next));
+                    default:
+                        mNodes.add(new defaultNode(properties.getJSONObject(next), next));
+                        break;
+                }
+            }
 
-        }catch (JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     public String getTitle() {
-        return mTitle;
+        return mName;
     }
 
     public String getDescription() {
@@ -71,7 +110,7 @@ public class Template implements Entity {
         return mIcon;
     }
 
-    public List<TemplateNode> getNodes(){
+    public List<TemplateNode> getNodes() {
         return mNodes;
     }
 

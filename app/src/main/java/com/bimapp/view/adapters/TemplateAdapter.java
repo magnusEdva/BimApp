@@ -13,13 +13,8 @@ import android.widget.TextView;
 
 import com.bimapp.BimApp;
 import com.bimapp.R;
-import com.bimapp.model.entity.Template.TopicAssignedToNode;
-import com.bimapp.model.entity.Template.TopicDescriptionNode;
-import com.bimapp.model.entity.Template.TopicStatusNode;
-import com.bimapp.model.entity.Template.TopicTitleNode;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Template.TemplateNode;
-import com.bimapp.model.entity.Template.TopicTypeNode;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
 import java.util.List;
@@ -144,16 +139,16 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
      */
     @Override
     public int getItemViewType(int position) {
-        Object c = mList.get(position);
-        if (c instanceof TopicTitleNode)
+        TemplateNode c = mList.get(position);
+        if (c.getTitle().equals(Template.TITLE))
             return NODE_TYPE.TITLE.getInt();
-        else if (c instanceof TopicDescriptionNode)
+        else if (c.getTitle().equals(Template.DESCRIPTION))
             return NODE_TYPE.DESCRIPTION.getInt();
-        else if (c instanceof TopicStatusNode)
+        else if (c.getTitle().equals(Template.TOPIC_STATUS))
             return NODE_TYPE.TOPIC_STATUS.getInt();
-        else if (c instanceof TopicTypeNode)
+        else if (c.getTitle().equals(Template.TOPIC_TYPE))
             return NODE_TYPE.TOPIC_TYPE.getInt();
-        else if (c instanceof TopicAssignedToNode)
+        else if (c.getTitle().equals(Template.ASSIGNED_TO))
             return NODE_TYPE.ASSIGNED_TO.getInt();
         else
             return 0;

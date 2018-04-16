@@ -111,19 +111,110 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
 
         public MOCKTEMPLATES() {
             try {
-                templateTwo = new JSONObject();
-                templateOne = new JSONObject();
+                templateTwo = new JSONObject("{\n" +
+                        "    \"templateName\": \"Uønsket hendelse\",\n" +
+                        "    \"templateDescription\": \"\",\n" +
+                        "    \"templateColor\": \"#f45f41\",\n" +
+                        "    \"title\": {\n" +
+                        "        \"mandatory\": true,\n" +
+                        "        \"visible\": true,\n" +
+                        "        \"defaultValue\": null\n" +
+                        "    },\n" +
+                        "    \"description\": {\n" +
+                        "        \"mandatory\": true,\n" +
+                        "        \"visible\": true,\n" +
+                        "        \"defaultValue\": \"Rapport ved uønsket hendelse\"\n" +
+                        "    },\n" +
+                        "    \"topic_status\": {\n" +
+                        "        \"mandatory\": true,\n" +
+                        "        \"visible\": true,\n" +
+                        "        \"defaultValue\": \"Open\"\n" +
+                        "    },\n" +
+                        "    \"topic_type\": {\n" +
+                        "        \"mandatory\": true,\n" +
+                        "        \"visible\": true,\n" +
+                        "        \"defaultValue\": \"Incident\"\n" +
+                        "    },\n" +
+                        "    \"labels\": {\n" +
+                        "        \"mandatory\": false,\n" +
+                        "        \"visible\": true,\n" +
+                        "        \"defaultValue\": [\n" +
+                        "        ]\n" +
+                        "    },\n" +
+                        "    \"assigned_to\": {\n" +
+                        "        \"mandatory\": true,\n" +
+                        "        \"visible\": false,\n" +
+                        "        \"defaultValue\": \"chief@company.com\"\n" +
+                        "    },\n" +
+                        "    \"due_date\": {\n" +
+                        "        \"mandatory\": true,\n" +
+                        "        \"visible\": false,\n" +
+                        "        \"defaultValue\": \"2018-12-05T00:00:00+01:00\"\n" +
+                        "    },\n" +
+                        "    \"image\": {\n" +
+                        "        \"mandatory\": true,\n" +
+                        "        \"visible\": true\n" +
+                        "    },\n" +
+                        "    \"comment\": {\n" +
+                        "        \"mandatory\": true,\n" +
+                        "        \"visible\": true,\n" +
+                        "        \"defaultValue\": null\n" +
+                        "    }\n" +
+                        "}");
+                templateOne = new JSONObject("\n" +
+                        "{\n" +
+                        "    \"templateName\": \"Inspeksjonsrunde\",\n" +
+                        "    \"templateDescription\": \"test description\",\n" +
+                        "    \"templateColor\": \"#4286f4\",\n" +
+                        "    \"title\": {\n" +
+                        "        \"mandatory\": true,\n" +
+                        "        \"visible\": true,\n" +
+                        "        \"defaultValue\": null\n" +
+                        "    },\n" +
+                        "    \"description\": {\n" +
+                        "        \"mandatory\": true,\n" +
+                        "        \"visible\": true,\n" +
+                        "        \"defaultValue\": \"Sjekkliste inspeksjonsrunde\"\n" +
+                        "    },\n" +
+                        "    \"topic_status\": {\n" +
+                        "        \"mandatory\": true,\n" +
+                        "        \"visible\": false,\n" +
+                        "        \"defaultValue\": \"Open\"\n" +
+                        "    },\n" +
+                        "    \"topic_type\": {\n" +
+                        "        \"mandatory\": true,\n" +
+                        "        \"visible\": false,\n" +
+                        "        \"defaultValue\": \"Inspection\"\n" +
+                        "    },\n" +
+                        "    \"labels\": {\n" +
+                        "        \"mandatory\": false,\n" +
+                        "        \"visible\": true,\n" +
+                        "        \"defaultValue\": [\n" +
+                        "            \"Tidlig fase\",\n" +
+                        "            \"Byggesone 1\"\n" +
+                        "        ]\n" +
+                        "    },\n" +
+                        "    \"assigned_to\": {\n" +
+                        "        \"mandatory\": false,\n" +
+                        "        \"visible\": false,\n" +
+                        "        \"defaultValue\": null\n" +
+                        "    },\n" +
+                        "    \"due_date\": {\n" +
+                        "        \"mandatory\": false,\n" +
+                        "        \"visible\": false,\n" +
+                        "        \"defaultValue\": null\n" +
+                        "    },\n" +
+                        "    \"image\": {\n" +
+                        "        \"mandatory\": true,\n" +
+                        "        \"visible\": true\n" +
+                        "    },\n" +
+                        "    \"comment\": {\n" +
+                        "        \"mandatory\": false,\n" +
+                        "        \"visible\": true,\n" +
+                        "        \"defaultValue\": null\n" +
+                        "    }\n" +
+                        "}");
 
-                templateOne.put(Template.TITLE, "Test-template 1");
-                templateOne.put(Template.DESCRIPTION, "Template to show concept");
-                templateOne.put(Template.COLOR, Color.GREEN);
-                templateOne.put(Template.ICON, 1);
-
-
-                templateTwo.put(Template.TITLE, "New safety-inspection item");
-                templateTwo.put(Template.DESCRIPTION, "Daily safety inspection onsite. Please document all issues with images and a description");
-                templateTwo.put(Template.COLOR, Color.YELLOW);
-                templateTwo.put(Template.ICON, 2);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
