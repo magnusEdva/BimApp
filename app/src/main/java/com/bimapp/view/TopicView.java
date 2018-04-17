@@ -1,6 +1,7 @@
 package com.bimapp.view;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ public class TopicView implements TopicViewInterface{
     private TextView mRequestedByText;
     private Button mTypeButton;
     private Button mStatusButton;
+    private FloatingActionButton floatingButton;
 
     private CommentAdapter mCommentsAdapter;
 
@@ -39,6 +41,7 @@ public class TopicView implements TopicViewInterface{
         mRequestedByText = mRootView.findViewById(R.id.view_topic_requested_by);
         mTypeButton = mRootView.findViewById(R.id.view_topic_TypeButton);
         mStatusButton = mRootView.findViewById(R.id.view_topic_StatusButton);
+        floatingButton = mRootView.findViewById(R.id.view_Topic_floating_button);
 
         RecyclerView commentsList = mRootView.findViewById(R.id.view_topic_comment_list);
         linearLayoutManager = new LinearLayoutManager(mRootView.getContext());
@@ -47,6 +50,13 @@ public class TopicView implements TopicViewInterface{
 
         mCommentsAdapter = new CommentAdapter();
         commentsList.setAdapter(mCommentsAdapter);
+
+        floatingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.newComment();
+            }
+        });
     }
 
     @Override
@@ -77,6 +87,7 @@ public class TopicView implements TopicViewInterface{
         mTypeButton.setText(topic.getTopicType());
         mStatusButton.setText(topic.getTopicStatus());
     }
+
 
     @Override
     public void setComments(List<Comment> comments){

@@ -38,9 +38,7 @@ class BimAppRequest {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
                         callback.onError(error.getMessage());
-                        mContext.refreshToken(mContext.getAcessToken(), OAuthHandler.GRANT_TYPE_REFRESH_TOKEN);
                     }
                 }
         ) {
@@ -64,7 +62,6 @@ class BimAppRequest {
                     VolleyError error = new VolleyError(new String(volleyError.networkResponse.data));
                     volleyError = error;
                 }
-                Log.d("ParseNetworkError", volleyError.getMessage());
                 return volleyError;
             }
         };
@@ -85,7 +82,6 @@ class BimAppRequest {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
                         callback.onError(error.getMessage());
 
                     }
@@ -116,7 +112,6 @@ class BimAppRequest {
                     VolleyError error = new VolleyError(new String(volleyError.networkResponse.data));
                     volleyError = error;
                 }
-                Log.d("ParseNetworkError", volleyError.getMessage());
                 return volleyError;
             }
         };

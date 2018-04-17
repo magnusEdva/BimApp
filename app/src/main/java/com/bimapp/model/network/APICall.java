@@ -11,6 +11,8 @@ public class APICall {
 
     private static final String HOST_URL = "https://bcf.bimsync.com/bcf/";
 
+    private static final String BASE_HOST_URL = "https://bimsync.com/projects/";
+
     private static final String VERSION_NUMBER = "2.1";
 
 
@@ -46,7 +48,7 @@ public class APICall {
         return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/comments";
     }
     public static String POSTComment(Project project,Topic topic){
-        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics" + topic.getGuid() + "/comments";
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/comments";
     }
     public static String GETIssueBoardExtensions(Project project) {
         return (BuildBcfURL() + "/projects/" + project.getProjectId() + "/extensions");

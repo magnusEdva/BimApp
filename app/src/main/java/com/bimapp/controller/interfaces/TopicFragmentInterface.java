@@ -6,7 +6,7 @@ import com.bimapp.model.entity.Topic;
 import java.util.List;
 
 public interface TopicFragmentInterface {
-    interface CommentFragmentListener{
+    interface topicFragmentListener {
        void getComments(TopicFragmentInterface presenterListener, Topic topic);
     }
 

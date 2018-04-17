@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".controller.FragmentTopic"
+    tools:context=".view.TopicView"
     android:weightSum="100">
 
     <TextView
@@ -75,7 +75,6 @@
 
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_gravity="bottom|end"
@@ -83,6 +82,7 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@android:drawable/ic_input_add"
+        android:id="@+id/view_Topic_floating_button"
         app:backgroundTint="@color/colorAccent"
         app:elevation="5dp" />
 

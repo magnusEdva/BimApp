@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.bimapp.controller.FragmentDashboard;
+import com.bimapp.controller.FragmentNewComment;
 import com.bimapp.controller.FragmentNewTopic;
 import com.bimapp.controller.FragmentProject;
 import com.bimapp.controller.FragmentTopic;
@@ -48,13 +49,15 @@ import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 public class ProjectsViewActivity extends AppCompatActivity
         implements
         Callback, FragmentProject.OnFragmentProjectInteractionListener, FragmentDashboard.DashboardListener,
-        FragmentTopicList.TopicSelectionInterface, FragmentNewTopic.OnFragmentInteractionListener {
-
+        FragmentTopicList.TopicSelectionInterface, FragmentNewTopic.OnFragmentInteractionListener,
+        FragmentTopic.TopicFragmentListener{
     public final static String DASHBOARD_FRAGMENT_TAG = "fragment_dashboard";
     public final static String NEWTOPIC_FRAGMENT_TAG = "fragment_new_topic";
     public final static String TOPICLIST_FRAGMENT_TAG = "fragment_topics";
     public final static String PROJECTS_FRAGMENT_TAG = "fragment_projects";
     public final static String TOPIC_FRAGMENT_TAG = "fragment_topic";
+    public final static String COMMENT_FRAGMENT_TAG = "fragment_comment";
+
 
     private BimApp mApplication;
     private DrawerLayout mDrawerLayout;
@@ -65,6 +68,7 @@ public class ProjectsViewActivity extends AppCompatActivity
     private Fragment mTopicListFragment;
     private Fragment mProjectsFragment;
     private Fragment mTopicFragment;
+    private Fragment mNewCommentFragment;
 
 
     @Override
@@ -88,6 +92,7 @@ public class ProjectsViewActivity extends AppCompatActivity
         mNewTopicFragment = new FragmentNewTopic();
         mProjectsFragment = new FragmentProject();
         mTopicFragment = new FragmentTopic();
+        mNewCommentFragment = new FragmentNewComment();
     }
 
     @Override
@@ -203,6 +208,12 @@ public class ProjectsViewActivity extends AppCompatActivity
         openFragment(mTopicFragment, TOPIC_FRAGMENT_TAG);
     }
 
+    @Override
+    public void openCommentFragment(Topic topic) {
+        FragmentNewComment.setTopic(topic);
+        openFragment(mNewCommentFragment, COMMENT_FRAGMENT_TAG);
+    }
+
     /**
      * only to be used in openFragment
      */
@@ -302,6 +313,7 @@ public class ProjectsViewActivity extends AppCompatActivity
             }
         });
     }
+
 
 
 }

@@ -35,7 +35,10 @@
                     android:scheme="bimapp" />
             </intent-filter>
         </activity>
-        <activity android:name=".ProjectsViewActivity"></activity>
+        <activity
+            android:name=".ProjectsViewActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

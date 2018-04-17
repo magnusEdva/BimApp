@@ -1,6 +1,7 @@
 package com.bimapp.controller;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,12 +24,13 @@ import java.util.List;
  * Use the {@link FragmentTopic#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentTopic extends Fragment implements TopicFragmentInterface{
+public class FragmentTopic extends Fragment implements TopicFragmentInterface, TopicViewInterface.TopicListener{
 
     private static Topic mTopic;
     private TopicViewInterface mTopicView;
     private CommentEntityManager commentManager;
     private BimApp mContext;
+    private TopicFragmentListener mListener;
 
     public FragmentTopic() {
 
@@ -50,9 +52,19 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface{
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof TopicFragmentListener)
+            mListener = (TopicFragmentListener) context;
+        else
+            throw new UnsupportedOperationException();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mTopicView = new TopicView(inflater, container);
+        mTopicView.registerListener(this);
         mTopicView.setTopic(mTopic);
         commentManager.getComments(this, mTopic);
         return mTopicView.getRootView();
@@ -63,5 +75,15 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface{
     @Override
     public void setComments(List<Comment> comments) {
         mTopicView.setComments(comments);
+    }
+
+    @Override
+    public void newComment() {
+        mListener.openCommentFragment(mTopic);
+    }
+
+
+    public interface TopicFragmentListener{
+        void openCommentFragment(Topic topic);
     }
 }

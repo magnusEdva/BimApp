@@ -290,14 +290,8 @@ public class OAuthHandler {
     public boolean isLoggedIn() {
         if (isValidAccessToken()) {
             return true;
-        } else if (getRefreshToken() == null) {
-            return false;
-        } else if (getRefreshToken() != null) {
-            if (!checkActiveRefresh())
-                getAccessToken(getRefreshToken(), OAuthHandler.GRANT_TYPE_REFRESH_TOKEN);
-            return true;
-        }
-        return false;
+        } else
+            return hasTokens();
     }
 
     /**
@@ -305,8 +299,7 @@ public class OAuthHandler {
      */
     public boolean hasTokens() {
         if (getRefreshToken() != null) {
-            if (!checkActiveRefresh())
-                getAccessToken(getRefreshToken(), GRANT_TYPE_REFRESH_TOKEN);
+            getAccessToken(getRefreshToken(), GRANT_TYPE_REFRESH_TOKEN);
             return true;
         } else
             return false;
@@ -334,7 +327,7 @@ public class OAuthHandler {
                 storeRefreshToken(refresh_token);
                 setFinishedRefresh();
 
-                if(callback != null)
+                if (callback != null)
                     callback.onSuccess(result);
             } catch (JSONException j) {
                 j.printStackTrace();

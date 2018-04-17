@@ -73,6 +73,10 @@ public class Comment implements Entity {
         construct(obj);
     }
 
+    public Comment(String comment) {
+        mComment = comment;
+    }
+
     /**
      * constructs a comment from a correspong JSON file
      *
@@ -135,8 +139,8 @@ public class Comment implements Entity {
     public JSONObject getJsonParams() {
         JSONObject map = new JSONObject();
         try {
-            map.put(STATUS, mStatus);
-            throw new UnsupportedOperationException();
+            if(mComment != null)
+                map.put(COMMENT, mComment);
         } catch (JSONException e) {
             e.printStackTrace();
         }
