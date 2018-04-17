@@ -39,7 +39,7 @@ public class ProjectEntityManager implements ProjectsFragmentInterface.FragmentP
      * <p>
      * Does it actually make it easier to see what this class does?
      */
-    private class ProjectCallback implements Callback {
+    private class ProjectCallback implements Callback<String> {
 
         ProjectsFragmentInterface mControllerCallback;
 

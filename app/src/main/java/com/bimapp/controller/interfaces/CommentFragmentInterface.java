@@ -10,9 +10,9 @@ import java.io.File;
 public interface CommentFragmentInterface {
 
 
-    public interface commentFragmentListener{
+    interface commentFragmentListener{
         void postComment(CommentFragmentInterface listener, Topic topic, Comment comment);
-        void postImage(CommentFragmentInterface listener, Topic topic,Comment comment, String file);
+        void postImage(CommentFragmentInterface listener, Topic topic,Comment comment, Bitmap file);
     }
 
     /**

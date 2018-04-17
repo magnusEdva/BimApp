@@ -4,16 +4,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bimapp.R;
 import com.bimapp.model.entity.Comment;
 import com.bimapp.view.interfaces.TopicViewInterface;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.graphics.Bitmap.createScaledBitmap;
 
 /**
  * Adapter used to show comments in a list in TopicView
@@ -54,6 +55,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.ContentView.setText(mComments.get(position).getComment());
         holder.NameView.setText(mComments.get(position).getAuthor());
         holder.DateView.setText(mComments.get(position).getDate());
+
+        if(mComments.get(position).getViewpoint() != null){
+            holder.imageView.setImageBitmap(createScaledBitmap(mComments.get(position).getViewpoint().getSnapshot(),
+                    811, 743, true));
+        }
+
     }
 
     @Override
@@ -66,6 +73,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         public final TextView NameView;
         public final TextView ContentView;
         public final TextView DateView;
+        public final ImageView imageView;
         public final View ItemView;
 
         public ViewHolder(View itemView) {
@@ -73,6 +81,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             this.ItemView = itemView;
             this.NameView = itemView.findViewById(R.id.TopicCommentName);
             this.DateView = itemView.findViewById(R.id.TopicCOmmentDate);
+            this.imageView = itemView.findViewById(R.id.TopicCommentImage);
             this.ContentView = itemView.findViewById(R.id.TopicCommentContent);
         }
     }

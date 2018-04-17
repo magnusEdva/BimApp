@@ -19,4 +19,5 @@ public interface TopicViewInterface extends ViewMVP {
     void setComments(List<Comment> comments);
 
 
+
 }

@@ -49,7 +49,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
     /**
      * Inner class which handles the Callbacks from Volley on a postTopic request
      */
-    private class TopicPostCallback implements Callback{
+    private class TopicPostCallback implements Callback<String>{
 
         NewTopicFragmentInterface mTopicsFragmentInterface;
 
@@ -78,7 +78,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
     /**
      * Inner class which handles the callbacks from Volley on a getTopics request
      */
-    private class TopicsCallback implements Callback {
+    private class TopicsCallback implements Callback<String> {
 
         TopicsFragmentInterface mControllerCallback;
 

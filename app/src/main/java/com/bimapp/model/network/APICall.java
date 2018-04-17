@@ -1,7 +1,9 @@
 package com.bimapp.model.network;
 
+import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Topic;
+import com.bimapp.model.entity.Viewpoint;
 
 /**
  * Class used to store all supported URLS. It manages URL dependencies aswell.
@@ -53,8 +55,16 @@ public class APICall {
     public static String GETIssueBoardExtensions(Project project) {
         return (BuildBcfURL() + "/projects/" + project.getProjectId() + "/extensions");
     }
+
+    public static String GETViewpoint(Project project, String topicGuid, Comment comment){
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topicGuid + "/viewpoints/" + comment.getViewpointGuid();
+    }
     public static String POSTViewpoints(Project project, Topic topic){
         return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/viewpoints";
+    }
+
+    public static String GETSnapshot(Project project, String topicGuid, Viewpoint vp){
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topicGuid + "/viewpoints/" + vp.getGuid() + "/snapshot";
     }
 
 }

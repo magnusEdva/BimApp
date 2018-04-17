@@ -11,4 +11,5 @@ public interface TopicFragmentInterface {
     }
 
     void setComments(List<Comment> comments);
+    void editComment(Comment comment);
 }
