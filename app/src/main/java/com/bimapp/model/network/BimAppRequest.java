@@ -1,11 +1,14 @@
 package com.bimapp.model.network;
 
+import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.bimapp.BimApp;
@@ -118,6 +121,46 @@ class BimAppRequest {
 
         mContext.addToRequestQueue(getUserRequest, url);
 
+    }
+    static void GETImage(final BimApp mContext, final int method, String url,
+                     final Callback<Bitmap> callback) {
+        ImageRequest imageRequest = new ImageRequest(
+                url,
+                new Response.Listener<Bitmap>() { // Bitmap listener
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        callback.onSuccess(response);
+                    }
+                },
+                0, // Image width
+                0, // Image height
+                ImageView.ScaleType.CENTER_CROP, // Image scale type
+                Bitmap.Config.RGB_565, //Image decode configuration
+                new Response.ErrorListener() { // Error listener
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.getMessage());
+
+                    }
+                }
+
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + mContext.getAcessToken());
+                return headers;
+            }
+            @Override
+            protected VolleyError parseNetworkError(VolleyError volleyError) {
+                if (volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
+                    VolleyError error = new VolleyError(new String(volleyError.networkResponse.data));
+                    volleyError = error;
+                }
+                return volleyError;
+            }
+        };
+        mContext.addToRequestQueue(imageRequest, url);
     }
 
     private static void onResponseString(String response, Callback callback) {

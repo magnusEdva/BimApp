@@ -67,7 +67,9 @@ public class Comment implements Entity {
      */
     private String mComment;
 
-    private String mViewpiontGuid;
+    private String mViewpointGuid;
+
+    private Viewpoint mViewpoint;
 
     public Comment(JSONObject obj) {
         construct(obj);
@@ -76,6 +78,10 @@ public class Comment implements Entity {
     public Comment(String comment) {
         mComment = comment;
     }
+
+
+
+
 
     /**
      * constructs a comment from a correspong JSON file
@@ -104,7 +110,7 @@ public class Comment implements Entity {
             if (obj.has(MODIFIED_AUTHOR))
                 mModifiedAuthor = obj.getString(MODIFIED_AUTHOR);
             if(obj.has(VIEWPOINT_GUID))
-                mViewpiontGuid = obj.getString(VIEWPOINT_GUID);
+                mViewpointGuid = obj.getString(VIEWPOINT_GUID);
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -125,11 +131,24 @@ public class Comment implements Entity {
         return mComment;
     }
 
-    public String getViewpointGuid(){
-        return mViewpiontGuid;
+    public String getTopicGuid(){
+        return mTopicGUID;
     }
+
+    public String getViewpointGuid(){
+        return mViewpointGuid;
+    }
+
+    public Viewpoint getViewpoint(){
+        return mViewpoint;
+    }
+
     public void setViewpointGuid(String guid){
-        mViewpiontGuid = guid;
+        mViewpointGuid = guid;
+    }
+
+    public void setViewpoint(Viewpoint vp){
+        mViewpoint = vp;
     }
 
     /**
@@ -147,16 +166,30 @@ public class Comment implements Entity {
         try {
             if(mComment != null)
                 map.put(COMMENT, mComment);
-            if(mViewpiontGuid != null)
-                map.put(VIEWPOINT_GUID, mViewpiontGuid);
+            if(mViewpointGuid != null)
+                map.put(VIEWPOINT_GUID, mViewpointGuid);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return map;
     }
-
+    @Override
     public String toString() {
         return mComment;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if (obj == null) {
+            return false;
+        }
+        if (!Comment.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+        final Comment other = (Comment) obj;
+        if(mCommentsGUID == null)
+            return false;
+        return mCommentsGUID.equals(other.mCommentsGUID);
     }
 
 }

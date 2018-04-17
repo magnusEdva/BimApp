@@ -57,7 +57,7 @@ import static android.support.v4.content.FileProvider.getUriForFile;
 
 public class ProjectsViewActivity extends AppCompatActivity
         implements
-        Callback, FragmentProject.OnFragmentProjectInteractionListener, FragmentDashboard.DashboardListener,
+        Callback<String>, FragmentProject.OnFragmentProjectInteractionListener, FragmentDashboard.DashboardListener,
         FragmentTopicList.TopicSelectionInterface, FragmentNewTopic.OnFragmentInteractionListener,
         FragmentTopic.TopicFragmentListener{
     public final static String DASHBOARD_FRAGMENT_TAG = "fragment_dashboard";
@@ -168,6 +168,7 @@ public class ProjectsViewActivity extends AppCompatActivity
 
     @Override
     public void onError(String response) {
+        if(response != null)
         Log.d("ProjectsViewActivity", response);
     }
 

@@ -17,6 +17,7 @@ import com.bimapp.model.entityManagers.CommentEntityManager;
 import com.bimapp.view.TopicView;
 import com.bimapp.view.interfaces.TopicViewInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +32,7 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface, T
     private CommentEntityManager commentManager;
     private BimApp mContext;
     private TopicFragmentListener mListener;
+    private List<Comment> mComments;
 
     public FragmentTopic() {
 
@@ -49,6 +51,7 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface, T
         super.onCreate(savedInstanceState);
         mContext = (BimApp) this.getActivity().getApplication();
         commentManager = new CommentEntityManager(mContext);
+        mComments = new ArrayList<>();
     }
 
     @Override
@@ -75,7 +78,21 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface, T
     @Override
     public void setComments(List<Comment> comments) {
         mTopicView.setComments(comments);
+        mComments.clear();
+        mComments.addAll(comments);
     }
+
+    @Override
+    public void editComment(Comment comment) {
+        boolean found = false;
+        for(int i = 0; i < mComments.size() && !found; i++){
+            if(mComments.get(i).equals(comment)){
+                mComments.remove(i);
+                mComments.add(i,comment);
+            }
+        }
+        mTopicView.setComments(mComments);
+            }
 
     @Override
     public void newComment() {

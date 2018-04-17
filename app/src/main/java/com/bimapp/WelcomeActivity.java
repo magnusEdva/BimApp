@@ -49,7 +49,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     }
 
-    private class networkCallback implements Callback{
+    private class networkCallback implements Callback<String>{
 
         @Override
         public void onError(String response) {}

@@ -7,7 +7,7 @@ import org.json.JSONObject;
  * Created by zorri on 14/03/2018.
  */
 
-public interface Callback {
+public interface Callback<T> {
     void onError(String response);
-    void onSuccess(String JSONResponse);
+    void onSuccess(T response);
 }

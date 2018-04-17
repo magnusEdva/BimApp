@@ -94,4 +94,5 @@ public class TopicView implements TopicViewInterface{
         mCommentsAdapter.setComments(comments);
     }
 
+
 }

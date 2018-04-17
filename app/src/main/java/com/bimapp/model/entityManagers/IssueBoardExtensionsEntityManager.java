@@ -32,7 +32,7 @@ public class IssueBoardExtensionsEntityManager {
     /**
      * Inner lass which implements Callback from {@link com.bimapp.model.network.NetworkConnManager}.
      */
-    public class IssueBoardExtensionsCallback implements Callback{
+    public class IssueBoardExtensionsCallback implements Callback<String>{
 
         IssueBoardExtensionsProjectCallback mProjectCallback;
         public IssueBoardExtensionsCallback(IssueBoardExtensionsProjectCallback issueBoardExtensionsCallback){
