@@ -1,13 +1,18 @@
 package com.bimapp.controller.interfaces;
 
+import android.graphics.Bitmap;
+
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Topic;
+
+import java.io.File;
 
 public interface CommentFragmentInterface {
 
 
     public interface commentFragmentListener{
         void postComment(CommentFragmentInterface listener, Topic topic, Comment comment);
+        void postImage(CommentFragmentInterface listener, Topic topic, String file);
     }
 
     /**

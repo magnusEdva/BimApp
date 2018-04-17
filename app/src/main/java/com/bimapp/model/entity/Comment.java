@@ -1,7 +1,6 @@
 package com.bimapp.model.entity;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,7 +9,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -28,6 +26,7 @@ public class Comment implements Entity {
     public static final String TOPIC_GUID = "topic_guid";
     public static final String MODIFIED_DATE = "modified_date";
     public static final String MODIFIED_AUTHOR = "modified_author";
+    public static final String VIEWPOINT_GUID = "viewpoint_guid";
 
     private static DateFormat formatter = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss.SSSZ");
     private static DateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
@@ -68,6 +67,7 @@ public class Comment implements Entity {
      */
     private String mComment;
 
+    private String mViewpiontGuid;
 
     public Comment(JSONObject obj) {
         construct(obj);
@@ -103,6 +103,8 @@ public class Comment implements Entity {
                 mModifiedDate = obj.getString(MODIFIED_DATE);
             if (obj.has(MODIFIED_AUTHOR))
                 mModifiedAuthor = obj.getString(MODIFIED_AUTHOR);
+            if(obj.has(VIEWPOINT_GUID))
+                mViewpiontGuid = obj.getString(VIEWPOINT_GUID);
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -123,6 +125,13 @@ public class Comment implements Entity {
         return mComment;
     }
 
+    public String getViewpointGuid(){
+        return mViewpiontGuid;
+    }
+    public void setViewpointGuid(String guid){
+        mViewpiontGuid = guid;
+    }
+
     /**
      * @param map @NonNull
      * @return
@@ -138,6 +147,8 @@ public class Comment implements Entity {
         try {
             if(mComment != null)
                 map.put(COMMENT, mComment);
+            if(mViewpiontGuid != null)
+                map.put(VIEWPOINT_GUID, mViewpiontGuid);
         } catch (JSONException e) {
             e.printStackTrace();
         }

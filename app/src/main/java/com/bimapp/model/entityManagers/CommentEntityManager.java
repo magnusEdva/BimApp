@@ -1,5 +1,7 @@
 package com.bimapp.model.entityManagers;
 
+import android.graphics.Bitmap;
+
 import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.CommentFragmentInterface;
@@ -7,6 +9,7 @@ import com.bimapp.controller.interfaces.TopicFragmentInterface;
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.EntityListConstructor;
 import com.bimapp.model.entity.Topic;
+import com.bimapp.model.entity.Viewpoint;
 import com.bimapp.model.network.APICall;
 import com.bimapp.model.network.Callback;
 import com.bimapp.model.network.NetworkConnManager;
@@ -15,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.List;
 
 public class CommentEntityManager implements TopicFragmentInterface.topicFragmentListener,
@@ -36,6 +40,13 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
         postComment(new postCommentCallback(listener), topic, comment);
     }
 
+    @Override
+    public void postImage(CommentFragmentInterface listener, Topic topic, String file) {
+        Viewpoint vp = new Viewpoint("png", file);
+        postImage(new postImageCallback(listener, topic),topic, vp);
+    }
+
+
 
     private void requestComments(getCommentsCallback Callback, Topic topic) {
         NetworkConnManager.networkRequest(mContext, Request.Method.GET,
@@ -47,6 +58,11 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
         NetworkConnManager.networkRequest(mContext, Request.Method.POST,
                 APICall.POSTComment(mContext.getActiveProject(), topic),
                 callback, comment);
+    }
+    private void postImage(postImageCallback callback, Topic topic, Viewpoint vp){
+        NetworkConnManager.networkRequest(mContext, Request.Method.GET,
+                APICall.POSTViewpoints(mContext.getActiveProject(), topic),
+                callback, vp);
     }
 
 
@@ -98,6 +114,38 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
                 e.printStackTrace();
             }
             mListener.postedComment(true, comment);
+        }
+    }
+
+    private class postImageCallback implements  Callback{
+
+        CommentFragmentInterface mListener;
+        Topic mTopic;
+
+        public postImageCallback(CommentFragmentInterface listener, Topic topic){
+            mListener = listener;
+            mTopic = topic;
+        }
+
+        @Override
+        public void onError(String response) {
+            mListener.postedComment(false, null);
+        }
+
+        @Override
+        public void onSuccess(String response) {
+            Viewpoint vp = null;
+            Comment comment = null;
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                vp = new Viewpoint(jsonObject);
+                comment = new Comment("");
+                comment.setViewpointGuid(vp.getGuid());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            postComment(mListener,mTopic,comment);
         }
     }
 

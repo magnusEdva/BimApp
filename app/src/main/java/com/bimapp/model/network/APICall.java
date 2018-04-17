@@ -53,5 +53,8 @@ public class APICall {
     public static String GETIssueBoardExtensions(Project project) {
         return (BuildBcfURL() + "/projects/" + project.getProjectId() + "/extensions");
     }
+    public static String POSTViewpoints(Project project, Topic topic){
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/viewpoints";
+    }
 
 }
