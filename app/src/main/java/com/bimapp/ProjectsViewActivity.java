@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -20,7 +21,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +32,7 @@ import com.bimapp.controller.FragmentProject;
 import com.bimapp.controller.FragmentTopic;
 import com.bimapp.controller.FragmentTopicList;
 import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
+import com.bimapp.model.ImageFile;
 import com.bimapp.model.entity.IssueBoardExtensions;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Template.Template;
@@ -46,6 +47,8 @@ import com.bimapp.model.network.NetworkConnManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
@@ -300,15 +303,38 @@ public class ProjectsViewActivity extends AppCompatActivity
 
     @Override
     public void onTakePhoto(View v) {
+
         // TODO HANDLE USER DENYING ACCESS!
         if(ContextCompat.checkSelfPermission(mApplication, Manifest.permission.CAMERA) !=
                 PackageManager.PERMISSION_GRANTED){
             requestPermissions(new String[] {Manifest.permission.CAMERA}, 123);
+        }    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = ImageFile.createImageFile(mApplication);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Log.d("CreateImageFile error", "Error on creating image file" + ex.toString());
+                // Error occurred while creating the File
+
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, 1);
+            }
         }
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(mApplication.getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, 1);
-        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        Toast.makeText(mApplication, "Successfully took photo", Toast.LENGTH_SHORT).show();
 
     }
 
