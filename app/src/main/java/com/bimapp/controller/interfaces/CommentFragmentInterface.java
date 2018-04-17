@@ -12,7 +12,7 @@ public interface CommentFragmentInterface {
 
     public interface commentFragmentListener{
         void postComment(CommentFragmentInterface listener, Topic topic, Comment comment);
-        void postImage(CommentFragmentInterface listener, Topic topic, String file);
+        void postImage(CommentFragmentInterface listener, Topic topic,Comment comment, String file);
     }
 
     /**

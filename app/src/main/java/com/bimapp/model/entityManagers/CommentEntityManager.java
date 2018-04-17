@@ -30,20 +30,38 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
         mContext = context;
     }
 
+    /**
+     * acquires all comments belonging to this topic.
+     * @param listener to receive the appropriate response.
+     * @param topic The comment/image is to be associated with
+     */
     @Override
     public void getComments(TopicFragmentInterface listener, Topic topic) {
         requestComments(new getCommentsCallback(listener), topic);
     }
 
+    /**
+     * posts a single Comment.
+     * @param listener to receive the appropriate response.
+     * @param topic The comment/image is to be associated with
+     * @param comment to be posted
+     */
     @Override
     public void postComment(CommentFragmentInterface listener,Topic topic, Comment comment) {
         postComment(new postCommentCallback(listener), topic, comment);
     }
 
+    /**
+     * posts a single image with a comment attached.
+     * @param listener to receive the appropriate response.
+     * @param topic The comment/image is to be associated with
+     * @param comment to be connected to the image
+     * @param file base64 encoded string
+     */
     @Override
-    public void postImage(CommentFragmentInterface listener, Topic topic, String file) {
+    public void postImage(CommentFragmentInterface listener, Topic topic, Comment comment,String file) {
         Viewpoint vp = new Viewpoint("png", file);
-        postImage(new postImageCallback(listener, topic),topic, vp);
+        postImage(new postImageCallback(listener, topic, comment),topic, vp);
     }
 
 
@@ -121,10 +139,12 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
 
         CommentFragmentInterface mListener;
         Topic mTopic;
+        Comment mComment;
 
-        public postImageCallback(CommentFragmentInterface listener, Topic topic){
+        public postImageCallback(CommentFragmentInterface listener, Topic topic, Comment comment){
             mListener = listener;
             mTopic = topic;
+            mComment = comment;
         }
 
         @Override
@@ -135,17 +155,15 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
         @Override
         public void onSuccess(String response) {
             Viewpoint vp = null;
-            Comment comment = null;
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 vp = new Viewpoint(jsonObject);
-                comment = new Comment("");
-                comment.setViewpointGuid(vp.getGuid());
+                mComment.setViewpointGuid(vp.getGuid());
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            postComment(mListener,mTopic,comment);
+            postComment(mListener,mTopic,mComment);
         }
     }
 
