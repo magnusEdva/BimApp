@@ -4,7 +4,7 @@ import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Topic;
 
 /**
- * Created by zorri on 21/03/2018.
+ * Class used to store all supported URLS. It manages URL dependencies aswell.
  */
 
 public class APICall {
@@ -17,16 +17,16 @@ public class APICall {
 
     private APICall(){}
 
-    private static String BuildBaseURL(){
+    private static String BuildBcfURL(){
         return HOST_URL + VERSION_NUMBER;
     }
 
     public static String GETProjects(){
-        return BuildBaseURL() + "/projects";
+        return BuildBcfURL() + "/projects";
     }
 
     public static String GETUser(){
-        return BuildBaseURL() + "/current-user";
+        return BuildBcfURL() + "/current-user";
     }
 
 
@@ -37,16 +37,16 @@ public class APICall {
      * @return completed String to be used in class NetworkConnManager
      */
     public static String GETTopics(Project project){
-        return BuildBaseURL() + "/projects/" + project.getProjectId() + "/topics";
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics";
     }
     public static String POSTTopics(Project project){
-        return BuildBaseURL() + "/projects/" + project.getProjectId() + "/topics";
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics";
     }
     public static String GETComments(Project project, Topic topic){
-        return BuildBaseURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/comments";
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/comments";
     }
     public static String GETIssueBoardExtensions(Project project) {
-        return (BuildBaseURL() + "/projects/" + project.getProjectId() + "/extensions");
+        return (BuildBcfURL() + "/projects/" + project.getProjectId() + "/extensions");
     }
 
 }

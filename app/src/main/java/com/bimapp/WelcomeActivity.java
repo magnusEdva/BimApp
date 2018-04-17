@@ -29,10 +29,8 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     public void buttonOnClick(View v){
-
         mApplication.getMOAuth().launchBrowser();
         finish();
-
     }
 
     @Override

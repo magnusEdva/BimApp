@@ -54,7 +54,7 @@ public class ProjectEntityUnitTest {
 
     @Test
     public void StringConstructor() throws Exception{
-        project = new Project(projectId, bimsyncProjectName, bimsyncProjectId, name);
+        //project = new Project(projectId, bimsyncProjectName, bimsyncProjectId, name);
 
         assertEquals(projectId, project.getProjectId());
         assertEquals(name, project.getName());
