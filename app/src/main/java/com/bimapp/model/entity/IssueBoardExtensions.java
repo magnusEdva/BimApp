@@ -13,9 +13,15 @@ import java.util.Set;
 
 /**
  * Model implementation of the issue board extensions used by bimsync.
+ *
+ * Constructors are available for default data or data from a JSONObject.
+ *
+ * If this class is expanded to provide support for more Extensions, the default constructor should
+ * be updated to provide default values.
  */
 public class IssueBoardExtensions {
 
+    // Variables to make sure typos are less of an issue
     public static final String TOPIC_TYPE = "topic_type";
     public static final String TOPIC_STATUS = "topic_status";
     public static final String USER_ID_TYPE = "user_id_type";
@@ -50,7 +56,7 @@ public class IssueBoardExtensions {
     }
 
     /**
-     * Empty constructor to return the default set of extensions
+     * Empty constructor to return the default set of extensions.
      */
     public IssueBoardExtensions(){
         String[] status = {"Open", "Closed"};
@@ -60,11 +66,19 @@ public class IssueBoardExtensions {
         mTopicLabel = new ArrayList<String>();
         mUserIdType = new ArrayList<String>();
     }
+
+    /**
+     * Used to return default values when retrieving Extensions from storage
+     * @return a default set of status
+     */
     public static Set<String> defaultStatus(){
         String[] status = {"Open", "Closed"};
         return new HashSet<>(Arrays.asList(status));
     }
-
+    /**
+     * Used to return default values when retrieving Extensions from storage
+     * @return a default set of type
+     */
     public static Set<String> defaultType(){
         String[] type ={"Information", "Error"};
         return new HashSet<>(Arrays.asList(type));
