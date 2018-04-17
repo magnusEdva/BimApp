@@ -1,9 +1,15 @@
 package com.bimapp.controller;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +56,11 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
         TopicsEntityManager manager = new TopicsEntityManager(mApplication, this);
         Log.d("FragmentNewTopic", "Made an entityManger");
         manager.postTopic(this, topic);
+    }
+
+    @Override
+    public void onCameraIntent(View view) {
+        mListener.onTakePhoto(view);
     }
 
 
@@ -109,6 +120,7 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
      */
     public interface OnFragmentInteractionListener {
         void onPostingTopic(boolean success);
+        void onTakePhoto(View v);
     }
 
     /**

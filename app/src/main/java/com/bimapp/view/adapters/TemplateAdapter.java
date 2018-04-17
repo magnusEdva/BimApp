@@ -1,6 +1,9 @@
 package com.bimapp.view.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -12,6 +15,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bimapp.BimApp;
 import com.bimapp.R;
@@ -27,6 +31,7 @@ import java.util.List;
  */
 public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHolder> {
 
+    private final NewTopicViewInterface mListener;
     private Template mTemplate;
     private List<TemplateNode> mList;
 
@@ -160,12 +165,10 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
      * @param listener
      */
     public TemplateAdapter(Template template, NewTopicViewInterface listener) {
-        mList =  template.getNodes();//new ArrayList<>();
+        mList =  template.getNodes();
 
         mTemplate = template;
-        // These aren't used?
-        //mList.addAll(template.getNodes());
-        //mListener = listener;
+        mListener = listener;
     }
 
     /**
@@ -269,7 +272,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
      * @param position the position of this view in the RecyclerView, corresponds to the position in the data set
      */
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         switch (this.getItemViewType(position)) {
             case 1: // IssueName
                 holder.mItem_description.setText(R.string.issue_name);
@@ -304,6 +307,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 break;
             case 8: //IMAGE
                 holder.mItem_button.setText(R.string.add_image);
+                holder.mItem_button.setOnClickListener(mListener);
                 break;
             case 9: // COMMENT
                 holder.mItem_description.setText("Comment");

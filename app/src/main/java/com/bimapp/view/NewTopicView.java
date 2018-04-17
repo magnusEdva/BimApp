@@ -1,6 +1,9 @@
 package com.bimapp.view;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -86,6 +89,12 @@ public class NewTopicView implements NewTopicViewInterface {
         mListener = null;
     }
 
+    @Override
+    public void takePhoto(View view) {
+
+        mListener.onCameraIntent(view);
+    }
+
     /**
      * Method to construct a topic from the user input.
      * contains a callback to the presenter, tells it that a topic has been made.
@@ -115,6 +124,18 @@ public class NewTopicView implements NewTopicViewInterface {
         // Tell fragment that topic has been posted
         Log.d("Posting topic", "Name of topic " + title );
         mListener.onPostTopic(topic);
+    }
+
+    /**
+     * Override from the interface {@link NewTopicViewInterface} which extends
+     * {@link android.view.View.OnClickListener}.
+     * Passes information to the fragment {@link com.bimapp.controller.FragmentNewTopic}
+     *
+     * @param v the view in which the item was clicked
+     */
+    @Override
+    public void onClick(View v) {
+        takePhoto(v);
     }
 }
 

@@ -1,13 +1,17 @@
 package com.bimapp;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -15,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -292,6 +297,21 @@ public class ProjectsViewActivity extends AppCompatActivity
         }
         openFragment(mDashboardFragment, DASHBOARD_FRAGMENT_TAG);
     }
+
+    @Override
+    public void onTakePhoto(View v) {
+        // TODO HANDLE USER DENYING ACCESS!
+        if(ContextCompat.checkSelfPermission(mApplication, Manifest.permission.CAMERA) !=
+                PackageManager.PERMISSION_GRANTED){
+            requestPermissions(new String[] {Manifest.permission.CAMERA}, 123);
+        }
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(mApplication.getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, 1);
+        }
+
+    }
+
 
     public void setInitialActiveProject() {
         ProjectEntityManager projectEntityManager = new ProjectEntityManager(mApplication);
