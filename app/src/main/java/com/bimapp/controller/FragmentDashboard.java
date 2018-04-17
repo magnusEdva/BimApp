@@ -166,15 +166,15 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
                         "    \"templateName\": \"Inspeksjonsrunde\",\n" +
                         "    \"templateDescription\": \"test description\",\n" +
                         "    \"templateColor\": \"#4286f4\",\n" +
-                        "    \"title\": {\n" +
-                        "        \"mandatory\": true,\n" +
-                        "        \"visible\": true,\n" +
-                        "        \"defaultValue\": null\n" +
-                        "    },\n" +
                         "    \"description\": {\n" +
                         "        \"mandatory\": true,\n" +
                         "        \"visible\": true,\n" +
                         "        \"defaultValue\": \"Sjekkliste inspeksjonsrunde\"\n" +
+                        "    },\n" +
+                        "    \"title\": {\n" +
+                        "        \"mandatory\": true,\n" +
+                        "        \"visible\": true,\n" +
+                        "        \"defaultValue\": null\n" +
                         "    },\n" +
                         "    \"topic_status\": {\n" +
                         "        \"mandatory\": true,\n" +

@@ -76,6 +76,7 @@ public class ProjectsViewActivity extends AppCompatActivity
         //This is a terrible way to handle things! It essentially gets the
         //user and sets the user variable through a callback method
         // Should be moved to some BimApp setting on login
+
         NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
                 APICall.GETUser(), this, null);
 
@@ -153,8 +154,7 @@ public class ProjectsViewActivity extends AppCompatActivity
 
     @Override
     public void onError(String response) {
-        NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
-                APICall.GETUser(), this, null);
+        Log.d("ProjectsViewActivity", response);
     }
 
     /**

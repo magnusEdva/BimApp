@@ -39,6 +39,7 @@ class BimAppRequest {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
+                        callback.onError(error.getMessage());
                         mContext.refreshToken(mContext.getAcessToken(), OAuthHandler.GRANT_TYPE_REFRESH_TOKEN);
                     }
                 }

@@ -111,9 +111,7 @@ public class OAuthHandler {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            new CallbackHandler().onSuccessResponse(response);
-                            if (callback != null)
-                                callback.onSuccess(response);
+                            new CallbackHandler().onSuccessResponse(response, callback);
                             Log.d("Access Token", "Successfully got an access token");
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -317,7 +315,7 @@ public class OAuthHandler {
 
     private class CallbackHandler implements OAuthCallback {
         @Override
-        public void onSuccessResponse(String result) {
+        public void onSuccessResponse(String result, Callback callback) {
 
             JSONObject response;
 
@@ -335,6 +333,9 @@ public class OAuthHandler {
                 storeAccesToken(access_token, Integer.parseInt(expires_in));
                 storeRefreshToken(refresh_token);
                 setFinishedRefresh();
+
+                if(callback != null)
+                    callback.onSuccess(result);
             } catch (JSONException j) {
                 j.printStackTrace();
             }

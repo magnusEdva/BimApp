@@ -140,15 +140,15 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
                         "        \"visible\": true,\n" +
                         "        \"defaultValue\": null\n" +
                         "    },\n" +
-                        "    \"description\": {\n" +
-                        "        \"mandatory\": true,\n" +
-                        "        \"visible\": true,\n" +
-                        "        \"defaultValue\": \"Rapport ved uønsket hendelse\"\n" +
-                        "    },\n" +
                         "    \"topic_status\": {\n" +
                         "        \"mandatory\": true,\n" +
                         "        \"visible\": true,\n" +
                         "        \"defaultValue\": \"Open\"\n" +
+                        "    },\n" +
+                        "    \"description\": {\n" +
+                        "        \"mandatory\": true,\n" +
+                        "        \"visible\": true,\n" +
+                        "        \"defaultValue\": \"Rapport ved uønsket hendelse\"\n" +
                         "    },\n" +
                         "    \"topic_type\": {\n" +
                         "        \"mandatory\": true,\n" +
