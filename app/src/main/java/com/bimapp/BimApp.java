@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.ArraySet;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -151,6 +152,7 @@ public class BimApp extends Application {
         editor.putStringSet("topic_type", new HashSet<>(project.getIssueBoardExtensions().getTopicType()));
         editor.putStringSet("topic_status", new HashSet<String>(project.getIssueBoardExtensions().getTopicStatus()));
         editor.putStringSet("user_id_type", new HashSet<String>(project.getIssueBoardExtensions().getUserIdType()));
+        editor.putStringSet("topic_label", new HashSet<String>(project.getIssueBoardExtensions().getTopicLabel()));
         editor.apply();
     }
 
@@ -165,12 +167,13 @@ public class BimApp extends Application {
             String Name = preferences.getString("Name", null);
             String BimSyncProjectId = preferences.getString("BimyncProjectId", null);
             String BimSyncProjetName = preferences.getString("BimsyncProjectName", null);
-            IssueBoardExtensions issueBoardExtensions = null;
+            IssueBoardExtensions issueBoardExtensions = null; // new IssueBoardExtensions(); // Default constructor returns default set of extensions
             if (projectId != null) {
-                ArrayList<String> topic_type = new ArrayList<>(preferences.getStringSet("topic_type", null));
-                ArrayList<String> topic_status = new ArrayList<>(preferences.getStringSet("topic_status", null));
-                ArrayList<String> user_id_type = new ArrayList<>(preferences.getStringSet("user_id_type", null));
-                issueBoardExtensions = new IssueBoardExtensions(topic_type, topic_status, user_id_type);
+                ArrayList<String> topic_type = new ArrayList<>(preferences.getStringSet("topic_type", IssueBoardExtensions.defaultType()));
+                ArrayList<String> topic_status = new ArrayList<>(preferences.getStringSet("topic_status", IssueBoardExtensions.defaultStatus()));
+                ArrayList<String> user_id_type = new ArrayList<>(preferences.getStringSet("user_id_type", new ArraySet<String>()));
+                ArrayList<String> topic_label = new ArrayList<>(preferences.getStringSet("topic_label", new ArraySet<String>()));
+                issueBoardExtensions = new IssueBoardExtensions(topic_type, topic_status, user_id_type, topic_label);
             }
             if (projectId != null && Name != null && BimSyncProjectId != null && BimSyncProjetName != null && issueBoardExtensions != null)
                 mActiveProject = new Project(projectId, BimSyncProjetName, BimSyncProjectId, Name, issueBoardExtensions);
