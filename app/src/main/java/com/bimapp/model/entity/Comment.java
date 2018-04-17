@@ -46,7 +46,7 @@ public class Comment implements Entity {
     /**
      * creation date
      */
-    private String mDate;
+    private Date mDate;
     /**
      * comment author
      */
@@ -93,10 +93,7 @@ public class Comment implements Entity {
             if (obj.has(STATUS))
                 mStatus = obj.getString(STATUS);
             if (obj.has(DATE)) {
-                Log.d("DatoStreng",obj.getString(DATE));
-                Date date = formatter.parse(obj.getString(DATE));
-                Log.d("Dato?",FORMATTER.format(date));
-                mDate = obj.getString(DATE);
+                mDate = DateMapper.toDate(obj.getString(DATE));
             }
             if (obj.has(AUTHOR))
                 mAuthor = obj.getString(AUTHOR);
@@ -115,7 +112,7 @@ public class Comment implements Entity {
     }
 
     public String getDate() {
-        return mDate;
+        return DateMapper.map(mDate);
     }
 
     public String getAuthor() {
