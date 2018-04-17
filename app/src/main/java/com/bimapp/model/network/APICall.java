@@ -45,6 +45,9 @@ public class APICall {
     public static String GETComments(Project project, Topic topic){
         return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/comments";
     }
+    public static String POSTComment(Project project,Topic topic){
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics" + topic.getGuid() + "/comments";
+    }
     public static String GETIssueBoardExtensions(Project project) {
         return (BuildBcfURL() + "/projects/" + project.getProjectId() + "/extensions");
     }
