@@ -89,11 +89,6 @@ public class NewTopicView implements NewTopicViewInterface {
         mListener = null;
     }
 
-    @Override
-    public void takePhoto(View view) {
-
-        mListener.onCameraIntent(view);
-    }
 
     /**
      * Method to construct a topic from the user input.
@@ -131,11 +126,11 @@ public class NewTopicView implements NewTopicViewInterface {
      * {@link android.view.View.OnClickListener}.
      * Passes information to the fragment {@link com.bimapp.controller.FragmentNewTopic}
      *
-     * @param v the view in which the item was clicked
+     * @param view the view in which the item was clicked
      */
     @Override
-    public void onClick(View v) {
-        takePhoto(v);
+    public void onClick(View view) {
+        mListener.onCameraIntent(view);
     }
 }
 

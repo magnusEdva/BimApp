@@ -15,5 +15,5 @@ public interface NewTopicViewInterface extends ViewMVP, View.OnClickListener {
 
     void registerListener(NewTopicToPresenter newTopicToPresenter);
     void unregisterListener();
-    void takePhoto(View view);
+    //void takePhoto(View view);
 }
