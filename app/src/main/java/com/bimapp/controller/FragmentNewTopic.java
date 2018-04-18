@@ -54,6 +54,11 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
         mListener.onTakePhoto(view);
     }
 
+    @Override
+    public void onPostComment() {
+        mListener.onPostingTopic(true);
+    }
+
 
     public FragmentNewTopic() {
         // Required empty public constructor

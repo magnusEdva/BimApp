@@ -106,7 +106,7 @@ public class NewTopicView implements NewTopicViewInterface {
     }
 
     @Override
-    public void postedTopic(Topic topic) {
+    public void postedTopic(final Topic topic) {
         Viewpoint vp = null;
         Comment comment = new Comment(mCommentString);
         if(mImage != null){
@@ -120,8 +120,9 @@ public class NewTopicView implements NewTopicViewInterface {
             @Override
             public void postedComment(boolean success, Comment comment) {
                 Log.d("Piss!", "Ett eller annet");
+
             }
-        }, topic, comment, mImage);
+        }, topic, comment);
 
     }
 

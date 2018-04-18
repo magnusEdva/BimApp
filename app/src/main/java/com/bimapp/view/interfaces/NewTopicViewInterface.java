@@ -13,6 +13,7 @@ public interface NewTopicViewInterface extends ViewMVP, View.OnClickListener {
     interface NewTopicToPresenter{
         void onPostTopic(Topic topic);
         void onCameraIntent(View view);
+        void onPostComment();
     }
 
     void registerListener(NewTopicToPresenter newTopicToPresenter);
