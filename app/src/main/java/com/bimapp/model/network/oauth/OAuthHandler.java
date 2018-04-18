@@ -260,6 +260,9 @@ public class OAuthHandler {
             SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFS_KEY, MODE_PRIVATE);
             accessToken = prefs.getString("AccessToken", null);
         }
+        if(accessToken == null){
+            Log.d("Access Token er null","??");
+        }
         return accessToken;
     }
 

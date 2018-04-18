@@ -25,7 +25,7 @@ public class Viewpoint implements Entity {
     private boolean hasSnapshot = false;
 
     public Viewpoint(String type, Bitmap data) {
-        mSnapshot = new Snapshot(data);
+        mSnapshot = new Snapshot(type, data);
     }
 
     public Viewpoint(JSONObject jsonObject) {
@@ -70,9 +70,9 @@ public class Viewpoint implements Entity {
         JSONObject viewpoints = new JSONObject();
         JSONObject snapshot = new JSONObject();
         try {
-            snapshot.put("snapshot_type", mSnapshot.type);
-            snapshot.put("snapshot_data", mSnapshot.getImageBytesAsString());
-            viewpoints.put("snapshot", snapshot);
+            snapshot.put(SNAPSHOT_TYPE, mSnapshot.type);
+            snapshot.put(SNAPSHOT_data, mSnapshot.getImageBytesAsString());
+            viewpoints.put(SNAPSHOT, snapshot);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -81,13 +81,16 @@ public class Viewpoint implements Entity {
 
     private class Snapshot {
         Bitmap image;
-        String type = "png";
+        String type;
 
-        Snapshot( Bitmap data) {
+        Snapshot( String type, Bitmap data) {
+            this.type = type;
             image = data;
         }
 
-
+        Snapshot(Bitmap data){
+            image = data;
+        }
 
         private String getImageBytesAsString() {
             ByteArrayOutputStream blob = new ByteArrayOutputStream();
