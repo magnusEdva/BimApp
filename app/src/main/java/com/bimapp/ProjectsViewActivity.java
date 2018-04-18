@@ -3,6 +3,7 @@ package com.bimapp;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -52,14 +53,17 @@ import java.io.IOException;
 import java.util.List;
 
 import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
-import static android.support.v4.content.FileProvider.getUriForFile;
 
 
 public class ProjectsViewActivity extends AppCompatActivity
         implements
-        Callback<String>, FragmentProject.OnFragmentProjectInteractionListener, FragmentDashboard.DashboardListener,
-        FragmentTopicList.TopicSelectionInterface, FragmentNewTopic.OnFragmentInteractionListener,
-        FragmentTopic.TopicFragmentListener{
+        Callback<String>,
+        FragmentProject.OnFragmentProjectInteractionListener,
+        FragmentDashboard.DashboardListener,
+        FragmentTopicList.TopicSelectionInterface,
+        FragmentNewTopic.OnFragmentInteractionListener,
+        FragmentTopic.TopicFragmentListener
+{
     public final static String DASHBOARD_FRAGMENT_TAG = "fragment_dashboard";
     public final static String NEWTOPIC_FRAGMENT_TAG = "fragment_new_topic";
     public final static String TOPICLIST_FRAGMENT_TAG = "fragment_topics";
@@ -67,10 +71,13 @@ public class ProjectsViewActivity extends AppCompatActivity
     public final static String TOPIC_FRAGMENT_TAG = "fragment_topic";
     public final static String COMMENT_FRAGMENT_TAG = "fragment_comment";
 
+    // Variables to select unique requests to other apps, and provides a way for this activity to handle those callbacks
+    private final static int TAKE_PHOTO_INTENT = 91;
 
     private BimApp mApplication;
     private DrawerLayout mDrawerLayout;
     private User user;
+    private Uri mImageUri;
 
     private Fragment mDashboardFragment;
     private Fragment mNewTopicFragment;
@@ -83,6 +90,7 @@ public class ProjectsViewActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //setRetainInstance(true);
         setContentView(R.layout.activity_logged_in);
         mApplication = (BimApp) getApplication();
 
@@ -102,6 +110,12 @@ public class ProjectsViewActivity extends AppCompatActivity
         mProjectsFragment = new FragmentProject();
         mTopicFragment = new FragmentTopic();
         mNewCommentFragment = new FragmentNewComment();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle b){
+        b.putCharSequence("Things", "are things");
+        super.onSaveInstanceState(b);
     }
 
     @Override
@@ -306,7 +320,8 @@ public class ProjectsViewActivity extends AppCompatActivity
     @Override
     public void onTakePhoto(View v) {
 
-        // TODO HANDLE USER DENYING ACCESS!
+        // TODO HANDLE USER DENYING ACCESS TO CAMERA!!!
+
 
         if(ContextCompat.checkSelfPermission(mApplication, Manifest.permission.CAMERA) !=
                 PackageManager.PERMISSION_GRANTED){
@@ -328,16 +343,40 @@ public class ProjectsViewActivity extends AppCompatActivity
                 Uri photoURI = FileProvider.getUriForFile(this,
                         "com.bimapp.fileprovider",
                         photoFile);
+                mImageUri = photoURI;
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, 1);
+                startActivityForResult(takePictureIntent, TAKE_PHOTO_INTENT);
             }
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        Toast.makeText(mApplication, "Successfully took photo", Toast.LENGTH_SHORT).show();
+        super.onActivityResult(requestCode,resultCode,data);
+        if (requestCode == TAKE_PHOTO_INTENT) {
+            if (resultCode == RESULT_OK) {
+                if (data.getData() != null) {
+                    Uri imageUri = data.getData();
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else {
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), mImageUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                // Add code to push bitmap to fragment here
+                Bundle b = new Bundle();
+                b.putCharSequence("uri", mImageUri.toString());
+                mNewCommentFragment.setArguments(b);
 
+                openFragment(mNewTopicFragment, NEWTOPIC_FRAGMENT_TAG);
+            }
+        }
     }
 
 
@@ -361,7 +400,6 @@ public class ProjectsViewActivity extends AppCompatActivity
             }
         });
     }
-
 
 
 }

@@ -1,19 +1,13 @@
 package com.bimapp.controller;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
@@ -32,23 +26,20 @@ import org.json.JSONObject;
  * {@link FragmentNewTopic.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.NewTopicToPresenter, NewTopicFragmentInterface {
+public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.NewTopicToPresenter,
+        NewTopicFragmentInterface {
 
 
-
-
-    public interface NewTopicFragmentInterface{
-        interface FragmentNewTopicListener{
-            void getTemplate(NewTopicFragmentInterface callback);
-        }
-        void setTemplate(Template template);
-    }
 
     private NewTopicViewInterface mNewTopicView;
     private BimApp mApplication;
 
-    // This is the listener for the activity
+    private Template mTemplate;
+
+    // This is the listener for the EntityManager
     private OnFragmentInteractionListener mListener;
+    // This is the listener for the activity
+
 
 
     @Override
@@ -71,25 +62,44 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         mApplication = (BimApp) this.getActivity().getApplication();
+        // Templates for testing. Need to be passed from activity which template should be shown.
+        MOCKTEMPLATES MOCK = new MOCKTEMPLATES();
+        mTemplate = new Template(MOCK.templateOne);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Instantiate the view
+        if (savedInstanceState != null){
+            Log.d("Got a bundle", savedInstanceState.getCharSequence("uri").toString());
+        }
 
-        // Templates for testing. Need to be passed from activity which template should be shown.
-        MOCKTEMPLATES MOCK = new MOCKTEMPLATES();
-        Template t = new Template(MOCK.templateOne);
 
-        mNewTopicView = new NewTopicView(inflater,container, t);
+
+        mNewTopicView = new NewTopicView(inflater,container, mTemplate);
         mNewTopicView.registerListener(this);
         // Inflate the layout for this fragment
         return mNewTopicView.getRootView();
     }
 
 
+    @Override
+    public void onSaveInstanceState(final Bundle outState){
+
+        outState.putCharSequence("Thing", "Other thing");
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null){
+            Log.d("Got a bundle", savedInstanceState.getCharSequence("uri").toString());
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -107,6 +117,7 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
         super.onDetach();
         mListener = null;
     }
+
 
     /**
      * This interface must be implemented by activities that contain this
