@@ -80,12 +80,13 @@ public class ProjectsViewActivity extends AppCompatActivity
     private Uri mImageUri;
 
     private Fragment mDashboardFragment;
-    private Fragment mNewTopicFragment;
+    private FragmentNewTopic mNewTopicFragment;
     private Fragment mTopicListFragment;
     private Fragment mProjectsFragment;
     private Fragment mTopicFragment;
     private Fragment mNewCommentFragment;
 
+    private int state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +94,6 @@ public class ProjectsViewActivity extends AppCompatActivity
         //setRetainInstance(true);
         setContentView(R.layout.activity_logged_in);
         mApplication = (BimApp) getApplication();
-
         //This is a terrible way to handle things! It essentially gets the
         //user and sets the user variable through a callback method
         // Should be moved to some BimApp setting on login
@@ -111,13 +111,10 @@ public class ProjectsViewActivity extends AppCompatActivity
         mTopicFragment = new FragmentTopic();
         mNewCommentFragment = new FragmentNewComment();
     }
-
     @Override
     public void onSaveInstanceState(Bundle b){
-        b.putCharSequence("Things", "are things");
         super.onSaveInstanceState(b);
     }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -167,6 +164,9 @@ public class ProjectsViewActivity extends AppCompatActivity
                     }
                 }
         );
+        if(state == 1)
+            openFragment(mNewTopicFragment, NEWTOPIC_FRAGMENT_TAG);
+        else
         openFragment(mDashboardFragment, DASHBOARD_FRAGMENT_TAG);
     }
 
@@ -212,6 +212,7 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     @Override
     public void onFragmentProjectInteraction(Project project) {
+        state = 0;
         openFragment(mDashboardFragment, DASHBOARD_FRAGMENT_TAG);
 
     }
@@ -223,17 +224,20 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     @Override
     public void onDashboardItemClick(Template template) {
+        state = 1;
         openFragment(mNewTopicFragment, NEWTOPIC_FRAGMENT_TAG);
     }
 
     @Override
     public void onTopicSelected(Topic topic) {
+        state = 0;
         FragmentTopic.setTopic(topic);
         openFragment(mTopicFragment, TOPIC_FRAGMENT_TAG);
     }
 
     @Override
     public void openCommentFragment(Topic topic) {
+        state = 0;
         FragmentNewComment.setTopic(topic);
         openFragment(mNewCommentFragment, COMMENT_FRAGMENT_TAG);
     }

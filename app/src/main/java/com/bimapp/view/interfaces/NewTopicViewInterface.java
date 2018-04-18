@@ -1,5 +1,6 @@
 package com.bimapp.view.interfaces;
 
+import android.graphics.Bitmap;
 import android.view.View;
 
 import com.bimapp.model.entity.Template.Template;
@@ -15,5 +16,6 @@ public interface NewTopicViewInterface extends ViewMVP, View.OnClickListener {
 
     void registerListener(NewTopicToPresenter newTopicToPresenter);
     void unregisterListener();
+    void setImage(Bitmap image);
     //void takePhoto(View view);
 }

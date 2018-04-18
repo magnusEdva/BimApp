@@ -1,6 +1,7 @@
 package com.bimapp.controller;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -30,7 +31,6 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
         NewTopicFragmentInterface {
 
 
-
     private NewTopicViewInterface mNewTopicView;
     private BimApp mApplication;
 
@@ -39,7 +39,6 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
     // This is the listener for the EntityManager
     private OnFragmentInteractionListener mListener;
     // This is the listener for the activity
-
 
 
     @Override
@@ -60,7 +59,7 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         mApplication = (BimApp) this.getActivity().getApplication();
@@ -72,31 +71,28 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Instantiate the view
-        if (savedInstanceState != null){
-            Log.d("Got a bundle", savedInstanceState.getCharSequence("uri").toString());
+
+
+        if (mNewTopicView == null) {
+
+            mNewTopicView = new NewTopicView(inflater, container, mTemplate);
+            mNewTopicView.registerListener(this);
         }
-
-
-
-        mNewTopicView = new NewTopicView(inflater,container, mTemplate);
-        mNewTopicView.registerListener(this);
         // Inflate the layout for this fragment
         return mNewTopicView.getRootView();
     }
 
 
     @Override
-    public void onSaveInstanceState(final Bundle outState){
-
-        outState.putCharSequence("Thing", "Other thing");
+    public void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putCharSequence("Thing", "Other thing");
     }
 
     @Override
-    public void onActivityCreated(final Bundle savedInstanceState){
+    public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             Log.d("Got a bundle", savedInstanceState.getCharSequence("uri").toString());
         }
     }
@@ -131,6 +127,7 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
      */
     public interface OnFragmentInteractionListener {
         void onPostingTopic(boolean success);
+
         void onTakePhoto(View v);
     }
 
@@ -144,16 +141,19 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
             mListener.onPostingTopic(success);
     }
 
+    public void setImage(Bitmap image){
+        mNewTopicView.setImage(image);
+    }
     /**
      * Class to create templates for testing purposes
      */
-    public class MOCKTEMPLATES{
+    public class MOCKTEMPLATES {
         JSONObject templateOne;
 
         JSONObject templateTwo;
 
-        MOCKTEMPLATES(){
-            try{
+        MOCKTEMPLATES() {
+            try {
                 templateTwo = new JSONObject("{\n" +
                         "    \"templateName\": \"Uønsket hendelse\",\n" +
                         "    \"templateDescription\": \"\",\n" +
@@ -259,7 +259,7 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
                         "}");
 
 
-            }catch (JSONException e){
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }

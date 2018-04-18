@@ -326,12 +326,11 @@ public class OAuthHandler {
                 storeAccesToken(access_token, Integer.parseInt(expires_in));
                 storeRefreshToken(refresh_token);
                 setFinishedRefresh();
-
-                if (callback != null)
-                    callback.onSuccess(result);
             } catch (JSONException j) {
                 j.printStackTrace();
             }
+            if (callback != null)
+                callback.onSuccess(result);
         }
 
         @Override

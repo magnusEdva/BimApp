@@ -1,6 +1,7 @@
 package com.bimapp.view;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -87,6 +88,11 @@ public class NewTopicView implements NewTopicViewInterface {
     @Override
     public void unregisterListener() {
         mListener = null;
+    }
+
+    @Override
+    public void setImage(Bitmap image) {
+
     }
 
 
