@@ -15,6 +15,7 @@ import com.bimapp.model.network.NetworkConnManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -61,17 +62,28 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
         @Override
         public void onError(String response) {
             Log.d("TopicsEntityManager", "Unsuccessfully posted topic to server");
-            makeToast(false);
+            Topic t = null;
+            makeToast(false, t);
         }
 
         @Override
         public void onSuccess(String JSONResponse) {
             Log.d("TopicsEntityManager", "Successfully posted topic to server");
-            makeToast(true);
+
+            JSONObject object = null;
+            try {
+                object  = new JSONObject(JSONResponse);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (object != null) {
+                Topic topic = new Topic(object);
+                makeToast(true, topic);
+            }
         }
 
-        public void makeToast(boolean success){
-            mListener.postedTopic(success);
+        public void makeToast(boolean success, Topic topic){
+            mListener.postedTopic(success, topic);
         }
     }
 
@@ -104,6 +116,9 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
             mControllerCallback.setTopics(topics);
         }
     }
+    /**
+     * Inner class which handles the callbacks from Volley on a putTopics request
+     */
     private class putTopicsCallback implements Callback<String> {
 
         TopicFragmentInterface mControllerCallback;
@@ -154,7 +169,9 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
     }
 
     /**
-     *
+     * Method to update a topic
+     * @param controllerCallback This is where the onSuccess/onError methods must be implemented
+     * @param topic the topic you wish to update
      */
     public void putTopic(TopicFragmentInterface controllerCallback, Topic topic){
         NetworkConnManager.networkRequest(mContext, Request.Method.PUT,

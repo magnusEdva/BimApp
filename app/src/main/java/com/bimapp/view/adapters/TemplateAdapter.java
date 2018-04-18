@@ -191,6 +191,8 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
             return NODE_TYPE.LABELS.getInt();
         else if (c.getTitle().equals(Template.IMAGE))
             return NODE_TYPE.IMAGE.getInt();
+        else if (c.getTitle().equals(Template.COMMENT))
+            return NODE_TYPE.COMMENT.getInt();
         else
             return 0;
     }

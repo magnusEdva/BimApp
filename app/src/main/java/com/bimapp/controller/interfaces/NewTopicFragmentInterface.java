@@ -28,5 +28,5 @@ public interface NewTopicFragmentInterface {
      * Method implemented by {@link com.bimapp.controller.FragmentNewTopic} and is called when
      * {@link com.bimapp.model.entityManagers.TopicsEntityManager} has finished posting a topic.
      */
-    void postedTopic(boolean success);
+    void postedTopic(boolean success, Topic topic);
 }

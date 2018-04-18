@@ -16,9 +16,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.bimapp.BimApp;
 import com.bimapp.R;
+import com.bimapp.controller.interfaces.CommentFragmentInterface;
+import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Topic;
+import com.bimapp.model.entity.Viewpoint;
+import com.bimapp.model.entityManagers.CommentEntityManager;
 import com.bimapp.view.adapters.TemplateAdapter;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
@@ -39,6 +44,9 @@ public class NewTopicView implements NewTopicViewInterface {
     private RecyclerView.LayoutManager mLayoutManager;
 
     private Button mSubmit;
+    private Bitmap mImage;
+
+    private String mCommentString;
 
     public NewTopicView(LayoutInflater inflater, ViewGroup container, final Template template){
 
@@ -93,6 +101,28 @@ public class NewTopicView implements NewTopicViewInterface {
     @Override
     public void setImage(Bitmap image) {
 
+        mImage = image;
+
+    }
+
+    @Override
+    public void postedTopic(Topic topic) {
+        Viewpoint vp = null;
+        Comment comment = new Comment(mCommentString);
+        if(mImage != null){
+            vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, mImage);
+            comment.setViewpoint(vp);
+            //comment.setViewpointGuid(topic.getGuid());
+        }
+        BimApp context = (BimApp) mRootView.getContext().getApplicationContext();
+        CommentEntityManager cm = new CommentEntityManager(context);
+        cm.postComment(new CommentFragmentInterface() {
+            @Override
+            public void postedComment(boolean success, Comment comment) {
+                Log.d("Piss!", "Ett eller annet");
+            }
+        }, topic, comment, mImage);
+
     }
 
 
@@ -122,6 +152,8 @@ public class NewTopicView implements NewTopicViewInterface {
         // Make new topic from fields
         Topic topic = new Topic(title,topicType,topic_status,assignedTo,description);
 
+        EditText comment_input = mRootView.findViewById(R.id.topic_comment_input);
+        mCommentString = comment_input.getText().toString();
         // Tell fragment that topic has been posted
         Log.d("Posting topic", "Name of topic " + title );
         mListener.onPostTopic(topic);

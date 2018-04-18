@@ -17,6 +17,9 @@ public class Viewpoint implements Entity {
     public final static String SNAPSHOT_data = "snapshot_type";
 
 
+    public final static String SNAPSHOT_TYPE_JPG ="jpg";
+    public final static String SNAPSHOT_TYPE_PNG = "png";
+
     private Snapshot mSnapshot;
     private String mGuid;
     private boolean hasSnapshot = false;

@@ -316,6 +316,7 @@ public class ProjectsViewActivity extends AppCompatActivity
 
         if (success) {
             Toast.makeText(mApplication, "Successfully posted topic", Toast.LENGTH_SHORT).show();
+
         } else {
             Toast.makeText(mApplication, "Didn't post topic", Toast.LENGTH_SHORT).show();
         }

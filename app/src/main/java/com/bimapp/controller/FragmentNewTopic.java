@@ -38,6 +38,7 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
 
     // This is the listener for the EntityManager
     private OnFragmentInteractionListener mListener;
+    private Bitmap mImage;
     // This is the listener for the activity
 
 
@@ -136,12 +137,16 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
      * Gets called when the {@link TopicsEntityManager} has finished posting a topic
      */
     @Override
-    public void postedTopic(boolean success) {
-        if (mListener != null)
-            mListener.onPostingTopic(success);
+    public void postedTopic(boolean success, Topic topic) {
+        if (success && topic != null){
+            mNewTopicView.postedTopic(topic);
+        }
+        //if (mListener != null)
+        // mListener.onPostingTopic(success);
     }
 
     public void setImage(Bitmap image){
+        //mImage = image;
         mNewTopicView.setImage(image);
     }
     /**
