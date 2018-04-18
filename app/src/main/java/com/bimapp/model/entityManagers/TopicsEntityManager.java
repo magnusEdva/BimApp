@@ -5,6 +5,7 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
+import com.bimapp.controller.interfaces.TopicFragmentInterface;
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
 import com.bimapp.model.entity.EntityListConstructor;
 import com.bimapp.model.entity.Topic;
@@ -103,6 +104,24 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
             mControllerCallback.setTopics(topics);
         }
     }
+    private class putTopicsCallback implements Callback<String> {
+
+        TopicFragmentInterface mControllerCallback;
+
+        public putTopicsCallback(TopicFragmentInterface controllerCallback) {
+            mControllerCallback = controllerCallback;
+        }
+
+        @Override
+        public void onError(String response) {
+            // TODO Error handling
+        }
+
+        @Override
+        public void onSuccess(String response) {
+            Log.d("PUTCOMMENT:", response);
+        }
+    }
 
     /**
      * Callback method from {@link }
@@ -132,5 +151,13 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
         NetworkConnManager.networkRequest(mContext, Request.Method.POST,
                 APICall.POSTTopics(mContext.getActiveProject()), new TopicPostCallback(controllerCallback),topic);
 
+    }
+
+    /**
+     *
+     */
+    public void putTopic(TopicFragmentInterface controllerCallback, Topic topic){
+        NetworkConnManager.networkRequest(mContext, Request.Method.PUT,
+                APICall.PUTTopic(mContext.getActiveProject(), topic), new putTopicsCallback(controllerCallback),topic);
     }
 }

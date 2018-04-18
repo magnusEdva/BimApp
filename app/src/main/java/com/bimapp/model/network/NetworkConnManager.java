@@ -21,10 +21,10 @@ public class NetworkConnManager {
     private NetworkConnManager() {}
 
     /**
-     * Sends a request using the @Param call URL. Data is provided to the callbacks onSuccess.
+     * Sends a request using the @aram call URL. Data is provided to the callbacks onSuccess.
      *
-     * @param context      Required to aqcuire tokens.
-     * @param method       type of request. From Volley.Request + 11 for aqcuiring an Image
+     * @param context      Required to acquire tokens.
+     * @param method       type of request. From Volley.Request + 11 for acquiring an Image
      * @param url          the url to be executed. Found in APICall
      * @param callback     implementation of the network.Callback interface.
      */
@@ -84,6 +84,9 @@ public class NetworkConnManager {
                 BimAppRequest.GET(context, method, url, new networkCallback(callback), params);
                 break;
             case(Request.Method.POST):
+                BimAppRequest.POST(context, method, url, new networkCallback(callback), params);
+                break;
+            case(Request.Method.PUT):
                 BimAppRequest.POST(context, method, url, new networkCallback(callback), params);
                 break;
             case(11):

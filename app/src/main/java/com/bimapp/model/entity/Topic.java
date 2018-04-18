@@ -3,9 +3,11 @@ package com.bimapp.model.entity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +17,25 @@ import java.util.Map;
  */
 
 public class Topic implements Entity {
+    public static String GUID = "guid";
+    public static String TOPIC_TYPE = "topic_type";
+    public static String TOPIC_STATUS = "topic_status";
+    public static String REFERENCE_LINKS = "reference_links";
+    public static String TITLE = "title";
+    public static String PRIORITY = "priority";
+    public static String INDEX = "index";
+    public static String LABELS = "labels";
+    public static String CREATION_DATE = "creation_date";
+    public static String CREATION_AUTHOR = "creation_author";
+    public static String MODIFIED_DATE = "modified_date";
+    public static String MODIFIED_AUTHOR = "modified_author";
+    public static String ASSIGNED_TO = "assigned_to";
+    public static String STAGE = "stage";
+    public static String DESCRIPTION = "description";
+    public static String BIM_SNIPPET = "bim_snippet";
+    public static String DUE_DATE = "due_date";
+    public static String AUTHORIZATION = "authorization";
+
 
     private String mGuid;
 
@@ -40,15 +61,18 @@ public class Topic implements Entity {
 
     private String mAssignedTo;
 
+    private List<String> mLabels;
+
     private String mStage;
     /**
      * actual description of the Topic. Used with the title to provide full context.
      */
     private String mDescription;
 
-    //private String bim_snippet;
+    private BimSnippet mBimSnippet;
 
     private String mDueDate;
+
 
     public Topic(JSONObject obj) {
         construct(obj);
@@ -71,7 +95,7 @@ public class Topic implements Entity {
         return mTopicType;
     }
 
-    public void setTopicType(String topicType){
+    public void setTopicType(String topicType) {
         mTopicType = topicType;
     }
 
@@ -79,7 +103,7 @@ public class Topic implements Entity {
         return mTopicStatus;
     }
 
-    public void setTopicStatus(String topicStatus ){
+    public void setTopicStatus(String topicStatus) {
         mTopicStatus = topicStatus;
     }
 
@@ -130,35 +154,38 @@ public class Topic implements Entity {
     private void construct(JSONObject obj) {
 
         try {
-            if (obj.has("guid"))
-                mGuid = obj.getString("guid");
-            if (obj.has("topic_type"))
-                mTopicType = obj.getString("topic_type");
-            if (obj.has("topic_status"))
-                mTopicStatus = obj.getString("topic_status");
-            //TODO aquire an actual array mReferenceLinks = obj.getJSONArray("reference_links");
-            if (obj.has("title"))
-                mTitle = obj.getString("title");
-            if (obj.has("description"))
-                mDescription = obj.getString("description");
-            if (obj.has("priority"))
-                mPriority = obj.getString("priority");
-            if (obj.has("index"))
-                mIndex = obj.getInt("index");
-            if (obj.has("creation_date"))
-                mCreationDate = obj.getString("creation_date");
-            if (obj.has("creation_author"))
-                mCreationAuthor = obj.getString("creation_author");
-            if (obj.has("modified_author"))
-                mModifiedAuthor = obj.getString("modified_author");
-            if (obj.has("assigned_to"))
-                mAssignedTo = obj.getString("assigned_to");
-            if (obj.has("stage"))
-                mStage = obj.getString("stage");
-
-            //TODO bimSnippet = obj.getString("bim_snippet");
-            if (obj.has("due_date"))
-                mDueDate = obj.getString("due_date");
+            if (obj.has(GUID))
+                mGuid = obj.getString(GUID);
+            if (obj.has(TOPIC_TYPE))
+                mTopicType = obj.getString(TOPIC_TYPE);
+            if (obj.has(TOPIC_STATUS))
+                mTopicStatus = obj.getString(TOPIC_STATUS);
+            if (obj.has(LABELS))
+                mLabels = getListFromJSonArray(obj.getJSONArray(LABELS));
+            if (obj.has(REFERENCE_LINKS))
+                mReferenceLinks = getListFromJSonArray(obj.getJSONArray(REFERENCE_LINKS));
+            if (obj.has(TITLE))
+                mTitle = obj.getString(TITLE);
+            if (obj.has(DESCRIPTION))
+                mDescription = obj.getString(DESCRIPTION);
+            if (obj.has(PRIORITY))
+                mPriority = obj.getString(PRIORITY);
+            if (obj.has(INDEX))
+                mIndex = obj.getInt(INDEX);
+            if (obj.has(CREATION_DATE))
+                mCreationDate = obj.getString(CREATION_DATE);
+            if (obj.has(CREATION_AUTHOR))
+                mCreationAuthor = obj.getString(CREATION_AUTHOR);
+            if (obj.has(MODIFIED_AUTHOR))
+                mModifiedAuthor = obj.getString(MODIFIED_AUTHOR);
+            if (obj.has(ASSIGNED_TO))
+                mAssignedTo = obj.getString(ASSIGNED_TO);
+            if (obj.has(STAGE))
+                mStage = obj.getString(STAGE);
+            if(obj.has(BIM_SNIPPET))
+             mBimSnippet = new BimSnippet(obj.getJSONObject("bim_snippet"));
+            if (obj.has(DUE_DATE))
+                mDueDate = obj.getString(DUE_DATE);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -186,7 +213,6 @@ public class Topic implements Entity {
             map.put("stage", mStage);
         if (mDescription != null)
             map.put("description", mDescription);
-        //TODO map.put("bim_snippet, mBimSnippet);
         if (mDueDate != null)
             map.put("due_date", mDueDate);
         return map;
@@ -195,35 +221,92 @@ public class Topic implements Entity {
     @Override
     public JSONObject getJsonParams() {
         JSONObject map = new JSONObject();
-        try{
+        try {
             if (mTopicType != null)
-                map.put("topic_type", mTopicType);
+                map.put(TOPIC_TYPE, mTopicType);
             if (mTopicStatus != null)
-                map.put("topic_status", mTopicStatus);
-            //TODO map.put("reference_links", mReferenceLinks);
-            map.put("title", mTitle);
+                map.put(TOPIC_STATUS, mTopicStatus);
+            if (mReferenceLinks != null)
+                map.put(REFERENCE_LINKS, mReferenceLinks);
+            if (mLabels != null)
+                map.put(LABELS, mLabels);
+            if (mTitle != null)
+                map.put(TITLE, mTitle);
             if (mPriority != null)
-                map.put("priority", mPriority);
+                map.put(PRIORITY, mPriority);
             if (mIndex != null)
-                map.put("index", mIndex.toString());
+                map.put(INDEX, mIndex.toString());
             if (mAssignedTo != null)
-                map.put("assigned_to", mAssignedTo);
+                map.put(ASSIGNED_TO, mAssignedTo);
             if (mStage != null)
-                map.put("stage", mStage);
+                map.put(STAGE, mStage);
             if (mDescription != null)
-                map.put("description", mDescription);
-            //TODO map.put("bim_snippet, mBimSnippet);
+                map.put(DESCRIPTION, mDescription);
+            if(mBimSnippet != null)
+                map.put(BIM_SNIPPET, mBimSnippet.getJSON());
             if (mDueDate != null)
-                map.put("due_date", mDueDate);
+                map.put(DUE_DATE, mDueDate);
 
-        }catch (JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return map;
+    }
+
+    public List<String> getListFromJSonArray(JSONArray array) {
+        List<String> strings = new ArrayList<>();
+        for (int i = 0; i < array.length(); i++) {
+            try {
+                strings.add(array.getString(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return strings;
     }
 
     @Override
     public String toString() {
         return mTitle;
     }
+
+    private class BimSnippet {
+        final static String SNIPPET_TYPE = "snippet_type";
+        final static String IS_EXTERNAL = "is_external";
+        final static String REFERENCE = "reference";
+        final static String REFERENCE_SCHEMA = "reference_schema";
+
+        String mSnippet_type;
+        boolean mExternal;
+        String mReference;
+        String mReferenceSchema;
+
+        public BimSnippet(JSONObject snippet) {
+            try {
+                if (snippet.has(SNIPPET_TYPE))
+                    mSnippet_type = snippet.getString(SNIPPET_TYPE);
+                if (snippet.has(IS_EXTERNAL))
+                    mExternal = snippet.getBoolean(IS_EXTERNAL);
+                if (snippet.has(REFERENCE))
+                    mReference = snippet.getString(REFERENCE);
+                if (snippet.has(REFERENCE_SCHEMA))
+                    mReferenceSchema = snippet.getString(REFERENCE_SCHEMA);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        public JSONObject getJSON(){
+            JSONObject map = new JSONObject();
+            try {
+                map.put(SNIPPET_TYPE, mSnippet_type);
+                map.put(IS_EXTERNAL, mExternal);
+                map.put(REFERENCE, mReference);
+                map.put(REFERENCE_SCHEMA, mReferenceSchema);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return map;
+        }
+    }
+
 }

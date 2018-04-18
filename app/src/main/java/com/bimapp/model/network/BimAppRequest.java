@@ -76,7 +76,7 @@ class BimAppRequest {
     static void POST(final BimApp mContext, final int method, String url,
                      final Callback callback, final Entity params) {
 
-        JsonObjectRequest getUserRequest = new JsonObjectRequest(url, params.getJsonParams(), new Response.Listener<JSONObject>() {
+        JsonObjectRequest getUserRequest = new JsonObjectRequest(method, url, params.getJsonParams(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 callback.onSuccess(response.toString());
@@ -122,6 +122,8 @@ class BimAppRequest {
         mContext.addToRequestQueue(getUserRequest, url);
 
     }
+
+
     static void GETImage(final BimApp mContext, final int method, String url,
                      final Callback<Bitmap> callback) {
         ImageRequest imageRequest = new ImageRequest(

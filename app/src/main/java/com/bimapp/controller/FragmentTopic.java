@@ -14,6 +14,7 @@ import com.bimapp.controller.interfaces.TopicFragmentInterface;
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entityManagers.CommentEntityManager;
+import com.bimapp.model.entityManagers.TopicsEntityManager;
 import com.bimapp.view.TopicView;
 import com.bimapp.view.interfaces.TopicViewInterface;
 
@@ -30,6 +31,7 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface, T
     private static Topic mTopic;
     private TopicViewInterface mTopicView;
     private CommentEntityManager commentManager;
+    private TopicsEntityManager mTopicManager;
     private BimApp mContext;
     private TopicFragmentListener mListener;
     private List<Comment> mComments;
@@ -51,6 +53,7 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface, T
         super.onCreate(savedInstanceState);
         mContext = (BimApp) this.getActivity().getApplication();
         commentManager = new CommentEntityManager(mContext);
+        mTopicManager = new TopicsEntityManager(mContext);
         mComments = new ArrayList<>();
     }
 
@@ -98,6 +101,11 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface, T
     @Override
     public void newComment() {
         mListener.openCommentFragment(mTopic);
+    }
+
+    @Override
+    public void changedCOmment() {
+        mTopicManager.putTopic(this, mTopic);
     }
 
 
