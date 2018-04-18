@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -45,6 +46,10 @@ public class TopicView implements TopicViewInterface{
     private LinearLayoutManager linearLayoutManager;
 
     private BimApp mContext;
+
+    private List<String> mStatusFields;
+
+    private List<String> mTypeFields;
 
     public TopicView(LayoutInflater inflater, ViewGroup container){
         mRootView = inflater.inflate(R.layout.view_topic, container, false);
@@ -97,7 +102,7 @@ public class TopicView implements TopicViewInterface{
     }
 
     @Override
-    public void setTopic(Topic topic) {
+    public void setTopic(final Topic topic) {
         mTitleText.setText(topic.getmTitle());
         mRequestedByText.setText(topic.getCreationAuthor());
         mAssignedToText.setText(topic.getAssignedTo());
@@ -106,15 +111,38 @@ public class TopicView implements TopicViewInterface{
         mStatusText.setText(R.string.issue_status);
         mTypeText.setText(R.string.topic_type);
 
+        mTypeFields = mContext.getActiveProject().getProjectTypesOrdered(topic);
         mTypeAdapter =  new ArrayAdapter<String>(mRootView.getContext()
                 , R.layout.support_simple_spinner_dropdown_item
-                , mContext.getActiveProject().getProjectTypesOrdered(topic));
+                , mTypeFields);
+
+        mStatusFields = mContext.getActiveProject().getProjectStatusOrdered(topic);
         mStatusAdapter =  new ArrayAdapter<String>(mRootView.getContext()
                 , R.layout.support_simple_spinner_dropdown_item
-                , mContext.getActiveProject().getProjectStatusOrdered(topic));
+                , mStatusFields);
 
         mTypeInput.setAdapter(mTypeAdapter);
         mStatusInput.setAdapter(mStatusAdapter);
+
+        mTypeInput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                topic.setTopicType(mTypeFields.get(position));
+                mListener.changedCOmment();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
+
+        mStatusInput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                topic.setTopicStatus(mStatusFields.get(position));
+                mListener.changedCOmment();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
     }
 
 

@@ -71,8 +71,16 @@ public class Topic implements Entity {
         return mTopicType;
     }
 
+    public void setTopicType(String topicType){
+        mTopicType = topicType;
+    }
+
     public String getTopicStatus() {
         return mTopicStatus;
+    }
+
+    public void setTopicStatus(String topicStatus ){
+        mTopicStatus = topicStatus;
     }
 
     public List<String> getReferenceLinks() {
