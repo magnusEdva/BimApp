@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -72,6 +73,44 @@ public class Project implements Entity {
 
     public void setIssueBoardExtensions(IssueBoardExtensions issueBoardExtensions){
         mIssueBoardExtensions = issueBoardExtensions;
+    }
+
+    /**
+     * Method for acquiring all the project Types and get them with the
+     * topics Type in position 0 for Spinner purposes.
+     * @param topic this topics type is in pos 0
+     * @return project Types
+     */
+
+    public List<String> getProjectTypesOrdered(Topic topic){
+        String topicType = topic.getTopicType();
+        List<String> projectTypes = mIssueBoardExtensions.getTopicType();
+        return reOrderList(projectTypes, topicType);
+    }
+    /**
+     * Method for acquiring all the project Status and get them with the
+     * topics Status in position 0 for Spinner purposes.
+     * @param topic this topics Status is in pos 0
+     * @return project Statuses
+     */
+    public List<String> getProjectStatusOrdered(Topic topic){
+        String Status = topic.getTopicStatus();
+        List<String> projectStatus = mIssueBoardExtensions.getTopicStatus();
+        return reOrderList(projectStatus, Status);
+    }
+
+    private List<String> reOrderList(List<String> list, String newFirstElement){
+        String tempStringStorage = list.get(0);
+        list.remove(0);
+        list.add(0, newFirstElement);
+        for(int i = 1; i < list.size(); i++){
+            if(list.get(i).equals(newFirstElement)){
+                list.remove(i);
+                list.add(i, tempStringStorage);
+
+            }
+        }
+        return list;
     }
 
     /**

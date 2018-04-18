@@ -34,8 +34,8 @@
     <string name="issue_name_input">Type issue name here!</string>
     <string name="issue_name">Topic title</string>
     <string name="issue_description">Topic Description</string>
-    <string name="issue_status">Topic Status</string>
-    <string name="topice_type">Topic Type</string>
+    <string name="issue_status">Topic Status:</string>
+    <string name="topic_type">Topic Type:</string>
     <string name="assigned_to">Assigned to</string>
     <string name="topic_label">Label</string>
     <string name="due_date">Due date</string>

@@ -1,11 +1,7 @@
 package com.bimapp.view.adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +11,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bimapp.BimApp;
 import com.bimapp.R;
@@ -288,7 +283,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 4: // TOPIC_TYPE
-                holder.mItem_description.setText(R.string.topice_type);
+                holder.mItem_description.setText(R.string.topic_type);
                 holder.mSpinner_input.setAdapter(holder.mAdapter);
                 //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
