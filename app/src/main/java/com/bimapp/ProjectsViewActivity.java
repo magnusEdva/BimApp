@@ -91,18 +91,13 @@ public class ProjectsViewActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setRetainInstance(true);
         setContentView(R.layout.activity_logged_in);
         mApplication = (BimApp) getApplication();
         //This is a terrible way to handle things! It essentially gets the
         //user and sets the user variable through a callback method
         // Should be moved to some BimApp setting on login
 
-        NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
-                APICall.GETUser(), this, null);
 
-        if (mApplication.getActiveProject() == null)
-            setInitialActiveProject();
 
         mDashboardFragment = new FragmentDashboard();
         mTopicListFragment = FragmentTopicList.newInstance(this);
@@ -118,6 +113,12 @@ public class ProjectsViewActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
+
+        NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
+                APICall.GETUser(), this, null);
+
+        if (mApplication.getActiveProject() == null)
+            setInitialActiveProject();
 
         //Setting toolbar as the actionbar.
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -357,18 +358,19 @@ public class ProjectsViewActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
+        Bitmap bitmap = null;
         if (requestCode == TAKE_PHOTO_INTENT) {
             if (resultCode == RESULT_OK) {
                 if (data.getData() != null) {
                     Uri imageUri = data.getData();
                     try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }else {
                     try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), mImageUri);
+                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), mImageUri);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -377,8 +379,9 @@ public class ProjectsViewActivity extends AppCompatActivity
                 Bundle b = new Bundle();
                 b.putCharSequence("uri", mImageUri.toString());
                 mNewCommentFragment.setArguments(b);
-
+                mNewTopicFragment.setImage(bitmap);
                 openFragment(mNewTopicFragment, NEWTOPIC_FRAGMENT_TAG);
+
             }
         }
     }
