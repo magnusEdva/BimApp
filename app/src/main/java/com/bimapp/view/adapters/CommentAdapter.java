@@ -56,9 +56,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.NameView.setText(mComments.get(position).getAuthor());
         holder.DateView.setText(mComments.get(position).getDate());
 
-        if(mComments.get(position).getViewpoint() != null){
+        if(mComments.get(position).getViewpoint() != null && mComments.get(position).getViewpoint().getSnapshot() != null){
             holder.imageView.setImageBitmap(createScaledBitmap(mComments.get(position).getViewpoint().getSnapshot(),
-                    811, 743, true));
+                    500, 500, true));
         }
 
     }

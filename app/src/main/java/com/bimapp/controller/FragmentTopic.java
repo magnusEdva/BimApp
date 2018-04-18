@@ -89,6 +89,7 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface, T
             if(mComments.get(i).equals(comment)){
                 mComments.remove(i);
                 mComments.add(i,comment);
+                found = true;
             }
         }
         mTopicView.setComments(mComments);

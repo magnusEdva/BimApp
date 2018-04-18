@@ -62,7 +62,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
      * @param file     base64 encoded string
      */
     @Override
-    public void postImage(CommentFragmentInterface listener, Topic topic, Comment comment, Bitmap file) {
+    public void postComment(CommentFragmentInterface listener, Topic topic, Comment comment, Bitmap file) {
         Viewpoint vp = new Viewpoint("png", file);
         postImage(new postViewpointCallback(listener, topic, comment), topic, vp);
     }
@@ -76,7 +76,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
     private void requestSnapshot(TopicFragmentInterface listener, Comment comment, Viewpoint vp) {
         NetworkConnManager.networkRequest(mContext, 11,
                 APICall.GETSnapshot(mContext.getActiveProject(), comment.getTopicGuid(), vp),
-                new getSnapshotCallback(listener, vp,comment), null);
+                new getSnapshotCallback(listener, vp, comment), null);
     }
 
     private void requestComments(getCommentsCallback Callback, Topic topic) {
@@ -244,7 +244,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
 
         @Override
         public void onError(String response) {
-            Log.d("CommentSnapshot",response);
+            Log.d("CommentSnapshot", response);
         }
     }
 }

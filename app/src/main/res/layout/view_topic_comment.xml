@@ -4,16 +4,18 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingEnd="5dp"
-    android:paddingStart="5dp">
+    android:paddingStart="5dp"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/TopicCommentName"
@@ -37,12 +39,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/TopicCommentImage"/>
         </LinearLayout>
-
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/TopicCommentImage"
+                android:gravity="center"/>
         <TextView
             android:id="@+id/TopicCommentContent"
             android:layout_width="wrap_content"
