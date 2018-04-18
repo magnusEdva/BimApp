@@ -13,7 +13,7 @@ public class APICall {
 
     private static final String HOST_URL = "https://bcf.bimsync.com/bcf/";
 
-    private static final String BASE_HOST_URL = "https://bimsync.com/projects/";
+    public static final String BASE_HOST_URL = "https://api.bimsync.com/";
 
     private static final String VERSION_NUMBER = "2.1";
 

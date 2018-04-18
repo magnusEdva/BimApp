@@ -23,6 +23,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.bimapp.APIkey;
 import com.bimapp.BimApp;
 import com.bimapp.R;
+import com.bimapp.model.network.APICall;
 import com.bimapp.model.network.Callback;
 
 import org.json.JSONException;
@@ -194,7 +195,7 @@ public class OAuthHandler {
 
     private String getOAuthUri() {
         StringBuilder URI = new StringBuilder();
-        URI.append(mContext.getText(R.string.BimSyncURL)); //mContext.getText(R.string.BimSyncURL)"http://10.0.0.8:8089/"
+        URI.append(APICall.BASE_HOST_URL); //mContext.getText(R.string.BimSyncURL)"http://10.0.0.8:8089/"
         URI.append(mContext.getText(R.string.oAuth0));
         URI.append(mContext.getText(R.string.oAuthClientId));
         URI.append(APIkey.Client_id);
