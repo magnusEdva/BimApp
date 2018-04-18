@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:text="Submit"
+        style="@style/BimAppDefaultTheme"
         >
     </Button>
 </LinearLayout>

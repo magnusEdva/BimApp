@@ -27,7 +27,7 @@
         >
         <activity
             android:name=".WelcomeActivity"
-            >
+            android:theme="@style/BimAppDefaultTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"
                     />
@@ -51,7 +51,7 @@
             android:name=".ProjectsViewActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
-            >
+            android:theme="@style/BimAppDefaultTheme">
         </activity>
         <provider
             android:name="android.support.v4.content.FileProvider"

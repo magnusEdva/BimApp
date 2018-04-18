@@ -1,11 +1,18 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="BimAppDefaultTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <!--
+        <item name="primaryText">@color/colorPrimaryText</item>
+        <item name="secondaryText">@color/colorSecondaryText</item>
+        <item name="textIcons">@color/colorTextIcons</item>
+        <item name="dividerColor">@color/colorDividerColor</item>
+        <item name="textColor">@color/colorTextColor</item>
+        -->
     </style>
 
 </resources>
