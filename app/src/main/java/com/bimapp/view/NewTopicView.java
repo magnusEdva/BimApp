@@ -122,7 +122,7 @@ public class NewTopicView implements NewTopicViewInterface {
                 Log.d("Piss!", "Ett eller annet");
 
             }
-        }, topic, comment);
+        }, topic, comment, mImage);
 
     }
 
