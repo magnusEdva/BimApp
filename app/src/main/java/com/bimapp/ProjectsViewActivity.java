@@ -160,6 +160,8 @@ public class ProjectsViewActivity extends AppCompatActivity
                     }
                 }
         );
+
+
         if(state == 1)
             openFragment(mNewTopicFragment, NEWTOPIC_FRAGMENT_TAG);
         else

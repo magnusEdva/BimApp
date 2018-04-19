@@ -63,7 +63,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
      */
     @Override
     public void postComment(CommentFragmentInterface listener, Topic topic, Comment comment, Bitmap file) {
-        Viewpoint vp = new Viewpoint("png", file);
+        Viewpoint vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, file);
         postImage(new postViewpointCallback(listener, topic, comment), topic, vp);
     }
 

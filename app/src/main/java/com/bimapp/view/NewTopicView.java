@@ -119,10 +119,9 @@ public class NewTopicView implements NewTopicViewInterface {
         cm.postComment(new CommentFragmentInterface() {
             @Override
             public void postedComment(boolean success, Comment comment) {
-                Log.d("Piss!", "Ett eller annet");
 
             }
-        }, topic, comment);
+        }, topic, comment, mImage);
 
     }
 
