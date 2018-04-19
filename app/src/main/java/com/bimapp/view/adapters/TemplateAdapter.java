@@ -343,7 +343,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         mList.addAll(template.getNodes());
     }
 
-    private void setExtensionsDefaultValue() {
+    public void setExtensionsDefaultValue() {
         IssueBoardExtensions issueBoardExtensions = mActiveProject.getIssueBoardExtensions();
         List<TemplateNode> nodes = mTemplate.getNodes();
 

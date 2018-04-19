@@ -9,6 +9,7 @@ import com.bimapp.model.entity.Topic;
 public interface NewTopicViewInterface extends ViewMVP, View.OnClickListener {
 
 
+    void updateExtensionsDefaultValue();
 
     interface NewTopicToPresenter{
         void onPostTopic(Topic topic);

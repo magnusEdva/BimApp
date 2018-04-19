@@ -75,6 +75,12 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        mNewTopicView.updateExtensionsDefaultValue();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 

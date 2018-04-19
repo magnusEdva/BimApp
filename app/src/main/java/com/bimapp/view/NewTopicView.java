@@ -74,6 +74,7 @@ public class NewTopicView implements NewTopicViewInterface {
             }
         });
 
+        Log.d("New View", "Made new view");
     }
 
 
@@ -115,6 +116,8 @@ public class NewTopicView implements NewTopicViewInterface {
             //comment.setViewpointGuid(topic.getGuid());
         }
         BimApp context = (BimApp) mRootView.getContext().getApplicationContext();
+
+        if(mCommentString != "" && mImage != null){
         CommentEntityManager cm = new CommentEntityManager(context);
         cm.postComment(new CommentFragmentInterface() {
             @Override
@@ -122,6 +125,16 @@ public class NewTopicView implements NewTopicViewInterface {
 
             }
         }, topic, comment, mImage);
+        } else if (mCommentString != "" && mImage == null){
+            CommentEntityManager cm = new CommentEntityManager(context);
+            cm.postComment(new CommentFragmentInterface() {
+                @Override
+                public void postedComment(boolean success, Comment comment) {
+
+                }
+            }, topic, comment);
+        }
+
 
     }
 
@@ -169,6 +182,11 @@ public class NewTopicView implements NewTopicViewInterface {
     @Override
     public void onClick(View view) {
         mListener.onCameraIntent(view);
+    }
+
+    @Override
+    public void updateExtensionsDefaultValue(){
+        mAdapter.setExtensionsDefaultValue();
     }
 }
 
