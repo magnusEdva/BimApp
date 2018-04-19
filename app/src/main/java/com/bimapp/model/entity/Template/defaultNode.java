@@ -15,8 +15,10 @@ public class defaultNode extends TemplateNode {
 
     public void assignDefaultValue(JSONObject node){
         try{
-            if(node.has(DEFAULT_VALUE))
+            if(node.has(DEFAULT_VALUE) && !node.getString(DEFAULT_VALUE).equals("null"))
                 defaultValue = node.getString(DEFAULT_VALUE);
+            else
+                defaultValue = "";
         }catch(Exception e){
             e.printStackTrace();
         }

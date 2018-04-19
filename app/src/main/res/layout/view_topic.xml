@@ -94,7 +94,8 @@
         android:src="@android:drawable/ic_input_add"
         android:id="@+id/view_Topic_floating_button"
         app:backgroundTint="@color/colorAccent"
-        app:elevation="5dp" />
+        app:elevation="5dp"
+        style="@style/BimAppDefaultTheme"/>
 
 
 </LinearLayout>

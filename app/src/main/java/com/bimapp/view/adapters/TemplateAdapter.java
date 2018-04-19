@@ -14,8 +14,11 @@ import android.widget.TextView;
 
 import com.bimapp.BimApp;
 import com.bimapp.R;
+import com.bimapp.model.entity.IssueBoardExtensions;
+import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Template.TemplateNode;
+import com.bimapp.model.entity.Template.defaultNode;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
 import java.util.List;
@@ -29,6 +32,11 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     private final NewTopicViewInterface mListener;
     private Template mTemplate;
     private List<TemplateNode> mList;
+    private BimApp mContext;
+    private Project mActiveProject;
+    private int mDefaultStatus;
+    private int mDefaultType;
+    private int mDefaultAsssignedTo;
 
     //private final NewTopicViewInterface mListener;
 
@@ -144,6 +152,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
             mLayout = itemView.findViewById(R.id.newtopic_list);
             mView = itemView;
         }
+
         public List<String> reorderList(List<String> strings, String defaultValue){
             if(defaultValue == null || !strings.contains(defaultValue))
                 return strings;
@@ -161,9 +170,11 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
      */
     public TemplateAdapter(Template template, NewTopicViewInterface listener) {
         mList =  template.getNodes();
-
+        mContext = (BimApp) listener.getRootView().getContext().getApplicationContext();
+        mActiveProject = mContext.getActiveProject();
         mTemplate = template;
         mListener = listener;
+        setExtensionsDefaultValue();
     }
 
     /**
@@ -282,16 +293,19 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
             case 3: // IssueStatus
                 holder.mItem_description.setText(R.string.issue_status);
                 holder.mSpinner_input.setAdapter(holder.mAdapter);
+                holder.mSpinner_input.setSelection(mDefaultStatus);
                 //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 4: // TOPIC_TYPE
                 holder.mItem_description.setText(R.string.topic_type);
                 holder.mSpinner_input.setAdapter(holder.mAdapter);
+                holder.mSpinner_input.setSelection(mDefaultType);
                 //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 5: // Assigned to
                 holder.mItem_description.setText(R.string.assigned_to);
                 holder.mSpinner_input.setAdapter(holder.mAdapter);
+                holder.mSpinner_input.setSelection(mDefaultAsssignedTo);
                 //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 6: // LABELS
@@ -329,5 +343,43 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         mList.addAll(template.getNodes());
     }
 
+    private void setExtensionsDefaultValue() {
+        IssueBoardExtensions issueBoardExtensions = mActiveProject.getIssueBoardExtensions();
+        List<TemplateNode> nodes = mTemplate.getNodes();
+
+
+
+        for (TemplateNode n : nodes) {
+            if (n.getTitle().equals("topic_status")) {
+                defaultNode dn = (defaultNode) n;
+                String content = (String) dn.getContent();
+                if (!content.equals(""))
+                    mDefaultStatus = issueBoardExtensions.getTopicStatus().indexOf(content);
+                else
+                    mDefaultStatus = issueBoardExtensions.getTopicStatus().indexOf("Open");
+            } else if (n.getTitle().equals("topic_type")) {
+                defaultNode dn = (defaultNode) n;
+                String content = (String) dn.getContent();
+                if (!content.equals(""))
+                    mDefaultType = issueBoardExtensions.getTopicType().indexOf(content);
+                else
+                    mDefaultType = issueBoardExtensions.getTopicType().indexOf("Info");
+            } else if (n.getTitle().equals("assigned_to")) {
+                defaultNode dn = (defaultNode) n;
+                String content = (String) dn.getContent();
+                if (!content.equals("")) {
+                    mDefaultAsssignedTo = issueBoardExtensions.getUserIdType().indexOf(content);
+                }
+            }
+        }
+        // Checks if index are out of bound (-1)
+        if (mDefaultType < 0)
+            mDefaultType = 0;
+        if (mDefaultAsssignedTo < 0)
+            mDefaultAsssignedTo = 0;
+        if (mDefaultStatus < 0)
+            mDefaultStatus = 0;
+
+    }
 
 }

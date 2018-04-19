@@ -255,7 +255,7 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
                         "    \"assigned_to\": {\n" +
                         "        \"mandatory\": false,\n" +
                         "        \"visible\": false,\n" +
-                        "        \"defaultValue\": null\n" +
+                        "        \"defaultValue\": mlyngsedva@gmail.com\n" +
                         "    },\n" +
                         "    \"stage\": {\n" +
                         "        \"mandatory\": false,\n" +
