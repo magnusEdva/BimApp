@@ -229,6 +229,7 @@ public class ProjectsViewActivity extends AppCompatActivity
     public void onDashboardItemClick(Template template) {
         state = 1;
         openFragment(mNewTopicFragment, NEWTOPIC_FRAGMENT_TAG);
+
     }
 
     @Override
