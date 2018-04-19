@@ -51,11 +51,10 @@ public class FragmentTopicList extends Fragment
      * this fragment using the provided parameters.
      * @return A new instance of fragment FragmentTopicList.
      */
-    public static FragmentTopicList newInstance(TopicSelectionInterface listener) {
+    public static FragmentTopicList newInstance() {
         FragmentTopicList fragment = new FragmentTopicList();
         Bundle args = new Bundle();
         fragment.setArguments(args);
-        fragment.setListener(listener);
         return fragment;
     }
 
@@ -81,8 +80,12 @@ public class FragmentTopicList extends Fragment
 
     @Override
     public void onAttach(Context context){
-        // Doesn't do anything at the moment, but we might find uses for it!
         super.onAttach(context);
+        if (context instanceof TopicSelectionInterface)
+            mListener = (TopicSelectionInterface) context;
+        else
+            throw new UnsupportedOperationException();
+
 
     }
     @Override
@@ -95,6 +98,7 @@ public class FragmentTopicList extends Fragment
     public void onDetach(){
         super.onDetach();
         mTopicsEntityManager = null; // I think this helps prevent memory leaks
+        mListener = null;
     }
 
     /**
@@ -108,15 +112,9 @@ public class FragmentTopicList extends Fragment
 
     }
 
-
-
     @Override
     public void onSelectedItem(Topic topic) {
         mListener.onTopicSelected(topic);
-    }
-
-    private void setListener(TopicSelectionInterface listener){
-        mListener = listener;
     }
 
     public interface TopicSelectionInterface{
