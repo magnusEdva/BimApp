@@ -49,7 +49,6 @@
         </activity>
         <activity
             android:name=".ProjectsViewActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/BimAppDefaultTheme">
         </activity>
