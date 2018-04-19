@@ -62,8 +62,7 @@ public class ProjectsViewActivity extends AppCompatActivity
         FragmentDashboard.DashboardListener,
         FragmentTopicList.TopicSelectionInterface,
         FragmentNewTopic.OnFragmentInteractionListener,
-        FragmentTopic.TopicFragmentListener
-{
+        FragmentTopic.TopicFragmentListener {
     public final static String DASHBOARD_FRAGMENT_TAG = "fragment_dashboard";
     public final static String NEWTOPIC_FRAGMENT_TAG = "fragment_new_topic";
     public final static String TOPICLIST_FRAGMENT_TAG = "fragment_topics";
@@ -86,6 +85,12 @@ public class ProjectsViewActivity extends AppCompatActivity
     private Fragment mTopicFragment;
     private Fragment mNewCommentFragment;
 
+
+    /**
+     * Used to manage the backstack Primarily.
+     */
+    final FragmentManager fragmentManager = ProjectsViewActivity.this.getSupportFragmentManager();
+
     private int state;
 
     @Override
@@ -95,16 +100,18 @@ public class ProjectsViewActivity extends AppCompatActivity
         mApplication = (BimApp) getApplication();
 
         mDashboardFragment = new FragmentDashboard();
-        mTopicListFragment = FragmentTopicList.newInstance(this);
+        mTopicListFragment = new FragmentTopicList();
         mNewTopicFragment = new FragmentNewTopic();
         mProjectsFragment = new FragmentProject();
         mTopicFragment = new FragmentTopic();
         mNewCommentFragment = new FragmentNewComment();
     }
+
     @Override
-    public void onSaveInstanceState(Bundle b){
+    public void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -161,11 +168,9 @@ public class ProjectsViewActivity extends AppCompatActivity
                 }
         );
 
+        if(fragmentManager.getBackStackEntryCount() == 0)
+            openFragment(mDashboardFragment, DASHBOARD_FRAGMENT_TAG);
 
-        if(state == 1)
-            openFragment(mNewTopicFragment, NEWTOPIC_FRAGMENT_TAG);
-        else
-        openFragment(mDashboardFragment, DASHBOARD_FRAGMENT_TAG);
     }
 
     @Override
@@ -180,8 +185,8 @@ public class ProjectsViewActivity extends AppCompatActivity
 
     @Override
     public void onError(String response) {
-        if(response != null)
-        Log.d("ProjectsViewActivity", response);
+        if (response != null)
+            Log.d("ProjectsViewActivity", response);
     }
 
     /**
@@ -240,10 +245,6 @@ public class ProjectsViewActivity extends AppCompatActivity
         openFragment(mNewCommentFragment, COMMENT_FRAGMENT_TAG);
     }
 
-    /**
-     * only to be used in openFragment
-     */
-    final FragmentManager fragmentManager = ProjectsViewActivity.this.getSupportFragmentManager();
 
     /**
      * responsible for opening all the fragments this activity possess
@@ -288,6 +289,7 @@ public class ProjectsViewActivity extends AppCompatActivity
 
     /**
      * Manages the Fragment Backstack
+     *
      * @param tag
      * @param transaction
      * @return
@@ -326,9 +328,9 @@ public class ProjectsViewActivity extends AppCompatActivity
         // TODO HANDLE USER DENYING ACCESS TO CAMERA!!!
 
 
-        if(ContextCompat.checkSelfPermission(mApplication, Manifest.permission.CAMERA) !=
-                PackageManager.PERMISSION_GRANTED){
-            requestPermissions(new String[] {Manifest.permission.CAMERA}, 123);
+        if (ContextCompat.checkSelfPermission(mApplication, Manifest.permission.CAMERA) !=
+                PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, 123);
         }
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -354,8 +356,8 @@ public class ProjectsViewActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         Bitmap bitmap = null;
         if (requestCode == TAKE_PHOTO_INTENT) {
             if (resultCode == RESULT_OK) {
@@ -366,7 +368,7 @@ public class ProjectsViewActivity extends AppCompatActivity
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }else {
+                } else {
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), mImageUri);
                     } catch (IOException e) {
@@ -393,7 +395,7 @@ public class ProjectsViewActivity extends AppCompatActivity
                 if (projects != null && !projects.isEmpty()) {
                     IssueBoardExtensionsEntityManager mExtensionManager
                             = new IssueBoardExtensionsEntityManager(mApplication);
-                    mExtensionManager.getIssueBoardExtensions(projects.get(0),new IssueBoardExtensionsEntityManager.IssueBoardExtensionsProjectCallback(){
+                    mExtensionManager.getIssueBoardExtensions(projects.get(0), new IssueBoardExtensionsEntityManager.IssueBoardExtensionsProjectCallback() {
                         @Override
                         public void setExtensions(IssueBoardExtensions issueBoardExtensions) {
                             projects.get(0).setIssueBoardExtensions(issueBoardExtensions);

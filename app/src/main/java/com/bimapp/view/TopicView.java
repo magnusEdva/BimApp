@@ -129,7 +129,7 @@ public class TopicView implements TopicViewInterface{
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(!topic.getTopicType().equals(mTypeFields.get(position))) {
                     topic.setTopicType(mTypeFields.get(position));
-                    mListener.changedComment();
+                    mListener.changedTopic();
                 }
             }
             @Override
@@ -141,7 +141,7 @@ public class TopicView implements TopicViewInterface{
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(!topic.getTopicStatus().equals(mStatusFields.get(position))) {
                     topic.setTopicStatus(mStatusFields.get(position));
-                    mListener.changedComment();
+                    mListener.changedTopic();
                 }
             }
             @Override
