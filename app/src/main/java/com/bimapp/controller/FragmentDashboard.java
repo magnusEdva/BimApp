@@ -146,6 +146,11 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
                         "        \"visible\": false,\n" +
                         "        \"defaultValue\": \"chief@company.com\"\n" +
                         "    },\n" +
+                        "    \"stage\": {\n" +
+                        "        \"mandatory\": false,\n" +
+                        "        \"visible\": true,\n" +
+                        "        \"defaultValue\": \"Bygge fase 1\"\n" +
+                        "    },\n" +
                         "    \"due_date\": {\n" +
                         "        \"mandatory\": true,\n" +
                         "        \"visible\": false,\n" +
@@ -198,6 +203,11 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
                         "        \"mandatory\": false,\n" +
                         "        \"visible\": false,\n" +
                         "        \"defaultValue\": null\n" +
+                        "    },\n" +
+                        "    \"stage\": {\n" +
+                        "        \"mandatory\": false,\n" +
+                        "        \"visible\": true,\n" +
+                        "        \"defaultValue\": \"Bygge fase 1\"\n" +
                         "    },\n" +
                         "    \"due_date\": {\n" +
                         "        \"mandatory\": false,\n" +

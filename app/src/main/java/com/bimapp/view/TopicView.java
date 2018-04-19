@@ -127,8 +127,10 @@ public class TopicView implements TopicViewInterface{
         mTypeInput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                topic.setTopicType(mTypeFields.get(position));
-                mListener.changedCOmment();
+                if(!topic.getTopicType().equals(mTypeFields.get(position))) {
+                    topic.setTopicType(mTypeFields.get(position));
+                    mListener.changedComment();
+                }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }
@@ -137,8 +139,10 @@ public class TopicView implements TopicViewInterface{
         mStatusInput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                topic.setTopicStatus(mStatusFields.get(position));
-                mListener.changedCOmment();
+                if(!topic.getTopicStatus().equals(mStatusFields.get(position))) {
+                    topic.setTopicStatus(mStatusFields.get(position));
+                    mListener.changedComment();
+                }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }

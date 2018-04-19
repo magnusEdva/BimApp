@@ -31,6 +31,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
 
     /**
      * Constructor for the getTopics fragment
+     *
      * @param context
      */
     public TopicsEntityManager(BimApp context) {
@@ -39,6 +40,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
 
     /**
      * Constructor for postTopics fragment
+     *
      * @param context
      * @param listener
      */
@@ -51,11 +53,11 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
     /**
      * Inner class which handles the Callbacks from Volley on a postTopic request
      */
-    private class TopicPostCallback implements Callback<String>{
+    private class TopicPostCallback implements Callback<String> {
 
         NewTopicFragmentInterface mTopicsFragmentInterface;
 
-        public TopicPostCallback(NewTopicFragmentInterface callback){
+        public TopicPostCallback(NewTopicFragmentInterface callback) {
             mTopicsFragmentInterface = callback;
         }
 
@@ -72,7 +74,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
 
             JSONObject object = null;
             try {
-                object  = new JSONObject(JSONResponse);
+                object = new JSONObject(JSONResponse);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -82,7 +84,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
             }
         }
 
-        public void makeToast(boolean success, Topic topic){
+        public void makeToast(boolean success, Topic topic) {
             mListener.postedTopic(success, topic);
         }
     }
@@ -101,7 +103,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
 
         @Override
         public void onError(String response) {
-            // TODO Error handling
+                Log.d("getTopicsError", response);
         }
 
         @Override
@@ -116,6 +118,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
             mControllerCallback.setTopics(topics);
         }
     }
+
     /**
      * Inner class which handles the callbacks from Volley on a putTopics request
      */
@@ -129,8 +132,8 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
 
         @Override
         public void onError(String response) {
-            // TODO Error handling
-        }
+            Log.d("TopicsEntityManager", response);
+            }
 
         @Override
         public void onSuccess(String response) {
@@ -140,6 +143,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
 
     /**
      * Callback method from {@link }
+     *
      * @param topic The topic you want to post
      */
     @Override
@@ -149,6 +153,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
 
     /**
      * Method to get topics from the server
+     *
      * @param controllerCallback This is where the onSuccess/onError methods must be implemented
      */
     public void getTopics(TopicsFragmentInterface controllerCallback) {
@@ -159,22 +164,24 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
 
     /**
      * Method to post topics to the server
+     *
      * @param controllerCallback This is where the onSuccess/onError methods must be implemented
-     * @param topic The topic you want to post
+     * @param topic              The topic you want to post
      */
-    public void postTopic(NewTopicFragmentInterface controllerCallback, Topic topic){
+    public void postTopic(NewTopicFragmentInterface controllerCallback, Topic topic) {
         NetworkConnManager.networkRequest(mContext, Request.Method.POST,
-                APICall.POSTTopics(mContext.getActiveProject()), new TopicPostCallback(controllerCallback),topic);
+                APICall.POSTTopics(mContext.getActiveProject()), new TopicPostCallback(controllerCallback), topic);
 
     }
 
     /**
      * Method to update a topic
+     *
      * @param controllerCallback This is where the onSuccess/onError methods must be implemented
-     * @param topic the topic you wish to update
+     * @param topic              the topic you wish to update
      */
-    public void putTopic(TopicFragmentInterface controllerCallback, Topic topic){
+    public void putTopic(TopicFragmentInterface controllerCallback, Topic topic) {
         NetworkConnManager.networkRequest(mContext, Request.Method.PUT,
-                APICall.PUTTopic(mContext.getActiveProject(), topic), new putTopicsCallback(controllerCallback),topic);
+                APICall.PUTTopic(mContext.getActiveProject(), topic), new putTopicsCallback(controllerCallback), topic);
     }
 }

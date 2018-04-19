@@ -227,7 +227,7 @@ public class Topic implements Entity {
             if (mTopicStatus != null)
                 map.put(TOPIC_STATUS, mTopicStatus);
             if (mReferenceLinks != null)
-                map.put(REFERENCE_LINKS, mReferenceLinks);
+                map.put(REFERENCE_LINKS, getJSONArrayFromList(mReferenceLinks));
             if (mLabels != null)
                 map.put(LABELS, mLabels);
             if (mTitle != null)
@@ -263,6 +263,13 @@ public class Topic implements Entity {
             }
         }
         return strings;
+    }
+    public JSONArray getJSONArrayFromList(List<String> list){
+        JSONArray array = new JSONArray();
+        for(String s : list){
+            array.put(s);
+        }
+        return array;
     }
 
     @Override

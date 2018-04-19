@@ -92,7 +92,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
     }
 
     private void postImage(postViewpointCallback callback, Topic topic, Viewpoint vp) {
-        NetworkConnManager.networkRequest(mContext, Request.Method.GET,
+        NetworkConnManager.networkRequest(mContext, Request.Method.POST,
                 APICall.POSTViewpoints(mContext.getActiveProject(), topic),
                 callback, vp);
     }
@@ -128,7 +128,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
 
         @Override
         public void onError(String response) {
-
+            Log.d("GetComments", response);
         }
     }
 

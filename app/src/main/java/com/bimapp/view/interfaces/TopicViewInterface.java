@@ -8,7 +8,7 @@ import java.util.List;
 public interface TopicViewInterface extends ViewMVP {
     interface TopicListener {
         void newComment();
-        void changedCOmment();
+        void changedComment();
     }
 
     void registerListener(TopicListener listener);

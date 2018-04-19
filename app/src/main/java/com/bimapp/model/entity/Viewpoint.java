@@ -1,28 +1,29 @@
 package com.bimapp.model.entity;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
+
+import com.bimapp.model.Base64;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 public class Viewpoint implements Entity {
     public final static String GUID = "guid";
     public final static String SNAPSHOT = "snapshot";
     public final static String SNAPSHOT_TYPE = "snapshot_type";
-    public final static String SNAPSHOT_data = "snapshot_type";
+    public final static String SNAPSHOT_DATA = "snapshot_data";
 
 
-    public final static String SNAPSHOT_TYPE_JPG ="jpg";
+    public final static String SNAPSHOT_TYPE_JPG = "jpg";
     public final static String SNAPSHOT_TYPE_PNG = "png";
 
     private Snapshot mSnapshot;
     private String mGuid;
-    private boolean hasSnapshot = false;
+    private boolean hasSnapshot = true;
 
     public Viewpoint(String type, Bitmap data) {
         mSnapshot = new Snapshot(type, data);
@@ -57,7 +58,7 @@ public class Viewpoint implements Entity {
     }
 
     public void constructSnapshot(Bitmap snapshot) {
-            mSnapshot = new Snapshot(snapshot);
+        mSnapshot = new Snapshot(snapshot);
     }
 
     @Override
@@ -70,8 +71,8 @@ public class Viewpoint implements Entity {
         JSONObject viewpoints = new JSONObject();
         JSONObject snapshot = new JSONObject();
         try {
-            snapshot.put(SNAPSHOT_TYPE, mSnapshot.type);
-            snapshot.put(SNAPSHOT_data, mSnapshot.getImageBytesAsString());
+            snapshot.put(SNAPSHOT_TYPE, SNAPSHOT_TYPE_PNG);
+            snapshot.put(SNAPSHOT_DATA, mSnapshot.convert());
             viewpoints.put(SNAPSHOT, snapshot);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -83,12 +84,12 @@ public class Viewpoint implements Entity {
         Bitmap image;
         String type;
 
-        Snapshot( String type, Bitmap data) {
+        Snapshot(String type, Bitmap data) {
             this.type = type;
             image = data;
         }
 
-        Snapshot(Bitmap data){
+        Snapshot(Bitmap data) {
             image = data;
         }
 
@@ -97,6 +98,19 @@ public class Viewpoint implements Entity {
             image.compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);
             byte[] bitmapdata = blob.toByteArray();
             return new String(bitmapdata);
+        }
+
+
+        public String convert() {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+
+            try {
+                return new String (Base64.getEncoder().encode(outputStream.toByteArray()), "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
 
