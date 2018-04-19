@@ -8,9 +8,15 @@
     <TextView
         android:id="@+id/topic_description"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:padding="@dimen/text_margin"
+        />
     <EditText
         android:id="@+id/topic_description_input"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/text_margin"
+        android:background="@color/colorPrimaryLight"
+        style="@style/BimAppDefaultTheme"
+        />
 </LinearLayout>

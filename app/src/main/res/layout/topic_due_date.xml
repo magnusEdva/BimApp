@@ -14,7 +14,10 @@
         app:layout_constraintEnd_toStartOf="@+id/topic_due_date_input"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:padding="@dimen/text_margin"
+        style="@style/BimAppDefaultTheme"
+        />
 
     <EditText
         android:id="@+id/topic_due_date_input"
@@ -26,6 +29,9 @@
         android:singleLine="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/topic_due_date"
-        app:layout_constraintTop_toTopOf="@+id/topic_due_date" />
+        app:layout_constraintTop_toTopOf="@+id/topic_due_date"
+        android:padding="@dimen/text_margin"
+        style="@style/BimAppDefaultTheme"
+        />
 
 </android.support.constraint.ConstraintLayout>

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    style="@style/BimAppDefaultTheme"
     >
     <Button
         android:id="@+id/topic_image_button"
@@ -12,5 +13,6 @@
         android:background="@color/colorPrimaryLight"
         android:textColor="@color/colorTextColor"
         style="@style/BimAppDefaultTheme"
+        android:padding="@dimen/text_margin"
         />
 </LinearLayout>

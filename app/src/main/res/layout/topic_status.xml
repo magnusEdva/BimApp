@@ -10,12 +10,16 @@
         android:id="@+id/topic_status"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:minWidth="@dimen/text_margin" />
+        android:padding="@dimen/text_margin"
+        style="@style/BimAppDefaultTheme"
+        />
 
     <Spinner
         android:id="@+id/topic_status_input"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:minWidth="@dimen/text_margin" />
+        android:padding="@dimen/text_margin"
+        style="@style/BimAppDefaultTheme"
+        />
 
 </LinearLayout>
