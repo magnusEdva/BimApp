@@ -104,7 +104,7 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface, T
     }
 
     @Override
-    public void changedComment() {
+    public void changedTopic() {
         mTopicManager.putTopic(this, mTopic);
     }
 
