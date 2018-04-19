@@ -2,24 +2,26 @@ package com.bimapp.model.network;
 
 import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.bimapp.BimApp;
-import com.bimapp.R;
 import com.bimapp.model.entity.Entity;
-import com.bimapp.model.network.oauth.OAuthHandler;
-
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.net.Proxy.Type.HTTP;
 
 /**
  * Provider of a very general GET method that can be accessed through NetworkConnManager.
@@ -66,6 +68,10 @@ class BimAppRequest {
                     volleyError = error;
                 }
                 return volleyError;
+            }
+            @Override
+            protected String getParamsEncoding() {
+                return "UTF-8";
             }
         };
 
@@ -117,6 +123,10 @@ class BimAppRequest {
                 }
                 return volleyError;
             }
+            @Override
+            protected String getParamsEncoding() {
+                return "UTF-8";
+            }
         };
 
         mContext.addToRequestQueue(getUserRequest, url);
@@ -160,6 +170,10 @@ class BimAppRequest {
                     volleyError = error;
                 }
                 return volleyError;
+            }
+            @Override
+            protected String getParamsEncoding() {
+                return "UTF-8";
             }
         };
         mContext.addToRequestQueue(imageRequest, url);
