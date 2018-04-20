@@ -91,8 +91,6 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     final FragmentManager fragmentManager = ProjectsViewActivity.this.getSupportFragmentManager();
 
-    private int state;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -215,7 +213,6 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     @Override
     public void onFragmentProjectInteraction(Project project) {
-        state = 0;
         openFragment(mDashboardFragment, DASHBOARD_FRAGMENT_TAG);
 
     }
@@ -227,21 +224,18 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     @Override
     public void onDashboardItemClick(Template template) {
-        state = 1;
         openFragment(mNewTopicFragment, NEWTOPIC_FRAGMENT_TAG);
 
     }
 
     @Override
     public void onTopicSelected(Topic topic) {
-        state = 0;
         FragmentTopic.setTopic(topic);
         openFragment(mTopicFragment, TOPIC_FRAGMENT_TAG);
     }
 
     @Override
     public void openCommentFragment(Topic topic) {
-        state = 0;
         FragmentNewComment.setTopic(topic);
         openFragment(mNewCommentFragment, COMMENT_FRAGMENT_TAG);
     }
