@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
@@ -70,8 +69,8 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
         setRetainInstance(true);
         mApplication = (BimApp) this.getActivity().getApplication();
         // Templates for testing. Need to be passed from activity which template should be shown.
-        MOCKTEMPLATES MOCK = new MOCKTEMPLATES();
-        mTemplate = new Template(MOCK.templateOne);
+        //MOCKTEMPLATES MOCK = new MOCKTEMPLATES();
+        //mTemplate = new Template(MOCK.templateOne);
     }
 
     @Override
@@ -124,6 +123,10 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public void setTemplate(Template template) {
+        mTemplate = template;
     }
 
 
