@@ -3,6 +3,7 @@ package com.bimapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.bimapp.model.network.Callback;
@@ -25,6 +26,7 @@ public class WelcomeActivity extends AppCompatActivity {
             openProjectsView();
 
         }
+        Log.d("create", "create");
 
     }
 

@@ -83,7 +83,7 @@ public class ProjectsViewActivity extends AppCompatActivity
     private Fragment mTopicListFragment;
     private Fragment mProjectsFragment;
     private Fragment mTopicFragment;
-    private Fragment mNewCommentFragment;
+    private FragmentNewComment mNewCommentFragment;
 
 
     /**
@@ -166,7 +166,7 @@ public class ProjectsViewActivity extends AppCompatActivity
                 }
         );
 
-        if(fragmentManager.getBackStackEntryCount() == 0)
+        if (fragmentManager.getBackStackEntryCount() == 0)
             openFragment(mDashboardFragment, DASHBOARD_FRAGMENT_TAG);
 
     }
@@ -320,7 +320,7 @@ public class ProjectsViewActivity extends AppCompatActivity
     }
 
     @Override
-    public void onTakePhoto(View v) {
+    public void onTakePhoto() {
 
         // TODO HANDLE USER DENYING ACCESS TO CAMERA!!!
 
@@ -328,26 +328,27 @@ public class ProjectsViewActivity extends AppCompatActivity
         if (ContextCompat.checkSelfPermission(mApplication, Manifest.permission.CAMERA) !=
                 PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, 123);
-        }
+        } else {
 
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = ImageFile.createImageFile(mApplication);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.bimapp.fileprovider",
-                        photoFile);
-                mImageUri = photoURI;
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, TAKE_PHOTO_INTENT);
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            // Ensure that there's a camera activity to handle the intent
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = ImageFile.createImageFile(mApplication);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(this,
+                            "com.bimapp.fileprovider",
+                            photoFile);
+                    mImageUri = photoURI;
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, TAKE_PHOTO_INTENT);
+                }
             }
         }
     }
@@ -375,9 +376,8 @@ public class ProjectsViewActivity extends AppCompatActivity
                 // Add code to push bitmap to fragment here
                 Bundle b = new Bundle();
                 b.putCharSequence("uri", mImageUri.toString());
-                mNewCommentFragment.setArguments(b);
+                mNewCommentFragment.setImage(bitmap);
                 mNewTopicFragment.setImage(bitmap);
-                openFragment(mNewTopicFragment, NEWTOPIC_FRAGMENT_TAG);
 
             }
         }

@@ -23,17 +23,17 @@ public class Viewpoint implements Entity {
 
     private Snapshot mSnapshot;
     private String mGuid;
-    private boolean hasSnapshot = true;
+    private boolean hasSnapshot;
 
     public Viewpoint(String type, Bitmap data) {
         mSnapshot = new Snapshot(type, data);
     }
 
     public Viewpoint(JSONObject jsonObject) {
-        contruct(jsonObject);
+        construct(jsonObject);
     }
 
-    private void contruct(JSONObject jsonObject) {
+    private void construct(JSONObject jsonObject) {
         try {
             mGuid = jsonObject.getString(GUID);
             if (jsonObject.has(SNAPSHOT))
@@ -93,12 +93,6 @@ public class Viewpoint implements Entity {
             image = data;
         }
 
-        private String getImageBytesAsString() {
-            ByteArrayOutputStream blob = new ByteArrayOutputStream();
-            image.compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);
-            byte[] bitmapdata = blob.toByteArray();
-            return new String(bitmapdata);
-        }
 
 
         public String convert() {

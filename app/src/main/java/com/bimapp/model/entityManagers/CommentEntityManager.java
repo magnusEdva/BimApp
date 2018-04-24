@@ -1,6 +1,7 @@
 package com.bimapp.model.entityManagers;
 
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -64,7 +65,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
     @Override
     public void postComment(CommentFragmentInterface listener, Topic topic, Comment comment, Bitmap file) {
         Viewpoint vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, file);
-        postImage(new postViewpointCallback(listener, topic, comment), topic, vp);
+        new postImage(new postViewpointCallback(listener, topic, comment), topic, vp).doInBackground();
     }
 
     private void requestViewpoint(TopicFragmentInterface listener, Comment comment) {
@@ -91,10 +92,24 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
                 callback, comment);
     }
 
-    private void postImage(postViewpointCallback callback, Topic topic, Viewpoint vp) {
-        NetworkConnManager.networkRequest(mContext, Request.Method.POST,
-                APICall.POSTViewpoints(mContext.getActiveProject(), topic),
-                callback, vp);
+    private class postImage extends AsyncTask<Void, Integer, Boolean>{
+        postViewpointCallback mCallback;
+        Topic mTopic;
+        Viewpoint mVp;
+
+        postImage(postViewpointCallback callback, Topic topic, Viewpoint vp){
+            mCallback = callback;
+            mTopic = topic;
+            mVp = vp;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            NetworkConnManager.networkRequest(mContext, Request.Method.POST,
+                    APICall.POSTViewpoints(mContext.getActiveProject(), mTopic),
+                    mCallback, mVp);
+            return null;
+        }
     }
 
 
@@ -142,6 +157,8 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
 
         @Override
         public void onError(String response) {
+            if(response != null)
+                Log.d("postComment", response);
             mListener.postedComment(false, null);
         }
 
@@ -191,37 +208,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
         }
     }
 
-    private class postViewpointCallback implements Callback<String> {
 
-        CommentFragmentInterface mListener;
-        Topic mTopic;
-        Comment mComment;
-
-        postViewpointCallback(CommentFragmentInterface listener, Topic topic, Comment comment) {
-            mListener = listener;
-            mTopic = topic;
-            mComment = comment;
-        }
-
-        @Override
-        public void onError(String response) {
-            mListener.postedComment(false, null);
-        }
-
-        @Override
-        public void onSuccess(String response) {
-            Viewpoint vp;
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                vp = new Viewpoint(jsonObject);
-                mComment.setViewpointGuid(vp.getGuid());
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            postComment(mListener, mTopic, mComment);
-        }
-    }
 
     private class getSnapshotCallback implements Callback<Bitmap> {
         TopicFragmentInterface mControllerCallback;
@@ -244,7 +231,42 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
 
         @Override
         public void onError(String response) {
-            Log.d("CommentSnapshot", response);
+           if(response != null) Log.d("CommentSnapshot", response);
+        }
+    }
+
+
+    private class postViewpointCallback  implements Callback<String> {
+
+        CommentFragmentInterface mListener;
+        Topic mTopic;
+        Comment mComment;
+
+        postViewpointCallback(CommentFragmentInterface listener, Topic topic, Comment comment) {
+            mListener = listener;
+            mTopic = topic;
+            mComment = comment;
+        }
+
+        @Override
+        public void onError(String response) {
+            mListener.postedComment(false, null);
+            if(response != null)
+                Log.d("postViewpoint",response);
+        }
+
+        @Override
+        public void onSuccess(String response) {
+            Viewpoint vp;
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                vp = new Viewpoint(jsonObject);
+                mComment.setViewpointGuid(vp.getGuid());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            postComment(mListener, mTopic, mComment);
         }
     }
 }

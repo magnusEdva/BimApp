@@ -122,6 +122,7 @@ public class OAuthHandler {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.d("Access Token", "server returned error got an access token");
                         if (error != null) {
                             new CallbackHandler().onErrorResponse(error);
                             error.printStackTrace();
