@@ -144,6 +144,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
 
         @Override
         public void onError(String response) {
+            if(response != null)
             Log.d("GetComments", response);
         }
     }
