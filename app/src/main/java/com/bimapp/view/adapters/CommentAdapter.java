@@ -63,13 +63,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.DateView.setText(mComments.get(position).getDate());
 
         if (mComments.get(position).getViewpoint() != null && mComments.get(position).getViewpoint().getSnapshot() != null) {
-            holder.imageView.setImageBitmap(scaleDown(mComments.get(position).getViewpoint().getSnapshot(), 500, false));
+            holder.bitmap = mComments.get(position).getViewpoint().getSnapshot();
+            holder.imageView.setImageBitmap(scaleDown(holder.bitmap, 500, false));
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mFullscreenImage.setVisibility(View.VISIBLE);
-                    mFullscreenImage.setImageBitmap(
-                            mComments.get(holder.getAdapterPosition()).getViewpoint().getSnapshot());
+                    mFullscreenImage.setImageBitmap(holder.bitmap);
                 }
             });
         }
@@ -88,6 +88,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         public final TextView DateView;
         public final ImageView imageView;
         public final View ItemView;
+        public Bitmap bitmap;
 
         public ViewHolder(View itemView) {
             super(itemView);
