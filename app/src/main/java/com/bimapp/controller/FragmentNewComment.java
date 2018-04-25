@@ -45,7 +45,9 @@ public class FragmentNewComment extends Fragment implements CommentViewInterface
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mCommentView = new CommentView(inflater, container);
+        if(mCommentView == null) {
+            mCommentView = new CommentView(inflater, container);
+        }
         mCommentView.attachListener(this);
         mCommentView.setTopic(mTopic);
         return mCommentView.getRootView();

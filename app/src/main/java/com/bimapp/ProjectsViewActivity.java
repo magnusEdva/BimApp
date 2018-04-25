@@ -373,14 +373,26 @@ public class ProjectsViewActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
                 }
-                // Add code to push bitmap to fragment here
-                Bundle b = new Bundle();
-                b.putCharSequence("uri", mImageUri.toString());
-                mNewCommentFragment.setImage(bitmap);
-                mNewTopicFragment.setImage(bitmap);
+                sendImageTOFragment(bitmap);
+
 
             }
         }
+    }
+
+    private void sendImageTOFragment(Bitmap bitmap){
+        String tag = fragmentManager.getBackStackEntryAt
+                (fragmentManager.getBackStackEntryCount() - 1).getName();
+        switch (tag){
+            case(NEWTOPIC_FRAGMENT_TAG):
+                mNewTopicFragment.setImage(bitmap);
+                break;
+            case(COMMENT_FRAGMENT_TAG):
+                mNewCommentFragment.setImage(bitmap);
+                break;
+        }
+
+
     }
 
 

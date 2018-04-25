@@ -33,8 +33,6 @@ public class NetworkConnManager {
 
         if(context.checkLogIn()){
             sendRequest(context, method, url, callback, params);
-        } else if(context.checkTokensAndRefresh()){
-            sendRequest(context, method, url, callback, params);
         } else{
             Intent intent = new Intent(context, WelcomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

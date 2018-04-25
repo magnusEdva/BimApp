@@ -27,6 +27,7 @@ public class Viewpoint implements Entity {
 
     public Viewpoint(String type, Bitmap data) {
         mSnapshot = new Snapshot(type, data);
+        hasSnapshot = true;
     }
 
     public Viewpoint(JSONObject jsonObject) {
