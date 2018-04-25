@@ -226,10 +226,10 @@ public class Topic implements Entity {
                 map.put(TOPIC_TYPE, mTopicType);
             if (mTopicStatus != null)
                 map.put(TOPIC_STATUS, mTopicStatus);
-            if (mReferenceLinks != null)
+            if (mReferenceLinks != null && !mReferenceLinks.isEmpty())
                 map.put(REFERENCE_LINKS, getJSONArrayFromList(mReferenceLinks));
-            if (mLabels != null)
-                map.put(LABELS, mLabels);
+            if (mLabels != null && !mLabels.isEmpty())
+                map.put(LABELS, getJSONArrayFromList(mLabels));
             if (mTitle != null)
                 map.put(TITLE, mTitle);
             if (mPriority != null)
