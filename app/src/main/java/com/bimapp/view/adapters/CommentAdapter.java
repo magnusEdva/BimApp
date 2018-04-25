@@ -1,5 +1,6 @@
 package com.bimapp.view.adapters;
 
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,17 +30,22 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
      * for interactions
      */
     private TopicViewInterface mListener;
+    /**
+     * Reference to class variable used to blow up an image.
+     */
+    private ImageView mFullscreenImage;
 
-    public CommentAdapter(){
+    public CommentAdapter(ImageView fullscreenImage) {
+        mFullscreenImage = fullscreenImage;
         mComments = new ArrayList<>();
     }
 
-    public void setComments(List<Comment> comments){
+    public void setComments(List<Comment> comments) {
         mComments = comments;
         notifyDataSetChanged();
     }
 
-    public void addComment(Comment comment){
+    public void addComment(Comment comment) {
         mComments.add(comment);
     }
 
@@ -51,14 +57,21 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.ContentView.setText(mComments.get(position).getComment());
         holder.NameView.setText(mComments.get(position).getAuthor());
         holder.DateView.setText(mComments.get(position).getDate());
 
-        if(mComments.get(position).getViewpoint() != null && mComments.get(position).getViewpoint().getSnapshot() != null){
-            holder.imageView.setImageBitmap(createScaledBitmap(mComments.get(position).getViewpoint().getSnapshot(),
-                    500, 500, true));
+        if (mComments.get(position).getViewpoint() != null && mComments.get(position).getViewpoint().getSnapshot() != null) {
+            holder.imageView.setImageBitmap(scaleDown(mComments.get(position).getViewpoint().getSnapshot(), 500, false));
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mFullscreenImage.setVisibility(View.VISIBLE);
+                    mFullscreenImage.setImageBitmap(
+                            mComments.get(holder.getAdapterPosition()).getViewpoint().getSnapshot());
+                }
+            });
         }
 
     }
@@ -84,5 +97,18 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             this.imageView = itemView.findViewById(R.id.TopicCommentImage);
             this.ContentView = itemView.findViewById(R.id.TopicCommentContent);
         }
+    }
+
+    public static Bitmap scaleDown(Bitmap realImage, float maxImageSize,
+                                   boolean filter) {
+        float ratio = Math.min(
+                (float) maxImageSize / realImage.getWidth(),
+                (float) maxImageSize / realImage.getHeight());
+        int width = Math.round((float) ratio * realImage.getWidth());
+        int height = Math.round((float) ratio * realImage.getHeight());
+
+        Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width,
+                height, filter);
+        return newBitmap;
     }
 }

@@ -99,6 +99,8 @@ public class FragmentNewComment extends Fragment implements CommentViewInterface
     public void postedComment(boolean success, Comment comment) {
         if(comment != null)
             Log.d("NewComment",success + " " + comment.getComment());
+        mListener.onFragmentFinish();
+
     }
 
 

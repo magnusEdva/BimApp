@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -34,6 +35,7 @@ public class TopicView implements TopicViewInterface{
     private TextView mTypeText;
     private Spinner mTypeInput;
     private Spinner mStatusInput;
+    private ImageView mFullScreenImage;
 
     private ArrayAdapter<String> mTypeAdapter;
 
@@ -60,19 +62,20 @@ public class TopicView implements TopicViewInterface{
         mTypeInput = mRootView.findViewById(R.id.view_topic_type_input);
         mStatusInput = mRootView.findViewById(R.id.view_topic_status_input);
         floatingButton = mRootView.findViewById(R.id.view_Topic_floating_button);
+        mFullScreenImage = mRootView.findViewById(R.id.view_topic_comment_fullscreen_image);
 
         RecyclerView commentsList = mRootView.findViewById(R.id.view_topic_comment_list);
         linearLayoutManager = new LinearLayoutManager(mRootView.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         commentsList.setLayoutManager(linearLayoutManager);
 
-        mCommentsAdapter = new CommentAdapter();
+        mCommentsAdapter = new CommentAdapter(mFullScreenImage);
         commentsList.setAdapter(mCommentsAdapter);
 
         mTypeText = mRootView.findViewById(R.id.view_topic_type);
         mStatusText = mRootView.findViewById(R.id.view_topic_status);
 
-
+        setFullScreenImageOnClick();
         floatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,5 +158,13 @@ public class TopicView implements TopicViewInterface{
         mCommentsAdapter.setComments(comments);
     }
 
+    private void setFullScreenImageOnClick(){
+        mFullScreenImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFullScreenImage.setVisibility(View.GONE);
+            }
+        });
+    }
 
 }

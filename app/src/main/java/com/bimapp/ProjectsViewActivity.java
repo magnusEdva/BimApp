@@ -143,16 +143,16 @@ public class ProjectsViewActivity extends AppCompatActivity
 
                         switch (id) {
                             case R.id.nav_projects:
-                                openFragment(mProjectsFragment, PROJECTS_FRAGMENT_TAG);
+                                openFragment(PROJECTS_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_issues:
-                                openFragment(mTopicListFragment, TOPICLIST_FRAGMENT_TAG);
+                                openFragment(TOPICLIST_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_dashboard:
-                                openFragment(mDashboardFragment, DASHBOARD_FRAGMENT_TAG);
+                                openFragment(DASHBOARD_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_new_topic:
-                                openFragment(mNewTopicFragment, NEWTOPIC_FRAGMENT_TAG);
+                                openFragment(NEWTOPIC_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_log_out:
                                 mApplication.logOut();
@@ -167,7 +167,7 @@ public class ProjectsViewActivity extends AppCompatActivity
         );
 
         if (fragmentManager.getBackStackEntryCount() == 0)
-            openFragment(mDashboardFragment, DASHBOARD_FRAGMENT_TAG);
+            openFragment(DASHBOARD_FRAGMENT_TAG);
 
     }
 
@@ -213,7 +213,7 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     @Override
     public void onFragmentProjectInteraction(Project project) {
-        openFragment(mDashboardFragment, DASHBOARD_FRAGMENT_TAG);
+        openFragment(DASHBOARD_FRAGMENT_TAG);
 
     }
 
@@ -226,20 +226,20 @@ public class ProjectsViewActivity extends AppCompatActivity
     public void onDashboardItemClick(Template template) {
         mNewTopicFragment = new FragmentNewTopic();
         mNewTopicFragment.setTemplate(template);
-        openFragment(mNewTopicFragment, NEWTOPIC_FRAGMENT_TAG);
+        openFragment(NEWTOPIC_FRAGMENT_TAG);
 
     }
 
     @Override
     public void onTopicSelected(Topic topic) {
         FragmentTopic.setTopic(topic);
-        openFragment(mTopicFragment, TOPIC_FRAGMENT_TAG);
+        openFragment(TOPIC_FRAGMENT_TAG);
     }
 
     @Override
     public void openCommentFragment(Topic topic) {
         FragmentNewComment.setTopic(topic);
-        openFragment(mNewCommentFragment, COMMENT_FRAGMENT_TAG);
+        openFragment(COMMENT_FRAGMENT_TAG);
     }
 
 
@@ -316,7 +316,7 @@ public class ProjectsViewActivity extends AppCompatActivity
         } else {
             Toast.makeText(mApplication, "Didn't post topic", Toast.LENGTH_SHORT).show();
         }
-        openFragment(mDashboardFragment, DASHBOARD_FRAGMENT_TAG);
+        openFragment(DASHBOARD_FRAGMENT_TAG);
     }
 
     @Override
@@ -351,6 +351,17 @@ public class ProjectsViewActivity extends AppCompatActivity
                 }
             }
         }
+    }
+
+    @Override
+    public void onFragmentFinish() {
+        int backStackEntryCount = fragmentManager.getBackStackEntryCount();
+        String tag = DASHBOARD_FRAGMENT_TAG;
+        if(backStackEntryCount > 1){
+            tag = fragmentManager.getBackStackEntryAt
+                    (backStackEntryCount - 2).getName();
+        }
+        openFragment(tag);
     }
 
     @Override
@@ -417,5 +428,32 @@ public class ProjectsViewActivity extends AppCompatActivity
         });
     }
 
+    /**
+     * tag is one of the public static final String variables belonging
+     * to this class.
+     * @param tag a String connected to a certain fragment.
+     */
+    public void openFragment(String tag){
+        switch (tag){
+            case(DASHBOARD_FRAGMENT_TAG):
+                openFragment(mDashboardFragment,tag);
+                break;
+            case(TOPIC_FRAGMENT_TAG):
+                openFragment(mTopicFragment,tag);
+                break;
+            case(NEWTOPIC_FRAGMENT_TAG):
+                openFragment(mNewTopicFragment,tag);
+                break;
+            case(COMMENT_FRAGMENT_TAG):
+                openFragment(mNewCommentFragment,tag);
+                break;
+            case(TOPICLIST_FRAGMENT_TAG):
+                openFragment(mTopicListFragment,tag);
+                break;
+            case(PROJECTS_FRAGMENT_TAG):
+                openFragment(mProjectsFragment,tag);
+                break;
+        }
+    }
 
 }

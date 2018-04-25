@@ -7,7 +7,12 @@
     android:orientation="vertical"
     tools:context=".view.TopicView"
     android:weightSum="100">
-
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:scaleType="centerCrop"
+        android:id="@+id/view_topic_comment_fullscreen_image"/>
     <TextView
         android:id="@+id/TitleText"
         android:layout_width="match_parent"

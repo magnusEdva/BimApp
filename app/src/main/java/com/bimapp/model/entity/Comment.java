@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -98,22 +99,19 @@ public class Comment implements Entity {
                 mVerbalStatus = obj.getString(VERBAL_STATUS);
             if (obj.has(STATUS))
                 mStatus = obj.getString(STATUS);
-            if (obj.has(DATE)) {
+            if (obj.has(DATE))
                 mDate = DateMapper.toDate(obj.getString(DATE));
-            }
             if (obj.has(AUTHOR))
                 mAuthor = obj.getString(AUTHOR);
             if (obj.has(COMMENT))
-                mComment = obj.getString(COMMENT);
+                mComment = new String(obj.getString(COMMENT).getBytes("ISO-8859-1"), "UTF-8");
             if (obj.has(MODIFIED_DATE))
                 mModifiedDate = obj.getString(MODIFIED_DATE);
             if (obj.has(MODIFIED_AUTHOR))
                 mModifiedAuthor = obj.getString(MODIFIED_AUTHOR);
             if(obj.has(VIEWPOINT_GUID))
                 mViewpointGuid = obj.getString(VIEWPOINT_GUID);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (JSONException | ParseException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 

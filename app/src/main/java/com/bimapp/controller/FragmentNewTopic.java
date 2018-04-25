@@ -142,6 +142,8 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
         void onPostingTopic(boolean success);
 
         void onTakePhoto();
+
+        void onFragmentFinish();
     }
 
     /**

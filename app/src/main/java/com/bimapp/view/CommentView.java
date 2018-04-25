@@ -84,6 +84,8 @@ public class CommentView implements CommentViewInterface {
             @Override
             public void onClick(View v) {
                 mListener.postComment(mInputText.getText().toString());
+                mSubmitButton.setEnabled(false);
+                mGetPictureButton.setEnabled(false);
             }
         });
     }
