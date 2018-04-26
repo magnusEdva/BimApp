@@ -7,7 +7,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:editTextColor">@color/colorPrimaryText</item>
-        <item name="android:editTextBackground">@color/editTextColor</item>
         <!--
         <item name="primaryText">@color/colorPrimaryText</item>
         <item name="secondaryText">@color/colorSecondaryText</item>
