@@ -17,11 +17,12 @@ import com.bimapp.model.entityManagers.ProjectEntityManager;
 import com.bimapp.view.ProjectsView;
 import com.bimapp.view.interfaces.ProjectsViewInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass that creates a view that shows a list of projects in a ListView.
- *
+ * <p>
  * Activities that contain this fragment must implement the
  * {@link OnFragmentProjectInteractionListener} interface to handle interaction events.
  */
@@ -39,8 +40,12 @@ public class FragmentProject extends Fragment
     private Project mProject;
 
 
+    private List<Project> mProjects;
+    private boolean BCF;
+
+
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = (BimApp) this.getActivity().getApplication();
         mProjectsManager = new ProjectEntityManager(mContext);
@@ -51,10 +56,10 @@ public class FragmentProject extends Fragment
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        if(mProjectsView == null)
-            mProjectsView = new ProjectsView(inflater,container);
+        if (mProjectsView == null)
+            mProjectsView = new ProjectsView(inflater, container);
         /**
-        Sets this as the callback from the view. See {@link onSelectedItem} method for where the callback goes.
+         Sets this as the callback from the view. See {@link onSelectedItem} method for where the callback goes.
          */
         mProjectsView.registerListener(this);
 
@@ -62,10 +67,9 @@ public class FragmentProject extends Fragment
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         mProjectsManager.getProjects(this);
-
     }
 
 
@@ -79,30 +83,40 @@ public class FragmentProject extends Fragment
     public void onDetach() {
         super.onDetach();
         mProjectsManager = null;
+
     }
 
     /**
      * Callback method from the view.
      * Starts new activity/fragment based on which project was selected. (Currently just logs it)
      * Also sets the active project in the application.
+     *
      * @param project the selected project
      */
     @Override
     public void onSelectedItem(Project project) {
-        mProject = project;
-        mExtensionManager = new IssueBoardExtensionsEntityManager(mContext);
-        mExtensionManager.getIssueBoardExtensions(project,this);
-        Log.d("ID : ", project.getProjectId());
+        if (BCF) {
+            mProject = project;
+            mExtensionManager = new IssueBoardExtensionsEntityManager(mContext);
+            mExtensionManager.getIssueBoardExtensions(project, this);
+            Log.d("ID : ", project.getProjectId());
+            BCF = false;
+        } else {
+            BCF = true;
+            mProjectsView.setProjects(makeIssueBoardList(project));
+        }
     }
 
     /**
      * From the ProjectsFragmentsInterface.
      * Calls on a method in the view and gives the projects the view should show.
+     *
      * @param projects the projects to be listed
      */
     @Override
     public void setProjects(List<Project> projects) {
-        mProjectsView.setProjects(projects);
+        mProjects = projects;
+        mProjectsView.setProjects(makeProjectList());
     }
 
     @Override
@@ -113,6 +127,37 @@ public class FragmentProject extends Fragment
 
     }
 
+    private List<Project> makeIssueBoardList(Project issueBoard) {
+        List<Project> projects = new ArrayList<>();
+        for (int i = 0; i < mProjects.size(); i++) {
+            if (mProjects.get(i).getBimsyncProjectId().equals(issueBoard.getBimsyncProjectId())) {
+                projects.add(mProjects.get(i));
+                projects.get(projects.size() - 1).setState(false);
+            }
+        }
+        return projects;
+    }
+
+    /**
+     * removes all Bimsync Project duplicates from the List
+     *
+     * @return only the actual projects, no issue board duplicates.
+     */
+    private List<Project> makeProjectList() {
+        List<Project> projects = new ArrayList<>();
+        for (int i = 0; i < mProjects.size(); i++) {
+            boolean exists = false;
+            for (int j = 0; j < projects.size() && !exists; j++) {
+                if (mProjects.get(i).getBimsyncProjectId().equals(projects.get(j).getBimsyncProjectId()))
+                    exists = true;
+            }
+            if (!exists) {
+                projects.add(mProjects.get(i));
+                projects.get(projects.size() - 1 ).setState(true);
+            }
+        }
+        return projects;
+    }
 
     /**
      * This interface must be implemented by activities that contain this
