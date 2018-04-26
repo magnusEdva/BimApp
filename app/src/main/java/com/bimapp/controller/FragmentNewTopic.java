@@ -50,7 +50,7 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
 
     @Override
     public void onCameraIntent(View view) {
-        mListener.onTakePhoto(view);
+        mListener.onTakePhoto();
     }
 
     @Override
@@ -103,9 +103,7 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
-            Log.d("Got a bundle", savedInstanceState.getCharSequence("uri").toString());
-        }
+
     }
 
     @Override
@@ -143,7 +141,9 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
     public interface OnFragmentInteractionListener {
         void onPostingTopic(boolean success);
 
-        void onTakePhoto(View v);
+        void onTakePhoto();
+
+        void onFragmentFinish();
     }
 
     /**

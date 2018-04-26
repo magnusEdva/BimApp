@@ -1,6 +1,8 @@
 package com.bimapp.controller;
 
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -27,6 +29,8 @@ public class FragmentNewComment extends Fragment implements CommentViewInterface
     private static Topic mTopic;
     private CommentEntityManager commentEntityManager;
     private CommentViewInterface mCommentView;
+    private FragmentNewTopic.OnFragmentInteractionListener mListener;
+    private Bitmap mImage;
 
     public FragmentNewComment() {}
 
@@ -41,7 +45,9 @@ public class FragmentNewComment extends Fragment implements CommentViewInterface
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mCommentView = new CommentView(inflater, container);
+        if(mCommentView == null) {
+            mCommentView = new CommentView(inflater, container);
+        }
         mCommentView.attachListener(this);
         mCommentView.setTopic(mTopic);
         return mCommentView.getRootView();
@@ -50,7 +56,15 @@ public class FragmentNewComment extends Fragment implements CommentViewInterface
     @Override
     public void postComment(String commentContent) {
         Comment comment = new Comment(commentContent);
-        commentEntityManager.postComment(this, mTopic, comment);
+        if(mImage == null)
+            commentEntityManager.postComment(this, mTopic, comment);
+        else
+            commentEntityManager.postComment(this, mTopic, comment, mImage);
+    }
+
+    @Override
+    public void takePicture() {
+        mListener.onTakePhoto();
     }
 
     @Override
@@ -60,16 +74,38 @@ public class FragmentNewComment extends Fragment implements CommentViewInterface
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof FragmentNewTopic.OnFragmentInteractionListener) {
+            mListener = (FragmentNewTopic.OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+    @Override
     public void editComment(String commentContent) {
 
+    }
+
+    @Override
+    public void deletePicture(int index) {
+        mImage = null;
     }
 
     public static void setTopic(Topic topic){mTopic = topic; }
 
     @Override
     public void postedComment(boolean success, Comment comment) {
-        if(comment .getComment() != null)
+        if(comment != null)
             Log.d("NewComment",success + " " + comment.getComment());
+        mListener.onFragmentFinish();
+
     }
 
+
+    public void setImage(Bitmap image) {
+        mImage = image;
+        mCommentView.setImage(mImage);
+    }
 }

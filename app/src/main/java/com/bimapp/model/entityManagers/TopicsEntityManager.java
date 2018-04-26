@@ -49,98 +49,6 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
         mListener = listener;
     }
 
-
-    /**
-     * Inner class which handles the Callbacks from Volley on a postTopic request
-     */
-    private class TopicPostCallback implements Callback<String> {
-
-        NewTopicFragmentInterface mTopicsFragmentInterface;
-
-        public TopicPostCallback(NewTopicFragmentInterface callback) {
-            mTopicsFragmentInterface = callback;
-        }
-
-        @Override
-        public void onError(String response) {
-            Log.d("TopicsEntityManager", "Unsuccessfully posted topic to server");
-            Topic t = null;
-            makeToast(false, t);
-        }
-
-        @Override
-        public void onSuccess(String JSONResponse) {
-            Log.d("TopicsEntityManager", "Successfully posted topic to server");
-
-            JSONObject object = null;
-            try {
-                object = new JSONObject(JSONResponse);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            if (object != null) {
-                Topic topic = new Topic(object);
-                makeToast(true, topic);
-            }
-        }
-
-        public void makeToast(boolean success, Topic topic) {
-            mListener.postedTopic(success, topic);
-        }
-    }
-
-
-    /**
-     * Inner class which handles the callbacks from Volley on a getTopics request
-     */
-    private class TopicsCallback implements Callback<String> {
-
-        TopicsFragmentInterface mControllerCallback;
-
-        public TopicsCallback(TopicsFragmentInterface controllerCallback) {
-            mControllerCallback = controllerCallback;
-        }
-
-        @Override
-        public void onError(String response) {
-                Log.d("getTopicsError", response);
-        }
-
-        @Override
-        public void onSuccess(String response) {
-            List<Topic> topics = null;
-            try {
-                JSONArray jsonArray = new JSONArray(response);
-                topics = EntityListConstructor.Topics(jsonArray);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            mControllerCallback.setTopics(topics);
-        }
-    }
-
-    /**
-     * Inner class which handles the callbacks from Volley on a putTopics request
-     */
-    private class putTopicsCallback implements Callback<String> {
-
-        TopicFragmentInterface mControllerCallback;
-
-        public putTopicsCallback(TopicFragmentInterface controllerCallback) {
-            mControllerCallback = controllerCallback;
-        }
-
-        @Override
-        public void onError(String response) {
-            Log.d("TopicsEntityManager", response);
-            }
-
-        @Override
-        public void onSuccess(String response) {
-            Log.d("PUTCOMMENT:", response);
-        }
-    }
-
     /**
      * Callback method from {@link }
      *
@@ -184,4 +92,96 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
         NetworkConnManager.networkRequest(mContext, Request.Method.PUT,
                 APICall.PUTTopic(mContext.getActiveProject(), topic), new putTopicsCallback(controllerCallback), topic);
     }
+    /**
+     * Inner class which handles the Callbacks from Volley on a postTopic request
+     */
+    private class TopicPostCallback implements Callback<String> {
+
+        NewTopicFragmentInterface mTopicsFragmentInterface;
+
+        public TopicPostCallback(NewTopicFragmentInterface callback) {
+            mTopicsFragmentInterface = callback;
+        }
+
+        @Override
+        public void onError(String response) {
+            Log.d("TopicsEntityManager", response);
+            Topic t = null;
+            makeToast(false, t);
+        }
+
+        @Override
+        public void onSuccess(String JSONResponse) {
+            Log.d("TopicsEntityManager", "Successfully posted topic to server");
+
+            JSONObject object = null;
+            try {
+                object = new JSONObject(JSONResponse);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (object != null) {
+                Topic topic = new Topic(object);
+                makeToast(true, topic);
+            }
+        }
+
+        public void makeToast(boolean success, Topic topic) {
+            mListener.postedTopic(success, topic);
+        }
+    }
+
+
+    /**
+     * Inner class which handles the callbacks from Volley on a getTopics request
+     */
+    private class TopicsCallback implements Callback<String> {
+
+        TopicsFragmentInterface mControllerCallback;
+
+        public TopicsCallback(TopicsFragmentInterface controllerCallback) {
+            mControllerCallback = controllerCallback;
+        }
+
+        @Override
+        public void onError(String response) {
+              if(response != null)  Log.d("getTopicsError", response);
+        }
+
+        @Override
+        public void onSuccess(String response) {
+            List<Topic> topics = null;
+            try {
+                JSONArray jsonArray = new JSONArray(response);
+                topics = EntityListConstructor.Topics(jsonArray);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            mControllerCallback.setTopics(topics);
+        }
+    }
+
+    /**
+     * Inner class which handles the callbacks from Volley on a putTopics request
+     */
+    private class putTopicsCallback implements Callback<String> {
+
+        TopicFragmentInterface mControllerCallback;
+
+        public putTopicsCallback(TopicFragmentInterface controllerCallback) {
+            mControllerCallback = controllerCallback;
+        }
+
+        @Override
+        public void onError(String response) {
+            Log.d("TopicsEntityManager", response);
+            }
+
+        @Override
+        public void onSuccess(String response) {
+            Log.d("PUTCOMMENT:", response);
+        }
+    }
+
+
 }

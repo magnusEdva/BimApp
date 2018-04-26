@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -99,14 +100,12 @@ public class OAuthHandler {
      * @param callback  used when acquiring the first token.
      */
     public void getAccessToken(@NonNull final String code, @NonNull final String grantType, @Nullable final Callback callback) {
+
+
         if (checkActiveRefresh())
             return;
-
         setActiveRefresh();
 
-
-        // url can be gotten from bcf/auth ish
-        //TODO get the string url from the {GET /bcf/{version}/auth} resource
         String url = mContext.getString(R.string.api_token);
         StringRequest oAuthRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -123,6 +122,7 @@ public class OAuthHandler {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.d("Access Token", "server returned error");
                         if (error != null) {
                             new CallbackHandler().onErrorResponse(error);
                             error.printStackTrace();
@@ -340,6 +340,8 @@ public class OAuthHandler {
 
         @Override
         public void onErrorResponse(VolleyError error) {
+            setFinishedRefresh();
+            mContext.logOut();
             if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                 error.printStackTrace();
             } else if (error instanceof AuthFailureError) {

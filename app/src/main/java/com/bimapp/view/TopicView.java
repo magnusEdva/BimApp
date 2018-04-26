@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -27,13 +28,11 @@ public class TopicView implements TopicViewInterface{
     private TopicListener mListener;
 
     private TextView mTitleText;
-    private TextView mAssignedToText;
-    private TextView mRequestedByText;
+    private TextView mAssignedTo;
 
-    private TextView mStatusText;
-    private TextView mTypeText;
     private Spinner mTypeInput;
     private Spinner mStatusInput;
+    private ImageView mFullScreenImage;
 
     private ArrayAdapter<String> mTypeAdapter;
 
@@ -55,24 +54,23 @@ public class TopicView implements TopicViewInterface{
         mRootView = inflater.inflate(R.layout.view_topic, container, false);
         mContext = (BimApp) mRootView.getContext().getApplicationContext();
         mTitleText = mRootView.findViewById(R.id.TitleText);
-        mAssignedToText = mRootView.findViewById(R.id.view_topic_assigned_to);
-        mRequestedByText = mRootView.findViewById(R.id.view_topic_requested_by);
+        mAssignedTo = mRootView.findViewById(R.id.view_topic_assigned_to);
         mTypeInput = mRootView.findViewById(R.id.view_topic_type_input);
         mStatusInput = mRootView.findViewById(R.id.view_topic_status_input);
         floatingButton = mRootView.findViewById(R.id.view_Topic_floating_button);
+        mFullScreenImage = mRootView.findViewById(R.id.view_topic_comment_fullscreen_image);
+
 
         RecyclerView commentsList = mRootView.findViewById(R.id.view_topic_comment_list);
         linearLayoutManager = new LinearLayoutManager(mRootView.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         commentsList.setLayoutManager(linearLayoutManager);
 
-        mCommentsAdapter = new CommentAdapter();
+        mCommentsAdapter = new CommentAdapter(mFullScreenImage);
         commentsList.setAdapter(mCommentsAdapter);
 
-        mTypeText = mRootView.findViewById(R.id.view_topic_type);
-        mStatusText = mRootView.findViewById(R.id.view_topic_status);
 
-
+        setFullScreenImageOnClick();
         floatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,13 +101,10 @@ public class TopicView implements TopicViewInterface{
 
     @Override
     public void setTopic(final Topic topic) {
-        mTitleText.setText(topic.getmTitle());
-        mRequestedByText.setText(topic.getCreationAuthor());
-        mAssignedToText.setText(topic.getAssignedTo());
+        mTitleText.setText(topic.getmTitle() + "\r\n" + topic.getDescription());
+        mAssignedTo.setText(topic.getAssignedTo());
         mTypeInput.setAdapter(mTypeAdapter);
         mStatusInput.setAdapter(mStatusAdapter);
-        mStatusText.setText(R.string.issue_status);
-        mTypeText.setText(R.string.topic_type);
 
         mTypeFields = mContext.getActiveProject().getProjectTypesOrdered(topic);
         mTypeAdapter =  new ArrayAdapter<String>(mRootView.getContext()
@@ -155,5 +150,13 @@ public class TopicView implements TopicViewInterface{
         mCommentsAdapter.setComments(comments);
     }
 
+    private void setFullScreenImageOnClick(){
+        mFullScreenImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFullScreenImage.setVisibility(View.GONE);
+            }
+        });
+    }
 
 }
