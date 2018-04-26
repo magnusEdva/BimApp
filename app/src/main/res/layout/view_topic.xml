@@ -73,14 +73,15 @@
         style="@style/BimAppDefaultTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/view_topic_comment_list"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_gravity="bottom|end"
         android:clickable="true"
         android:focusable="true"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/colorAccent"
+        android:alpha="0.75"
         app:elevation="5dp" />
+
 
     <ImageView
         android:id="@+id/view_topic_comment_fullscreen_image"
