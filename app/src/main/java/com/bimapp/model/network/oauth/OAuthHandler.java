@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -106,6 +105,7 @@ public class OAuthHandler {
             return;
         setActiveRefresh();
 
+        //TODO auth_url and token_url can be gotten from GET /bcf/{version}/auth
         String url = mContext.getString(R.string.api_token);
         StringRequest oAuthRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
