@@ -100,9 +100,9 @@ public class FragmentNewComment extends Fragment implements CommentViewInterface
         if(comment != null)
             Log.d("NewComment",success + " " + comment.getComment());
         mListener.onFragmentFinish();
-
+        mCommentView.clear();
+        mImage = null;
     }
-
 
     public void setImage(Bitmap image) {
         mImage = image;

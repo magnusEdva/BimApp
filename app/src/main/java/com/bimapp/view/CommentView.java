@@ -70,6 +70,14 @@ public class CommentView implements CommentViewInterface {
     }
 
     @Override
+    public void clear() {
+        mSubmitButton.setEnabled(true);
+        mGetPictureButton.setEnabled(true);
+        mImageView.setImageBitmap(null);
+        mInputText.setText("");
+    }
+
+    @Override
     public View getRootView() {
         return mRootView;
     }

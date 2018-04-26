@@ -19,6 +19,7 @@ public interface CommentViewInterface extends ViewMVP {
     void setTopic(Topic topic);
     void setComment(Comment comment);
     void setImage(Bitmap bitmap);
+    void clear();
 
 
 }
