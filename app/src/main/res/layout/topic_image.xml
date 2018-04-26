@@ -4,15 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    style="@style/BimAppDefaultTheme"
     >
     <Button
         android:id="@+id/topic_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryLight"
-        android:textColor="@color/colorTextColor"
-        style="@style/BimAppDefaultTheme"
+        android:layout_gravity="center"
         android:padding="@dimen/text_margin"
         />
 </LinearLayout>
