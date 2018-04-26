@@ -30,14 +30,17 @@
     <string name="dashboard">Dashboard</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    <string name="description_inpu">Type description</string>
+    <string name="description_inpu">Description</string>
     <string name="issue_name_input">Type issue name here!</string>
-    <string name="issue_name">Topic title</string>
+    <string name="issue_name">Title</string>
     <string name="issue_description">Topic Description</string>
-    <string name="issue_status">Topic Status:</string>
-    <string name="topic_type">Topic Type:</string>
+    <string name="issue_status">Status:</string>
+    <string name="topic_type">Type:</string>
     <string name="assigned_to">Assigned to</string>
     <string name="topic_label">Label</string>
     <string name="due_date">Due date</string>
     <string name="add_image">Add image</string>
+    <string name="topic_title">Title</string>
+    <string name="description">Description</string>
+    <string name="submit">Submit Issue</string>
 </resources>

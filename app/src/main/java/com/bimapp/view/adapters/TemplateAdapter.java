@@ -88,12 +88,12 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
             BimApp mContext = (BimApp) context.getApplicationContext();
             switch (viewType) {
                 case 1: // TITLE
-                    this.mItem_description = itemView.findViewById(R.id.topic_title);
+                    //this.mItem_description = itemView.findViewById(R.id.topic_title);
                     this.mItem_input = itemView.findViewById(R.id.topic_title_input);
                     this.mSpinner_input = null;
                     break;
                 case 2: // DESCRIPTION
-                    this.mItem_description = itemView.findViewById(R.id.topic_description);
+                    //this.mItem_description = itemView.findViewById(R.id.topic_description);
                     this.mItem_input = itemView.findViewById(R.id.topic_description_input);
                     this.mSpinner_input = null;
                     break;
@@ -144,8 +144,8 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                     mItem_input = itemView.findViewById(R.id.topic_comment_input);
                     break;
                 default: // Defaults to no view
-                    this.mItem_description = itemView.findViewById(R.id.topic_description);
-                    this.mItem_input = itemView.findViewById(R.id.topic_description_input);
+                    this.mItem_description = itemView.findViewById(R.id.topic_default);
+                    this.mItem_input = itemView.findViewById(R.id.topic_default_input);
                     this.mSpinner_input = null;
                     break;
             }
@@ -266,7 +266,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 break;
             default:
                 view = LayoutInflater.from(context)
-                        .inflate(R.layout.topic_description, parent, false);
+                        .inflate(R.layout.topic_default, parent, false);
                 viewHolder = new ViewHolder(view, viewType, context);
                 break;
         }
@@ -282,12 +282,12 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         switch (this.getItemViewType(position)) {
-            case 1: // IssueName
-                holder.mItem_description.setText(R.string.issue_name);
+            case 1: // IssueTitle
+                //holder.mItem_description.setText(R.string.issue_name);
                 holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 2: // IssueDescription
-                holder.mItem_description.setText(R.string.issue_description);
+                //holder.mItem_description.setText(R.string.issue_description);
                 holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 3: // IssueStatus
@@ -324,9 +324,10 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 holder.mItem_description.setText("Comment");
                 holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
-            default: // Issue Description
+            default: // DEFAULT
                 holder.mItem_description.setText(mTemplate.getNodes().get(position).getTitle());
-                holder.mItem_input.setText("Default text");
+                holder.mItem_input.setHint(mTemplate.getNodes().get(position).getTitle());
+                holder.mItem_input.setText("");
                 break;
 
         }

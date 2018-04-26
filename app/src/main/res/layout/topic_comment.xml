@@ -8,14 +8,14 @@
     <TextView
         android:id="@+id/topic_comment"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:padding="@dimen/text_margin"
         style="@style/BimAppDefaultTheme"
         />
     <EditText
         android:id="@+id/topic_comment_input"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:padding="@dimen/text_margin"
         style="@style/BimAppDefaultTheme"
         />
