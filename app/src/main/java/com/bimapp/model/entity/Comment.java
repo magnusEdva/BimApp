@@ -43,6 +43,7 @@ public class Comment implements entity {
      * Unique identifier for a comment.
      */
     @PrimaryKey
+    @NonNull
     private String mCommentsGUID;
     /**
      * comment verbal status
@@ -120,49 +121,17 @@ public class Comment implements entity {
             if (obj.has(AUTHOR))
                 mAuthor = obj.getString(AUTHOR);
             if (obj.has(COMMENT))
-                mComment = obj.getString(COMMENT);
+                mComment = new String(obj.getString(COMMENT).getBytes("ISO-8859-1"), "UTF-8");
             if (obj.has(MODIFIED_DATE))
                 mModifiedDate = obj.getString(MODIFIED_DATE);
             if (obj.has(MODIFIED_AUTHOR))
                 mModifiedAuthor = obj.getString(MODIFIED_AUTHOR);
             if(obj.has(VIEWPOINT_GUID))
                 mViewpointGuid = obj.getString(VIEWPOINT_GUID);
-        } catch (JSONException | ParseException e) {
+        } catch (JSONException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-    }
-
-    public String getDate() {
-        return DateMapper.map(mDate);
-    }
-
-    public String getAuthor() {
-        return mAuthor;
-    }
-
-    public String getComment() {
-        return mComment;
-    }
-
-    public String getTopicGuid(){
-        return mTopicGUID;
-    }
-
-    public String getViewpointGuid(){
-        return mViewpointGuid;
-    }
-
-    public Viewpoint getViewpoint(){
-        return mViewpoint;
-    }
-
-    public void setViewpointGuid(String guid){
-        mViewpointGuid = guid;
-    }
-
-    public void setViewpoint(Viewpoint vp){
-        mViewpoint = vp;
     }
 
     @Override
@@ -197,4 +166,100 @@ public class Comment implements entity {
         return mCommentsGUID.equals(other.mCommentsGUID);
     }
 
+    public String getDate() {
+        return DateMapper.map(mDate);
+    }
+
+    public Date getMDate(){return mDate;}
+
+    public String getMAuthor() {
+        return mAuthor;
+    }
+
+    public String getMComment() {
+        return mComment;
+    }
+
+    public String getMTopicGuid(){
+        return mTopicGUID;
+    }
+
+    public String getMViewpointGuid(){
+        return mViewpointGuid;
+    }
+
+    public Viewpoint getMViewpoint(){
+        return mViewpoint;
+    }
+
+
+    public String getMCommentsGUID() {
+        return mCommentsGUID;
+    }
+
+    public void setCommentsGUID(String mCommentsGUID) {
+        this.mCommentsGUID = mCommentsGUID;
+    }
+
+    public String getMVerbalStatus() {
+        return mVerbalStatus;
+    }
+
+    public void setVerbalStatus(String mVerbalStatus) {
+        this.mVerbalStatus = mVerbalStatus;
+    }
+
+    public String getMStatus() {
+        return mStatus;
+    }
+
+    public void setStatus(String mStatus) {
+        this.mStatus = mStatus;
+    }
+
+
+    public void setDate(Date mDate) {
+        this.mDate = mDate;
+    }
+
+
+    public void setAuthor(String mAuthor) {
+        this.mAuthor = mAuthor;
+    }
+
+    public String getMTopicGUID() {
+        return mTopicGUID;
+    }
+
+    public void setTopicGUID(String mTopicGUID) {
+        this.mTopicGUID = mTopicGUID;
+    }
+
+    public String getMModifiedDate() {
+        return mModifiedDate;
+    }
+
+    public void setModifiedDate(String mModifiedDate) {
+        this.mModifiedDate = mModifiedDate;
+    }
+
+    public String getMModifiedAuthor() {
+        return mModifiedAuthor;
+    }
+
+    public void setModifiedAuthor(String mModifiedAuthor) {
+        this.mModifiedAuthor = mModifiedAuthor;
+    }
+
+    public void setComment(String mComment) {
+        this.mComment = mComment;
+    }
+
+    public void setViewpointGuid(String guid){
+        mViewpointGuid = guid;
+    }
+
+    public void setViewpoint(Viewpoint vp){
+        mViewpoint = vp;
+    }
 }

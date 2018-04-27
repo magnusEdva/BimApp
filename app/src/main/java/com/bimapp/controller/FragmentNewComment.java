@@ -15,7 +15,6 @@ import com.bimapp.controller.interfaces.CommentFragmentInterface;
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.DataAccess.entityManagers.CommentEntityManager;
-import com.bimapp.model.DataAccess.entityManagers.ProjectEntityManager;
 import com.bimapp.view.CommentView;
 import com.bimapp.view.interfaces.CommentViewInterface;
 
@@ -97,7 +96,7 @@ public class FragmentNewComment extends Fragment implements CommentViewInterface
     @Override
     public void postedComment(boolean success, Comment comment) {
         if(comment != null)
-            Log.d("NewComment",success + " " + comment.getComment());
+            Log.d("NewComment",success + " " + comment.getMComment());
         mListener.onFragmentFinish();
         mCommentView.clear();
         mImage = null;

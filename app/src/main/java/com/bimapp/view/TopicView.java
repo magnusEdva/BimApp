@@ -101,8 +101,8 @@ public class TopicView implements TopicViewInterface{
 
     @Override
     public void setTopic(final Topic topic) {
-        mTitleText.setText(topic.getmTitle() + "\r\n" + topic.getDescription());
-        mAssignedTo.setText(topic.getAssignedTo());
+        mTitleText.setText(topic.getMTitle() + "\r\n" + topic.getMDescription());
+        mAssignedTo.setText(topic.getMAssignedTo());
         mTypeInput.setAdapter(mTypeAdapter);
         mStatusInput.setAdapter(mStatusAdapter);
 
@@ -122,7 +122,7 @@ public class TopicView implements TopicViewInterface{
         mTypeInput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(!topic.getTopicType().equals(mTypeFields.get(position))) {
+                if(!topic.getMTopicType().equals(mTypeFields.get(position))) {
                     topic.setTopicType(mTypeFields.get(position));
                     mListener.changedTopic();
                 }
@@ -134,7 +134,7 @@ public class TopicView implements TopicViewInterface{
         mStatusInput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(!topic.getTopicStatus().equals(mStatusFields.get(position))) {
+                if(!topic.getMTopicStatus().equals(mStatusFields.get(position))) {
                     topic.setTopicStatus(mStatusFields.get(position));
                     mListener.changedTopic();
                 }

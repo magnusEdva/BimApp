@@ -20,6 +20,7 @@ public class User implements entity {
 
      */
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "id")
     private String id;
     @ColumnInfo(name = "name")
