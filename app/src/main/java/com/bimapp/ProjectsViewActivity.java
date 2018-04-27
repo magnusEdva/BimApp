@@ -21,7 +21,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,11 +38,11 @@ import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.User;
-import com.bimapp.model.entityManagers.IssueBoardExtensionsEntityManager;
-import com.bimapp.model.entityManagers.ProjectEntityManager;
-import com.bimapp.model.network.APICall;
-import com.bimapp.model.network.Callback;
-import com.bimapp.model.network.NetworkConnManager;
+import com.bimapp.model.DataAccess.entityManagers.IssueBoardExtensionsEntityManager;
+import com.bimapp.model.DataAccess.entityManagers.ProjectEntityManager;
+import com.bimapp.model.DataAccess.network.APICall;
+import com.bimapp.model.DataAccess.network.Callback;
+import com.bimapp.model.DataAccess.network.NetworkConnManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;

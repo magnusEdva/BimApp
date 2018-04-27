@@ -1,5 +1,10 @@
 package com.bimapp.model.entity;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import org.json.JSONException;
@@ -12,19 +17,29 @@ import java.util.Map;
 /**
  * Model implementation of a the project type.
  */
-
-public class Project implements Entity {
+@Entity(tableName = "project")
+public class Project implements entity {
     public static final String PROJECT_ID = "project_id";
     public static final String BIMSYNC_PROJECT_NAME = "bimsync_project_name";
     public static final String NAME = "name";
     public static final String BIMSYNC_PROJECT_ID = "bimsync_project_id";
-
+    /**
+     * used by the presenter to control which name the view
+     * shows. either bimsyncProjectName or name, depending on state.
+     */
+    @Ignore
     private boolean state;
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = PROJECT_ID)
     private String projectId;
+    @ColumnInfo(name = BIMSYNC_PROJECT_NAME)
     private String bimsyncProjectName;
+    @ColumnInfo(name = NAME)
     private String name;
+    @ColumnInfo(name = BIMSYNC_PROJECT_ID)
     private String bimsyncProjectId;
-
+    @Embedded
     private IssueBoardExtensions mIssueBoardExtensions;
 
     /**
@@ -45,7 +60,7 @@ public class Project implements Entity {
      * @param bimsyncProjectId   String with the BimsyncProjectId corresponding to the project Id
      * @param name               String with the project name corresponding to the project Id.
      */
-    public Project(String projectId, String bimsyncProjectName, String bimsyncProjectId, String name, IssueBoardExtensions issueBoardExtensions) {
+    public Project(@NonNull String projectId, String bimsyncProjectName, String bimsyncProjectId, String name, IssueBoardExtensions issueBoardExtensions) {
         this.projectId = projectId;
         this.bimsyncProjectName = bimsyncProjectName;
         this.bimsyncProjectId = bimsyncProjectId;
@@ -116,15 +131,6 @@ public class Project implements Entity {
             }
         }
         return list;
-    }
-
-    /**
-     * @param map @NonNull
-     * @return always throws exception
-     */
-    @Override
-    public Map<String, String> getStringParams(@NonNull Map<String, String> map) {
-        throw new UnsupportedOperationException();
     }
 
     /**

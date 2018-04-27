@@ -1,4 +1,4 @@
-package com.bimapp.model.network;
+package com.bimapp.model.DataAccess.network;
 
 
 import android.content.Intent;
@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.WelcomeActivity;
-import com.bimapp.model.entity.Entity;
+import com.bimapp.model.entity.entity;
 
 /**
  * Provider of all access to all API calls and methods.
@@ -29,7 +29,7 @@ public class NetworkConnManager {
      * @param callback     implementation of the network.Callback interface.
      */
     static public void networkRequest(@NonNull BimApp context, @NonNull int method,
-                                      @NonNull String url, @NonNull Callback callback, @Nullable Entity params) {
+                                      @NonNull String url, @NonNull Callback callback, @Nullable entity params) {
 
         if(context.checkLogIn()){
             sendRequest(context, method, url, callback, params);
@@ -76,7 +76,7 @@ public class NetworkConnManager {
     }
 
 
-    private static void sendRequest(BimApp context, int method, String url, Callback callback, Entity params){
+    private static void sendRequest(BimApp context, int method, String url, Callback callback, entity params){
         switch (method){
             case(Request.Method.GET):
                 BimAppRequest.GET(context, method, url, new networkCallback(callback), params);

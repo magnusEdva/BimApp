@@ -1,4 +1,4 @@
-package com.bimapp.model.network.oauth;
+package com.bimapp.model.DataAccess.network.oauth;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,8 +22,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.bimapp.APIkey;
 import com.bimapp.BimApp;
 import com.bimapp.R;
-import com.bimapp.model.network.APICall;
-import com.bimapp.model.network.Callback;
+import com.bimapp.model.DataAccess.network.APICall;
+import com.bimapp.model.DataAccess.network.Callback;
 
 import org.json.JSONException;
 import org.json.JSONObject;

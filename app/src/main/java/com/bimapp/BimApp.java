@@ -11,12 +11,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.bimapp.model.entity.IssueBoardExtensions;
 import com.bimapp.model.entity.Project;
-import com.bimapp.model.network.Callback;
-import com.bimapp.model.network.oauth.OAuthHandler;
+import com.bimapp.model.DataAccess.network.Callback;
+import com.bimapp.model.DataAccess.network.oauth.OAuthHandler;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Application class. Acquired with getApplicationContext. Casted to

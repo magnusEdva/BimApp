@@ -1,7 +1,13 @@
 package com.bimapp.model.entity;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.view.View;
 
 import com.bimapp.model.Base64;
 
@@ -11,7 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-public class Viewpoint implements Entity {
+public class Viewpoint implements entity {
     public final static String GUID = "guid";
     public final static String SNAPSHOT = "snapshot";
     public final static String SNAPSHOT_TYPE = "snapshot_type";
@@ -21,14 +27,19 @@ public class Viewpoint implements Entity {
     public final static String SNAPSHOT_TYPE_JPG = "jpg";
     public final static String SNAPSHOT_TYPE_PNG = "png";
 
+    @Embedded
     private Snapshot mSnapshot;
+    @ColumnInfo(name = GUID)
     private String mGuid;
+    @Ignore
     private boolean hasSnapshot;
 
     public Viewpoint(String type, Bitmap data) {
         mSnapshot = new Snapshot(type, data);
         hasSnapshot = true;
     }
+
+    public Viewpoint(){}
 
     public Viewpoint(JSONObject jsonObject) {
         construct(jsonObject);
@@ -63,11 +74,6 @@ public class Viewpoint implements Entity {
     }
 
     @Override
-    public Map<String, String> getStringParams(@NonNull Map<String, String> map) {
-        return null;
-    }
-
-    @Override
     public JSONObject getJsonParams() {
         JSONObject viewpoints = new JSONObject();
         JSONObject snapshot = new JSONObject();
@@ -80,15 +86,19 @@ public class Viewpoint implements Entity {
         }
         return viewpoints;
     }
-
+    @Entity(tableName = "snapshot")
     private class Snapshot {
+        @Ignore
         Bitmap image;
+        @ColumnInfo(name = "type")
         String type;
 
         Snapshot(String type, Bitmap data) {
             this.type = type;
             image = data;
         }
+
+        Snapshot(){}
 
         Snapshot(Bitmap data) {
             image = data;

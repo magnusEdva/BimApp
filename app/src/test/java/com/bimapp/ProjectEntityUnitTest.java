@@ -13,7 +13,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests on the Project Entity Type.
+ * Unit tests on the Project entity Type.
  */
 public class ProjectEntityUnitTest {
     @Mock

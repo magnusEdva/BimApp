@@ -1,7 +1,4 @@
-package com.bimapp.model.network;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
+package com.bimapp.model.DataAccess.network;
 
 /**
  * Created by zorri on 14/03/2018.

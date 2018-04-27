@@ -3,7 +3,7 @@ package com.bimapp.model.entity.Template;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 
-import com.bimapp.model.entity.Entity;
+import com.bimapp.model.entity.entity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +18,7 @@ import java.util.Map;
  * To be created within bimsyncs desktop client.
  */
 
-public class Template implements Entity {
+public class Template implements entity {
     private final static String PROPERTIES = "properties";
     public final static String TEMPLATE_NAME = "templateName";
     public final static String TEMPLATE_DESCRIPTION = "templateDescription";
@@ -118,10 +118,6 @@ public class Template implements Entity {
         return mNodes;
     }
 
-    @Override
-    public Map<String, String> getStringParams(@NonNull Map<String, String> map) {
-        return null;
-    }
 
     @Override
     public JSONObject getJsonParams() {
