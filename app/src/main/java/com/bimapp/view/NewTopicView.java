@@ -1,10 +1,7 @@
 package com.bimapp.view;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,7 +20,7 @@ import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.Viewpoint;
-import com.bimapp.model.entityManagers.CommentEntityManager;
+import com.bimapp.model.DataAccess.entityManagers.CommentEntityManager;
 import com.bimapp.view.adapters.TemplateAdapter;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
