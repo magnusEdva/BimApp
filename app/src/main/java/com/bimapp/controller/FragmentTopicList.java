@@ -10,9 +10,8 @@ import android.view.ViewGroup;
 
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
+import com.bimapp.model.data_access.entityManagers.TopicsEntityManager;
 import com.bimapp.model.entity.Topic;
-import com.bimapp.model.DataAccess.entityManagers.ProjectEntityManager;
-import com.bimapp.model.DataAccess.entityManagers.TopicsEntityManager;
 import com.bimapp.view.TopicsListView;
 import com.bimapp.view.interfaces.TopicsViewInterface;
 

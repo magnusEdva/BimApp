@@ -1,4 +1,4 @@
-package com.bimapp.model.DataAccess.entityManagers;
+package com.bimapp.model.data_access.entityManagers;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -8,13 +8,13 @@ import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.CommentFragmentInterface;
 import com.bimapp.controller.interfaces.TopicFragmentInterface;
+import com.bimapp.model.data_access.network.APICall;
+import com.bimapp.model.data_access.network.Callback;
+import com.bimapp.model.data_access.network.NetworkConnManager;
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.EntityListConstructor;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.Viewpoint;
-import com.bimapp.model.DataAccess.network.APICall;
-import com.bimapp.model.DataAccess.network.Callback;
-import com.bimapp.model.DataAccess.network.NetworkConnManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;

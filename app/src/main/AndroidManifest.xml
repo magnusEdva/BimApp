@@ -72,8 +72,8 @@
                 />
         </provider>
         <provider
-            android:authorities="com.bimapp.model.DataAccess.DataProvider"
-            android:name="com.bimapp.model.DataAccess.DataProvider"
+            android:name="com.bimapp.model.data_access.DataProvider"
+            android:authorities="com.bimapp.model.data_access.DataProvider"
             android:exported="false"
             android:syncable="true"
             />

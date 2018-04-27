@@ -9,10 +9,10 @@ import android.util.ArraySet;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.bimapp.model.data_access.network.Callback;
+import com.bimapp.model.data_access.network.oauth.OAuthHandler;
 import com.bimapp.model.entity.IssueBoardExtensions;
 import com.bimapp.model.entity.Project;
-import com.bimapp.model.DataAccess.network.Callback;
-import com.bimapp.model.DataAccess.network.oauth.OAuthHandler;
 
 import java.util.ArrayList;
 import java.util.HashSet;
