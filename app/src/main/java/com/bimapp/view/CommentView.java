@@ -55,13 +55,13 @@ public class CommentView implements CommentViewInterface {
 
     @Override
     public void setTopic(Topic topic) {
-        mTitleText.setText(topic.getmTitle());
-        mCommentText.setText(topic.getDescription());
+        mTitleText.setText(topic.getMTitle());
+        mCommentText.setText(topic.getMDescription());
     }
 
     @Override
     public void setComment(Comment comment) {
-        mCommentText.setText(comment.getComment());
+        mCommentText.setText(comment.getMComment());
     }
 
     @Override

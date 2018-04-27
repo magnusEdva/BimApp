@@ -12,7 +12,6 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Model implementation of a the project type.
@@ -101,7 +100,7 @@ public class Project implements entity {
      */
 
     public List<String> getProjectTypesOrdered(Topic topic) {
-        String topicType = topic.getTopicType();
+        String topicType = topic.getMTopicType();
         List<String> projectTypes = mIssueBoardExtensions.getTopicType();
         return reOrderList(projectTypes, topicType);
     }
@@ -114,7 +113,7 @@ public class Project implements entity {
      * @return project Statuses
      */
     public List<String> getProjectStatusOrdered(Topic topic) {
-        String Status = topic.getTopicStatus();
+        String Status = topic.getMTopicStatus();
         List<String> projectStatus = mIssueBoardExtensions.getTopicStatus();
         return reOrderList(projectStatus, Status);
     }

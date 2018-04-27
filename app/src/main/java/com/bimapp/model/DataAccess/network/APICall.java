@@ -47,28 +47,28 @@ public class APICall {
         return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics";
     }
     public static String GETComments(Project project, Topic topic){
-        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/comments";
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getMGuid() + "/comments";
     }
     public static String POSTComment(Project project,Topic topic){
-        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/comments";
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getMGuid() + "/comments";
     }
     public static String PUTTopic(Project project, Topic topic){
-        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid();
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getMGuid();
     }
     public static String GETIssueBoardExtensions(Project project) {
         return (BuildBcfURL() + "/projects/" + project.getProjectId() + "/extensions");
     }
 
     public static String GETViewpoint(Project project, String topicGuid, Comment comment){
-        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topicGuid + "/viewpoints/" + comment.getViewpointGuid();
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topicGuid + "/viewpoints/" + comment.getMViewpointGuid();
     }
     public static String POSTViewpoints(Project project, Topic topic){
-        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/viewpoints";
-       // return "http:/10.0.0.8:8097/bcf/2.1" + "/projects/" + project.getProjectId() + "/topics/" + topic.getmGuid() + "/viewpoints";
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getMGuid() + "/viewpoints";
+       // return "http:/10.0.0.8:8097/bcf/2.1" + "/projects/" + project.getProjectId() + "/topics/" + topic.getMGuid() + "/viewpoints";
     }
 
     public static String GETSnapshot(Project project, String topicGuid, Viewpoint vp){
-        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topicGuid + "/viewpoints/" + vp.getmGuid() + "/snapshot";
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topicGuid + "/viewpoints/" + vp.getMGuid() + "/snapshot";
     }
 
 }
