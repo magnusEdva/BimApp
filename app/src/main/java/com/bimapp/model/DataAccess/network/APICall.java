@@ -64,11 +64,11 @@ public class APICall {
     }
     public static String POSTViewpoints(Project project, Topic topic){
         return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/viewpoints";
-       // return "http:/10.0.0.8:8097/bcf/2.1" + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/viewpoints";
+       // return "http:/10.0.0.8:8097/bcf/2.1" + "/projects/" + project.getProjectId() + "/topics/" + topic.getmGuid() + "/viewpoints";
     }
 
     public static String GETSnapshot(Project project, String topicGuid, Viewpoint vp){
-        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topicGuid + "/viewpoints/" + vp.getGuid() + "/snapshot";
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topicGuid + "/viewpoints/" + vp.getmGuid() + "/snapshot";
     }
 
 }

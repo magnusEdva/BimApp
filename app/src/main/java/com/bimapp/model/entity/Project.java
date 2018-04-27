@@ -147,10 +147,10 @@ public class Project implements entity {
     private void construct(JSONObject object) {
         try {
             projectId = object.getString(PROJECT_ID);
-            name = object.getString(NAME);
+            name = new String(object.getString(NAME).getBytes("ISO-8859-1"), "UTF-8");
             bimsyncProjectName = object.getString(BIMSYNC_PROJECT_NAME);
             bimsyncProjectId = object.getString(BIMSYNC_PROJECT_ID);
-        } catch (JSONException e) {
+        } catch (JSONException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
     }
