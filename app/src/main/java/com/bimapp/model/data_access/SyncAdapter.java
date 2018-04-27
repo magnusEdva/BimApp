@@ -1,6 +1,7 @@
-package com.bimapp.model.DataAccess;
+package com.bimapp.model.data_access;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
@@ -15,7 +16,9 @@ import android.os.Bundle;
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
     // Global variables
     // Define a variable to contain a content resolver instance
-    ContentResolver mContentResolver;
+    private final ContentResolver mContentResolver;
+
+    private final AccountManager mAccountManager;
 
     /**
      * Set up the sync adapter
@@ -27,6 +30,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
          * from the incoming Context
          */
         mContentResolver = context.getContentResolver();
+        mAccountManager = AccountManager.get(context);
     }
 
 
@@ -45,7 +49,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
          * from the incoming Context
          */
         mContentResolver = context.getContentResolver();
-
+        mAccountManager = AccountManager.get(context);
     }
 
     @Override

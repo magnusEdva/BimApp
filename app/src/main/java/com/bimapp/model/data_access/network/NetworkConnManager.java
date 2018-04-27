@@ -1,4 +1,4 @@
-package com.bimapp.model.DataAccess.network;
+package com.bimapp.model.data_access.network;
 
 
 import android.content.Intent;

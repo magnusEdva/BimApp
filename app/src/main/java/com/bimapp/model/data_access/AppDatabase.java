@@ -1,4 +1,4 @@
-package com.bimapp.model.DataAccess;
+package com.bimapp.model.data_access;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -13,10 +13,10 @@ import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.bimapp.model.DataAccess.DAO.CommentDAO;
-import com.bimapp.model.DataAccess.DAO.ProjectDAO;
-import com.bimapp.model.DataAccess.DAO.TopicDAO;
-import com.bimapp.model.DataAccess.DAO.UserDAO;
+import com.bimapp.model.data_access.dao.CommentDAO;
+import com.bimapp.model.data_access.dao.ProjectDAO;
+import com.bimapp.model.data_access.dao.TopicDAO;
+import com.bimapp.model.data_access.dao.UserDAO;
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.DateMapper;
 import com.bimapp.model.entity.Project;
