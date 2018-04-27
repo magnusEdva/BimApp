@@ -56,12 +56,22 @@ public class Viewpoint implements entity {
 
     }
 
-    public String getmGuid() {
+    public String getMGuid() {
         return mGuid;
     }
 
-    public Bitmap getmSnapshot() {
+    public Bitmap getSnapshot() {
         return mSnapshot.image;
+    }
+
+    public Snapshot getMSnapshot(){return mSnapshot; }
+
+    public void setGuid(String guid){
+        mGuid = guid;
+    }
+
+    public void setSnapshot(Snapshot snapshot){
+        mSnapshot = snapshot;
     }
 
     public boolean hasSnapshot() {
@@ -87,18 +97,18 @@ public class Viewpoint implements entity {
         return viewpoints;
     }
     @Entity(tableName = "snapshot")
-    private class Snapshot {
+    public static class Snapshot {
         @Ignore
-        Bitmap image;
+        public Bitmap image;
         @ColumnInfo(name = "type")
-        String type;
+        public String type;
 
         Snapshot(String type, Bitmap data) {
             this.type = type;
             image = data;
         }
 
-        Snapshot(){}
+        public Snapshot(){}
 
         Snapshot(Bitmap data) {
             image = data;
