@@ -1,5 +1,6 @@
 package com.bimapp.model.entity;
 
+import android.arch.persistence.room.Ignore;
 import android.support.annotation.NonNull;
 
 import org.json.JSONArray;
@@ -59,6 +60,7 @@ public class IssueBoardExtensions {
     /**
      * Empty constructor to return the default set of extensions.
      */
+    @Ignore
     public IssueBoardExtensions(){
         String[] status = {"Open", "Closed"};
         String[] type ={"Information", "Error"};

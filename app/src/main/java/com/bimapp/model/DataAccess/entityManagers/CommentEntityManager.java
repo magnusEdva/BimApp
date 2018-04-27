@@ -263,7 +263,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 vp = new Viewpoint(jsonObject);
-                mComment.setViewpointGuid(vp.getGuid());
+                mComment.setViewpointGuid(vp.getmGuid());
 
             } catch (JSONException e) {
                 e.printStackTrace();

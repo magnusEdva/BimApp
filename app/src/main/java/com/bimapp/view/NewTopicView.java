@@ -110,7 +110,7 @@ public class NewTopicView implements NewTopicViewInterface {
         if(mImage != null){
             vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, mImage);
             comment.setViewpoint(vp);
-            //comment.setViewpointGuid(topic.getGuid());
+            //comment.setViewpointGuid(topic.getmGuid());
         }
         BimApp context = (BimApp) mRootView.getContext().getApplicationContext();
 
