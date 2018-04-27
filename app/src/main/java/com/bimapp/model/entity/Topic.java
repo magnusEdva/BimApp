@@ -44,6 +44,7 @@ public class Topic implements entity {
 
     @PrimaryKey
     @ColumnInfo(name = GUID)
+    @NonNull
     private String mGuid;
 
     @ColumnInfo(name = TOPIC_TYPE)
@@ -114,69 +115,6 @@ public class Topic implements entity {
         mDescription = description;
     }
 
-    public String getGuid() {
-        return mGuid;
-    }
-
-    public String getTopicType() {
-        return mTopicType;
-    }
-
-    public void setTopicType(String topicType) {
-        mTopicType = topicType;
-    }
-
-    public String getTopicStatus() {
-        return mTopicStatus;
-    }
-
-    public void setTopicStatus(String topicStatus) {
-        mTopicStatus = topicStatus;
-    }
-
-    public List<String> getReferenceLinks() {
-        return mReferenceLinks;
-    }
-
-    public String getmTitle() {
-        return mTitle;
-    }
-
-    public String getPriority() {
-        return mPriority;
-    }
-
-    public Integer getIndex() {
-        return mIndex;
-    }
-
-    public String getCreationDate() {
-        return mCreationDate;
-    }
-
-    public String getCreationAuthor() {
-        return mCreationAuthor;
-    }
-
-    public String getModifiedAuthor() {
-        return mModifiedAuthor;
-    }
-
-    public String getAssignedTo() {
-        return mAssignedTo;
-    }
-
-    public String getStage() {
-        return mStage;
-    }
-
-    public String getDescription() {
-        return mDescription;
-    }
-
-    public String getDueDate() {
-        return mDueDate;
-    }
 
     private void construct(JSONObject obj) {
 
@@ -291,7 +229,120 @@ public class Topic implements entity {
         return mTitle;
     }
 
-    private class BimSnippet {
+    public String getMGuid() {
+        return mGuid;
+    }
+
+    public void setGuid(String guid){mGuid = guid;}
+
+    public String getMTopicType() {
+        return mTopicType;
+    }
+
+    public void setTopicType(String topicType) {
+        mTopicType = topicType;
+    }
+
+    public String getMTopicStatus() {
+        return mTopicStatus;
+    }
+
+    public void setTopicStatus(String topicStatus) {
+        mTopicStatus = topicStatus;
+    }
+
+    public List<String> getMReferenceLinks() {
+        return mReferenceLinks;
+    }
+
+    public void setReferenceLinks(List<String> links){mReferenceLinks = links;}
+
+    public String getMTitle() {
+        return mTitle;
+    }
+
+    public String getMPriority() {
+        return mPriority;
+    }
+
+    public void setPriority(String priority){mPriority = priority;}
+
+    public Integer getMIndex() {
+        return mIndex;
+    }
+
+    public void setIndex(Integer index){
+        mIndex = index;
+    }
+
+    public String getMCreationDate() {
+        return mCreationDate;
+    }
+
+    public void setCreationDate(String creationDate){
+        mCreationDate = creationDate;
+    }
+
+    public String getMCreationAuthor() {
+        return mCreationAuthor;
+    }
+
+    public void setCreationAuthor(String author){
+        mCreationAuthor = author;
+    }
+
+    public String getMModifiedAuthor() {
+        return mModifiedAuthor;
+    }
+
+    public void setModifiedAuthor(String modifiedAuthor){
+        mModifiedAuthor = modifiedAuthor;
+    }
+    public String getMAssignedTo() {
+        return mAssignedTo;
+    }
+
+    public String getMStage() {
+        return mStage;
+    }
+
+    public void setStage(String stage){
+        mStage = stage;
+    }
+
+    public String getMDescription() {
+        return mDescription;
+    }
+
+    public String getMDueDate() {
+        return mDueDate;
+    }
+
+    public void setDueDate(String dueDate){
+        mDueDate = dueDate;
+    }
+
+    public BimSnippet getMBimSnippet() {
+        return mBimSnippet;
+    }
+    public void setBimSnippet(BimSnippet snippet){
+        mBimSnippet = snippet;
+    }
+    public List<String> getMLabels(){
+        return mLabels;
+    }
+    public void setLabels(List<String> labels){
+        mLabels = labels;
+    }
+    public String getProjectId(){
+        return projectId;
+    }
+    public void setProjectId(String projectId){
+        this.projectId = projectId;
+    }
+
+
+    public static class BimSnippet {
         final static String SNIPPET_TYPE = "snippet_type";
         final static String IS_EXTERNAL = "is_external";
         final static String REFERENCE = "reference";
@@ -299,16 +350,16 @@ public class Topic implements entity {
 
 
         @ColumnInfo(name = SNIPPET_TYPE)
-        String mSnippet_type;
+        public String mSnippet_type;
 
         @ColumnInfo(name = IS_EXTERNAL)
-        boolean mExternal;
+        public boolean mExternal;
 
         @ColumnInfo(name = REFERENCE)
-        String mReference;
+        public String mReference;
 
         @ColumnInfo(name = REFERENCE_SCHEMA)
-        String mReferenceSchema;
+        public String mReferenceSchema;
 
         public BimSnippet(){}
 

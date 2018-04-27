@@ -16,7 +16,7 @@ public class DateMapper {
     private static int LENGTH_WITHOUT_MILLIS = 24;
 
     @TypeConverter
-    public static String map(Date date) {
+    public static String map(Date date)  {
         if (date == null) {
             return null;
         }
@@ -28,13 +28,18 @@ public class DateMapper {
      * Transform ISO 8601 string to Date.
      */
     @TypeConverter
-    public static Date toDate(final String iso8601string) throws ParseException {
+    public static Date toDate(final String iso8601string) {
         String formatted = formatTimeZone(iso8601string);
-        if (formatted.length() == LENGTH_WITHOUT_MILLIS) {
-            return FORMATTER.parse(formatted);
-        } else {
-            return MILLIS_FORMATTER.parse(formatted);
+        try {
+            if (formatted.length() == LENGTH_WITHOUT_MILLIS) {
+                return FORMATTER.parse(formatted);
+            } else {
+                return MILLIS_FORMATTER.parse(formatted);
+            }
+        }catch (ParseException e){
+            e.printStackTrace();
         }
+        return null;
     }
 
     private static String formatTimeZone(String iso8601string) {

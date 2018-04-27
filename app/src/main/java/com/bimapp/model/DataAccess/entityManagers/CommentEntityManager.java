@@ -70,13 +70,13 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
 
     private void requestViewpoint(TopicFragmentInterface listener, Comment comment) {
         NetworkConnManager.networkRequest(mContext, Request.Method.GET,
-                APICall.GETViewpoint(mContext.getActiveProject(), comment.getTopicGuid(), comment),
+                APICall.GETViewpoint(mContext.getActiveProject(), comment.getMTopicGuid(), comment),
                 new getViewpointCallback(listener, comment), null);
     }
 
     private void requestSnapshot(TopicFragmentInterface listener, Comment comment, Viewpoint vp) {
         NetworkConnManager.networkRequest(mContext, 11,
-                APICall.GETSnapshot(mContext.getActiveProject(), comment.getTopicGuid(), vp),
+                APICall.GETSnapshot(mContext.getActiveProject(), comment.getMTopicGuid(), vp),
                 new getSnapshotCallback(listener, vp, comment), null);
     }
 
@@ -130,7 +130,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
 
 
                 for (Comment comment : comments) {
-                    if (comment.getViewpointGuid() != null) {
+                    if (comment.getMViewpointGuid() != null) {
                         requestViewpoint(mControllerCallback, comment);
                     }
                 }
@@ -263,7 +263,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 vp = new Viewpoint(jsonObject);
-                mComment.setViewpointGuid(vp.getmGuid());
+                mComment.setViewpointGuid(vp.getMGuid());
 
             } catch (JSONException e) {
                 e.printStackTrace();

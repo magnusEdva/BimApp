@@ -1,6 +1,8 @@
 package com.bimapp.model.entity;
 
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.TypeConverter;
+import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
 import org.json.JSONArray;
@@ -9,6 +11,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,11 +31,15 @@ public class IssueBoardExtensions {
     public static final String USER_ID_TYPE = "user_id_type";
     public static final String TOPIC_LABELS = "topic_label";
 
+    @TypeConverters(Topic.class)
+    private List<String> mTopicType;
+    @TypeConverters(Topic.class)
+    private List<String> mTopicStatus;
+    @TypeConverters(Topic.class)
+    private List<String> mUserIdType;
+    @TypeConverters(Topic.class)
+    private List<String> mTopicLabel;
 
-    private ArrayList<String> mTopicType;
-    private ArrayList<String> mTopicStatus;
-    private ArrayList<String> mUserIdType;
-    private ArrayList<String> mTopicLabel;
 
     /**
      * Constructor which generates extentions based on a JSONObject from the server
@@ -50,7 +57,7 @@ public class IssueBoardExtensions {
      * @param userIdType
      * @param topicLabel
      */
-    public IssueBoardExtensions(ArrayList<String> topicType,ArrayList<String> topicStatus, ArrayList<String> userIdType, ArrayList<String> topicLabel){
+    public IssueBoardExtensions(List<String> topicType,List<String> topicStatus, List<String> userIdType, List<String> topicLabel){
         mTopicType = topicType;
         mTopicStatus = topicStatus;
         mUserIdType = userIdType;
@@ -119,19 +126,20 @@ public class IssueBoardExtensions {
             e.printStackTrace();
         }
     }
-    public ArrayList<String> getTopicType() {
+    public List<String> getTopicType() {
         return mTopicType;
     }
 
-    public ArrayList<String> getTopicStatus() {
+    public List<String> getTopicStatus() {
         return mTopicStatus;
     }
 
-    public ArrayList<String> getUserIdType() {
+    public List<String> getUserIdType() {
         return mUserIdType;
     }
 
-    public ArrayList<String> getTopicLabel() {
+    public List<String> getTopicLabel() {
         return mTopicLabel;
     }
+
 }
