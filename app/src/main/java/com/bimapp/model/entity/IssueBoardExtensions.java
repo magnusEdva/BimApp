@@ -27,6 +27,7 @@ public class IssueBoardExtensions {
     public static final String USER_ID_TYPE = "user_id_type";
     public static final String TOPIC_LABELS = "topic_label";
 
+
     private ArrayList<String> mTopicType;
     private ArrayList<String> mTopicStatus;
     private ArrayList<String> mUserIdType;

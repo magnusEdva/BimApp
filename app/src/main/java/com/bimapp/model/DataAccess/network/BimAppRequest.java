@@ -1,27 +1,22 @@
-package com.bimapp.model.network;
+package com.bimapp.model.DataAccess.network;
 
 import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
-import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.bimapp.BimApp;
-import com.bimapp.model.entity.Entity;
+import com.bimapp.model.entity.entity;
+
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-
-import static java.net.Proxy.Type.HTTP;
 
 /**
  * Provider of a very general GET method that can be accessed through NetworkConnManager.
@@ -31,7 +26,7 @@ class BimAppRequest {
 
 
     static void GET(final BimApp mContext, final int method, String url,
-                    final Callback callback, @Nullable final Entity params) {
+                    final Callback callback, @Nullable final entity params) {
 
         StringRequest getUserRequest = new StringRequest(
                 method, url, new Response.Listener<String>() {
@@ -85,7 +80,7 @@ class BimAppRequest {
     }
 
     static void POST(final BimApp mContext, final int method, String url,
-                     final Callback callback, final Entity params) {
+                     final Callback callback, final entity params) {
 
         JsonObjectRequest getUserRequest = new JsonObjectRequest(method, url, params.getJsonParams(), new Response.Listener<JSONObject>() {
             @Override

@@ -1,5 +1,12 @@
 package com.bimapp.model.entity;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import org.json.JSONException;
@@ -17,7 +24,8 @@ import java.util.Map;
  * Comment belonging to a Topic. This Class belongs to said topic,
  * but the topic itself need not have any reference to these.
  */
-public class Comment implements Entity {
+@Entity(tableName = "comment")
+public class Comment implements entity {
     public static final String GUID = "";
     public static final String VERBAL_STATUS = "verbal_status";
     public static final String STATUS = "status";
@@ -34,42 +42,54 @@ public class Comment implements Entity {
     /**
      * Unique identifier for a comment.
      */
+    @PrimaryKey
     private String mCommentsGUID;
     /**
      * comment verbal status
      */
+    @ColumnInfo(name = VERBAL_STATUS)
     private String mVerbalStatus;
     /**
      * comment status
      */
+    @ColumnInfo(name = STATUS)
     private String mStatus;
     /**
      * creation date
      */
+    @ColumnInfo(name = DATE)
+
     private Date mDate;
     /**
      * comment author
      */
+    @ColumnInfo(name = AUTHOR)
     private String mAuthor;
     /**
      * topic id
      */
+    @ColumnInfo(name = TOPIC_GUID)
     private String mTopicGUID;
     /**
      * modified at
      */
+    @ColumnInfo(name = MODIFIED_DATE)
     private String mModifiedDate;
     /**
      * modified by
      */
+    @ColumnInfo(name = MODIFIED_AUTHOR)
     private String mModifiedAuthor;
     /**
      * actual comment content
      */
+    @ColumnInfo(name = COMMENT)
     private String mComment;
 
+    @ColumnInfo(name = VIEWPOINT_GUID)
     private String mViewpointGuid;
 
+    @Embedded
     private Viewpoint mViewpoint;
 
     public Comment(JSONObject obj) {
@@ -79,10 +99,6 @@ public class Comment implements Entity {
     public Comment(String comment) {
         mComment = comment;
     }
-
-
-
-
 
     /**
      * constructs a comment from a correspong JSON file
@@ -147,15 +163,6 @@ public class Comment implements Entity {
 
     public void setViewpoint(Viewpoint vp){
         mViewpoint = vp;
-    }
-
-    /**
-     * @param map @NonNull
-     * @return
-     */
-    @Override
-    public Map<String, String> getStringParams(@NonNull Map<String, String> map) {
-        return null;
     }
 
     @Override
