@@ -63,7 +63,7 @@
                 />
         </provider>
         <service
-            android:name=".services.AuthenticatorService">
+            android:name=".model.services.AuthenticatorService">
             <intent-filter>
                 <action
                     android:name="android.accounts.AccountAuthenticator"/>

@@ -1,4 +1,4 @@
-package com.bimapp.services;
+package com.bimapp.model.services;
 
 import android.app.Service;
 import android.content.Intent;
