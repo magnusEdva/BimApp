@@ -7,6 +7,7 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
 import org.json.JSONException;
@@ -26,7 +27,7 @@ import java.util.Map;
  */
 @Entity(tableName = "comment")
 public class Comment implements entity {
-    public static final String GUID = "";
+    public static final String GUID = "guid";
     public static final String VERBAL_STATUS = "verbal_status";
     public static final String STATUS = "status";
     public static final String DATE = "date";
@@ -97,8 +98,35 @@ public class Comment implements entity {
         construct(obj);
     }
 
+    public Comment(String guid, String verbalStatus, String status,String Date, String author, String topic,
+                   String modifiedDate, String modifiedAuthor, String comment, String viewpointGuid){
+        mCommentsGUID = guid;
+        mVerbalStatus = verbalStatus;
+        mStatus = status;
+        mDate = DateMapper.toDate(Date);
+        mAuthor = author;
+        mTopicGUID = topic;
+        mModifiedDate = modifiedDate;
+        mModifiedAuthor = modifiedAuthor;
+        mComment = comment;
+        mViewpointGuid = viewpointGuid;
+    }
+    public Comment(ContentValues values){
+        mCommentsGUID = values.getAsString("mCommentsGUID");
+        mTopicGUID = values.getAsString(TOPIC_GUID);
+        mVerbalStatus = values.getAsString(VERBAL_STATUS);
+        mStatus = values.getAsString(STATUS);
+        mDate = DateMapper.toDate(values.getAsString(DATE));
+        mAuthor = values.getAsString(AUTHOR);
+        mComment = values.getAsString(COMMENT);
+        mModifiedDate = values.getAsString(mModifiedDate);
+        mModifiedAuthor = values.getAsString(MODIFIED_AUTHOR);
+        mViewpointGuid = values.getAsString(mViewpointGuid);
+    }
+
     public Comment(String comment) {
         mComment = comment;
+        mCommentsGUID = Math.random() + "";
     }
 
     /**
@@ -147,6 +175,22 @@ public class Comment implements entity {
         }
         return map;
     }
+    public ContentValues getValues(){
+        ContentValues values = new ContentValues();
+        values.put("mCommentsGUID", mCommentsGUID);
+        values.put(TOPIC_GUID, mTopicGUID);
+        values.put(VERBAL_STATUS, mVerbalStatus);
+        values.put(STATUS, mStatus);
+        values.put(DATE, DateMapper.map(mDate));
+        values.put(AUTHOR, mAuthor);
+        values.put(COMMENT, mComment);
+        values.put(mModifiedDate, MODIFIED_DATE);
+        values.put(MODIFIED_AUTHOR, MODIFIED_AUTHOR);
+        values.put(mViewpointGuid, mViewpointGuid);
+        return values;
+    }
+
+
     @Override
     public String toString() {
         return mComment;

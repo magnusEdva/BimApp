@@ -4,6 +4,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.database.Cursor;
 
 import com.bimapp.model.entity.User;
 
@@ -14,5 +15,5 @@ public interface UserDAO {
     void insert( User user);
 
     @Query("SELECT * FROM user")
-    User getUser();
+    Cursor getUser();
 }

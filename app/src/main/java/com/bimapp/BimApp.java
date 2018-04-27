@@ -9,6 +9,8 @@ import android.util.ArraySet;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.bimapp.model.data_access.AppDatabase;
+import com.bimapp.model.data_access.entityManagers.LogOutHelper;
 import com.bimapp.model.data_access.network.Callback;
 import com.bimapp.model.data_access.network.oauth.OAuthHandler;
 import com.bimapp.model.entity.IssueBoardExtensions;
@@ -53,11 +55,12 @@ public class BimApp extends Application {
 
     /**
      * deletes all tokens and cache from storage. After calling this, the presenter should change to the login
-     * view.
+     * view. Also empties the offline storage.
      */
     public void logOut() {
         requestQueue.getCache().clear();
         mOAuth.deleteTokens();
+        new LogOutHelper(AppDatabase.getInstance(this)).execute();
     }
 
     /**

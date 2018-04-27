@@ -29,6 +29,13 @@ public class DateMapper {
      */
     @TypeConverter
     public static Date toDate(final String iso8601string) {
+        if(iso8601string.length() == 10){
+            try {
+                return formatter.parse(iso8601string);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
         String formatted = formatTimeZone(iso8601string);
         try {
             if (formatted.length() == LENGTH_WITHOUT_MILLIS) {
