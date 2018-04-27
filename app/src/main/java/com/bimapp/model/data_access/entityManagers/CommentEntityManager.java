@@ -1,21 +1,14 @@
 package com.bimapp.model.data_access.entityManagers;
 
-import android.content.AsyncQueryHandler;
-import android.content.ContentProviderClient;
 import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.RemoteException;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.CommentFragmentInterface;
 import com.bimapp.controller.interfaces.TopicFragmentInterface;
-import com.bimapp.model.data_access.AppDatabase;
 import com.bimapp.model.data_access.DataProvider;
 import com.bimapp.model.data_access.network.APICall;
 import com.bimapp.model.data_access.network.Callback;
@@ -55,7 +48,8 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
      */
     @Override
     public void getComments(TopicFragmentInterface listener, Topic topic) {
-        handler.startQuery(1, listener, ParseUri(), null, topic.getMGuid(), null, null);
+        handler.startQuery(1, listener, DataProvider.ParseUri(DataProvider.CommentTable),
+                null, topic.getMGuid(), null, null);
         requestComments(new getCommentsCallback(listener), topic);
     }
 
@@ -81,7 +75,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
      */
     @Override
     public void postComment(CommentFragmentInterface listener, Topic topic, Comment comment, Bitmap file) {
-        Viewpoint vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, file);
+        Viewpoint vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, file, null);
         new postImage(new postViewpointCallback(listener, topic, comment), topic, vp).execute();
     }
 
@@ -156,7 +150,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
             }
             mControllerCallback.setComments(comments);
             for(Comment c : comments){
-                handler.startInsert(-1, null, ParseUri(), c.getValues());
+                handler.startInsert(-1, null, DataProvider.ParseUri(DataProvider.CommentTable), c.getContentValues());
             }
         }
 
@@ -209,7 +203,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
             Viewpoint vp = null;
             try {
                 JSONObject jsonObject = new JSONObject(response);
-                vp = new Viewpoint(jsonObject);
+                vp = new Viewpoint(jsonObject, mComment.getMCommentsGUID());
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -244,6 +238,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
         public void onSuccess(Bitmap response) {
             mViewpoint.constructSnapshot(response);
             mComment.setViewpoint(mViewpoint);
+            handler.startInsert(2,null, DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE), mViewpoint.getContentValues());
             mControllerCallback.editComment(mComment);
 
         }
@@ -279,7 +274,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
             Viewpoint vp;
             try {
                 JSONObject jsonObject = new JSONObject(response);
-                vp = new Viewpoint(jsonObject);
+                vp = new Viewpoint(jsonObject, mComment.getMCommentsGUID());
                 mComment.setViewpointGuid(vp.getMGuid());
 
             } catch (JSONException e) {
@@ -289,25 +284,6 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
         }
 
     }
-
-    private void insertCommentsIntoProvider(List<Comment> comments) {
-        ContentProviderClient client = contentResolver.acquireContentProviderClient(ParseUri());
-        ContentValues values = new ContentValues();
-
-        if (client != null)
-            client.release();
-
-    }
-
-    private static Uri ParseUri() {
-        Uri.Builder builder = new Uri.Builder();
-        builder.scheme("content");
-        builder.authority(DataProvider.AUTHORITY);
-        builder.path(DataProvider.CommentTable);
-        return builder.build();
-    }
-
-
 }
 
 

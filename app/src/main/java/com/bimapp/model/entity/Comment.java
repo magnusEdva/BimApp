@@ -45,6 +45,7 @@ public class Comment implements entity {
      */
     @PrimaryKey
     @NonNull
+    @ColumnInfo(name = GUID)
     private String mCommentsGUID;
     /**
      * comment verbal status
@@ -91,7 +92,7 @@ public class Comment implements entity {
     @ColumnInfo(name = VIEWPOINT_GUID)
     private String mViewpointGuid;
 
-    @Embedded
+    @Ignore
     private Viewpoint mViewpoint;
 
     public Comment(JSONObject obj) {
@@ -119,9 +120,9 @@ public class Comment implements entity {
         mDate = DateMapper.toDate(values.getAsString(DATE));
         mAuthor = values.getAsString(AUTHOR);
         mComment = values.getAsString(COMMENT);
-        mModifiedDate = values.getAsString(mModifiedDate);
+        mModifiedDate = values.getAsString(MODIFIED_DATE);
         mModifiedAuthor = values.getAsString(MODIFIED_AUTHOR);
-        mViewpointGuid = values.getAsString(mViewpointGuid);
+        mViewpointGuid = values.getAsString(VIEWPOINT_GUID);
     }
 
     public Comment(String comment) {
@@ -175,7 +176,7 @@ public class Comment implements entity {
         }
         return map;
     }
-    public ContentValues getValues(){
+    public ContentValues getContentValues(){
         ContentValues values = new ContentValues();
         values.put("mCommentsGUID", mCommentsGUID);
         values.put(TOPIC_GUID, mTopicGUID);
@@ -184,9 +185,9 @@ public class Comment implements entity {
         values.put(DATE, DateMapper.map(mDate));
         values.put(AUTHOR, mAuthor);
         values.put(COMMENT, mComment);
-        values.put(mModifiedDate, MODIFIED_DATE);
-        values.put(MODIFIED_AUTHOR, MODIFIED_AUTHOR);
-        values.put(mViewpointGuid, mViewpointGuid);
+        values.put(MODIFIED_DATE, mModifiedDate);
+        values.put(MODIFIED_AUTHOR, mModifiedAuthor);
+        values.put(VIEWPOINT_GUID, mViewpointGuid);
         return values;
     }
 
@@ -304,6 +305,7 @@ public class Comment implements entity {
     }
 
     public void setViewpoint(Viewpoint vp){
+        vp.setCommentGUID(mCommentsGUID);
         mViewpoint = vp;
     }
 }

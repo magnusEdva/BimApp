@@ -108,7 +108,7 @@ public class NewTopicView implements NewTopicViewInterface {
         Viewpoint vp = null;
         Comment comment = new Comment(mCommentString);
         if(mImage != null){
-            vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, mImage);
+            vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, mImage, null);
             comment.setViewpoint(vp);
             //comment.setViewpointGuid(topic.getMGuid());
         }
