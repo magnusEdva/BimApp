@@ -37,7 +37,12 @@ class BimAppRequest {
                 method, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        onResponseString(response, callback);
+                        try {
+                            String utf8Response = new String(response.getBytes("ISO-8859-1"), "UTF8");
+                            onResponseString(utf8Response, callback);
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -85,7 +90,13 @@ class BimAppRequest {
         JsonObjectRequest getUserRequest = new JsonObjectRequest(method, url, params.getJsonParams(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                callback.onSuccess(response.toString());
+                try {
+                    String utf8response = new String(response.toString().getBytes("ISO-8859-1"), "UTF8");
+                    callback.onSuccess(utf8response);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
             }
         },
                 new Response.ErrorListener() {
@@ -127,6 +138,8 @@ class BimAppRequest {
             protected String getParamsEncoding() {
                 return "UTF-8";
             }
+
+
         };
 
         mContext.addToRequestQueue(getUserRequest, url);

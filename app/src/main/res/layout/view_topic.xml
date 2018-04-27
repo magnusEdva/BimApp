@@ -83,27 +83,27 @@
                 android:visibility="visible" />
 
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/view_Topic_floating_button"
-                style="@style/BimAppDefaultTheme"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:alpha="0.75"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@android:drawable/ic_input_add"
-                app:backgroundTint="@color/colorAccent"
-                app:elevation="5dp" />
 
-
-            <ImageView
-                android:id="@+id/view_topic_comment_fullscreen_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone" />
         </RelativeLayout>
     </ScrollView>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/view_Topic_floating_button"
+        style="@style/BimAppDefaultTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:alpha="0.75"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="@color/colorAccent"
+        app:elevation="5dp" />
 
+
+    <ImageView
+        android:id="@+id/view_topic_comment_fullscreen_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 </RelativeLayout>
