@@ -1,4 +1,4 @@
-package com.bimapp.model.entityManagers;
+package com.bimapp.model.DataAccess.entityManagers;
 
 import android.util.Log;
 
@@ -6,9 +6,9 @@ import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.model.entity.IssueBoardExtensions;
 import com.bimapp.model.entity.Project;
-import com.bimapp.model.network.APICall;
-import com.bimapp.model.network.Callback;
-import com.bimapp.model.network.NetworkConnManager;
+import com.bimapp.model.DataAccess.network.APICall;
+import com.bimapp.model.DataAccess.network.Callback;
+import com.bimapp.model.DataAccess.network.NetworkConnManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +30,7 @@ public class IssueBoardExtensionsEntityManager {
     }
 
     /**
-     * Inner lass which implements Callback from {@link com.bimapp.model.network.NetworkConnManager}.
+     * Inner lass which implements Callback from {@link com.bimapp.model.DataAccess.network.NetworkConnManager}.
      */
     public class IssueBoardExtensionsCallback implements Callback<String>{
 

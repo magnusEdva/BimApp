@@ -4,18 +4,15 @@ package com.bimapp.controller;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bimapp.BimApp;
-import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
-import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Topic;
-import com.bimapp.model.entityManagers.ProjectEntityManager;
-import com.bimapp.model.entityManagers.TopicsEntityManager;
+import com.bimapp.model.DataAccess.entityManagers.ProjectEntityManager;
+import com.bimapp.model.DataAccess.entityManagers.TopicsEntityManager;
 import com.bimapp.view.TopicsListView;
 import com.bimapp.view.interfaces.TopicsViewInterface;
 

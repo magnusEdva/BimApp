@@ -9,14 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.CommentFragmentInterface;
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Topic;
-import com.bimapp.model.entityManagers.CommentEntityManager;
-import com.bimapp.model.entityManagers.ProjectEntityManager;
+import com.bimapp.model.DataAccess.entityManagers.CommentEntityManager;
+import com.bimapp.model.DataAccess.entityManagers.ProjectEntityManager;
 import com.bimapp.view.CommentView;
 import com.bimapp.view.interfaces.CommentViewInterface;
 

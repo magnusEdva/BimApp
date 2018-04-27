@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class which uses Entity implementations to generate Entity Arrays from JSONArray.
+ * Class which uses entity implementations to generate entity Arrays from JSONArray.
  */
 
 public class EntityListConstructor {

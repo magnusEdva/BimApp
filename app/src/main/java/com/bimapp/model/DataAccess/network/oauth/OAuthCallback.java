@@ -1,7 +1,7 @@
-package com.bimapp.model.network.oauth;
+package com.bimapp.model.DataAccess.network.oauth;
 
 import com.android.volley.VolleyError;
-import com.bimapp.model.network.Callback;
+import com.bimapp.model.DataAccess.network.Callback;
 
 /**
  * Created by Håkon on 13.03.2018.

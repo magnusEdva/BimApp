@@ -1,5 +1,11 @@
 package com.bimapp.model.entity;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverter;
+import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -15,64 +21,85 @@ import java.util.Map;
  * A topic is a model class which can be used to showcase a problem
  * or something else.
  */
+@Entity(tableName = "topic")
+public class Topic implements entity {
+    public static final String GUID = "guid";
+    public static final String TOPIC_TYPE = "topic_type";
+    public static final String TOPIC_STATUS = "topic_status";
+    public static final String REFERENCE_LINKS = "reference_links";
+    public static final String TITLE = "title";
+    public static final String PRIORITY = "priority";
+    public static final String INDEX = "index";
+    public static final String LABELS = "labels";
+    public static final String CREATION_DATE = "creation_date";
+    public static final String CREATION_AUTHOR = "creation_author";
+    public static final String MODIFIED_DATE = "modified_date";
+    public static final String MODIFIED_AUTHOR = "modified_author";
+    public static final String ASSIGNED_TO = "assigned_to";
+    public static final String STAGE = "stage";
+    public static final String DESCRIPTION = "description";
+    public static final String BIM_SNIPPET = "bim_snippet";
+    public static final String DUE_DATE = "due_date";
+    public static final String AUTHORIZATION = "authorization";
 
-public class Topic implements Entity {
-    public static String GUID = "guid";
-    public static String TOPIC_TYPE = "topic_type";
-    public static String TOPIC_STATUS = "topic_status";
-    public static String REFERENCE_LINKS = "reference_links";
-    public static String TITLE = "title";
-    public static String PRIORITY = "priority";
-    public static String INDEX = "index";
-    public static String LABELS = "labels";
-    public static String CREATION_DATE = "creation_date";
-    public static String CREATION_AUTHOR = "creation_author";
-    public static String MODIFIED_DATE = "modified_date";
-    public static String MODIFIED_AUTHOR = "modified_author";
-    public static String ASSIGNED_TO = "assigned_to";
-    public static String STAGE = "stage";
-    public static String DESCRIPTION = "description";
-    public static String BIM_SNIPPET = "bim_snippet";
-    public static String DUE_DATE = "due_date";
-    public static String AUTHORIZATION = "authorization";
-
-
+    @PrimaryKey
+    @ColumnInfo(name = GUID)
     private String mGuid;
 
+    @ColumnInfo(name = TOPIC_TYPE)
     private String mTopicType;
 
+    @ColumnInfo(name = TOPIC_STATUS)
     private String mTopicStatus;
 
+    @ColumnInfo(name = REFERENCE_LINKS)
+    @TypeConverters(Topic.class)
     private List<String> mReferenceLinks;
     /**
      * title of the topic. Used to quickly identify what the topic is about.
      */
+
+    @ColumnInfo(name = TITLE)
     private String mTitle;
 
+    @ColumnInfo(name = PRIORITY)
     private String mPriority;
 
+    @ColumnInfo(name = INDEX)
     private Integer mIndex;
 
+    @ColumnInfo(name = CREATION_DATE)
     private String mCreationDate;
 
+    @ColumnInfo(name = CREATION_AUTHOR)
     private String mCreationAuthor;
 
+    @ColumnInfo(name = MODIFIED_AUTHOR)
     private String mModifiedAuthor;
 
+    @ColumnInfo(name = ASSIGNED_TO)
     private String mAssignedTo;
 
+    @ColumnInfo(name = LABELS)
+    @TypeConverters(Topic.class)
     private List<String> mLabels;
 
+    @ColumnInfo(name = STAGE)
     private String mStage;
     /**
      * actual description of the Topic. Used with the title to provide full context.
      */
+    @ColumnInfo(name = DESCRIPTION)
     private String mDescription;
 
+    @Embedded
     private BimSnippet mBimSnippet;
 
+    @ColumnInfo(name = DUE_DATE)
     private String mDueDate;
 
+    @ColumnInfo(name = Project.PROJECT_ID)
+    private String projectId;
 
     public Topic(JSONObject obj) {
         construct(obj);
@@ -191,33 +218,6 @@ public class Topic implements Entity {
         }
     }
 
-    /**
-     * @param map @NonNull empty or non-empty map that is used to store the parameters
-     * @return map containing all of this topics variables.
-     */
-    @Override
-    public Map<String, String> getStringParams(@NonNull Map<String, String> map) {
-        if (mTopicType != null)
-            map.put("topic_type", "");
-        if (mTopicStatus != null)
-            map.put("topic_status", "");
-        //TODO map.put("reference_links", mReferenceLinks);
-        map.put("title", mTitle);
-        if (mPriority != null)
-            map.put("priority", mPriority);
-        if (mIndex != null)
-            map.put("index", mIndex.toString());
-        if (mAssignedTo != null)
-            map.put("assigned_to", "");
-        if (mStage != null)
-            map.put("stage", mStage);
-        if (mDescription != null)
-            map.put("description", mDescription);
-        if (mDueDate != null)
-            map.put("due_date", mDueDate);
-        return map;
-    }
-
     @Override
     public JSONObject getJsonParams() {
         JSONObject map = new JSONObject();
@@ -253,7 +253,7 @@ public class Topic implements Entity {
         return map;
     }
 
-    public List<String> getListFromJSonArray(JSONArray array) {
+    public static List<String> getListFromJSonArray(JSONArray array) {
         List<String> strings = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
             try {
@@ -264,12 +264,26 @@ public class Topic implements Entity {
         }
         return strings;
     }
-    public JSONArray getJSONArrayFromList(List<String> list){
+    public static JSONArray getJSONArrayFromList(List<String> list){
         JSONArray array = new JSONArray();
         for(String s : list){
             array.put(s);
         }
         return array;
+    }
+    @TypeConverter
+    public static String getStringFromList(List<String> list){
+        return getJSONArrayFromList(list).toString();
+    }
+    @TypeConverter
+    public static List<String> getListFromString(String string){
+        JSONArray array = null;
+        try {
+             array = new JSONArray(string);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return getListFromJSonArray(array);
     }
 
     @Override
@@ -283,10 +297,20 @@ public class Topic implements Entity {
         final static String REFERENCE = "reference";
         final static String REFERENCE_SCHEMA = "reference_schema";
 
+
+        @ColumnInfo(name = SNIPPET_TYPE)
         String mSnippet_type;
+
+        @ColumnInfo(name = IS_EXTERNAL)
         boolean mExternal;
+
+        @ColumnInfo(name = REFERENCE)
         String mReference;
+
+        @ColumnInfo(name = REFERENCE_SCHEMA)
         String mReferenceSchema;
+
+        public BimSnippet(){}
 
         public BimSnippet(JSONObject snippet) {
             try {
