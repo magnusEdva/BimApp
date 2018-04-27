@@ -56,11 +56,11 @@ public class Viewpoint implements entity {
 
     }
 
-    public String getGuid() {
+    public String getmGuid() {
         return mGuid;
     }
 
-    public Bitmap getSnapshot() {
+    public Bitmap getmSnapshot() {
         return mSnapshot.image;
     }
 

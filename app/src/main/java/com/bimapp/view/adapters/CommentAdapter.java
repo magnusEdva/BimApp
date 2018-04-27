@@ -15,8 +15,6 @@ import com.bimapp.view.interfaces.TopicViewInterface;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.graphics.Bitmap.createScaledBitmap;
-
 /**
  * Adapter used to show comments in a list in TopicView
  */
@@ -62,8 +60,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.NameView.setText(mComments.get(position).getAuthor());
         holder.DateView.setText(mComments.get(position).getDate());
 
-        if (mComments.get(position).getViewpoint() != null && mComments.get(position).getViewpoint().getSnapshot() != null) {
-            holder.bitmap = mComments.get(position).getViewpoint().getSnapshot();
+        if (mComments.get(position).getViewpoint() != null && mComments.get(position).getViewpoint().getmSnapshot() != null) {
+            holder.bitmap = mComments.get(position).getViewpoint().getmSnapshot();
             holder.imageView.setImageBitmap(scaleDown(holder.bitmap, 500, false));
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
