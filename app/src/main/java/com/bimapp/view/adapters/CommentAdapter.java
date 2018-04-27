@@ -56,12 +56,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.ContentView.setText(mComments.get(position).getMComment());
-        holder.NameView.setText(mComments.get(position).getMAuthor());
+        holder.ContentView.setText(mComments.get(position).getComment());
+        holder.NameView.setText(mComments.get(position).getAuthor());
         holder.DateView.setText(mComments.get(position).getDate());
 
-        if (mComments.get(position).getMViewpoint() != null && mComments.get(position).getMViewpoint().getSnapshot() != null) {
-            holder.bitmap = mComments.get(position).getMViewpoint().getSnapshot();
+        if (mComments.get(position).getViewpoint() != null && mComments.get(position).getViewpoint().getmSnapshot() != null) {
+            holder.bitmap = mComments.get(position).getViewpoint().getmSnapshot();
             holder.imageView.setImageBitmap(scaleDown(holder.bitmap, 500, false));
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override

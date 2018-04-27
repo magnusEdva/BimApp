@@ -16,11 +16,11 @@ import android.widget.Spinner;
 import com.bimapp.BimApp;
 import com.bimapp.R;
 import com.bimapp.controller.interfaces.CommentFragmentInterface;
-import com.bimapp.model.data_access.entityManagers.CommentEntityManager;
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.Viewpoint;
+import com.bimapp.model.DataAccess.entityManagers.CommentEntityManager;
 import com.bimapp.view.adapters.TemplateAdapter;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
@@ -108,9 +108,9 @@ public class NewTopicView implements NewTopicViewInterface {
         Viewpoint vp = null;
         Comment comment = new Comment(mCommentString);
         if(mImage != null){
-            vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, mImage, null);
+            vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, mImage);
             comment.setViewpoint(vp);
-            //comment.setViewpointGuid(topic.getMGuid());
+            //comment.setViewpointGuid(topic.getmGuid());
         }
         BimApp context = (BimApp) mRootView.getContext().getApplicationContext();
 
