@@ -6,8 +6,15 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+
+import com.bimapp.model.entity.Comment;
 
 public class DataProvider extends ContentProvider {
+    public static final String CommentTable = "comment_table";
+    public static final String ProjectTable = "Project_table";
+    public static final String AUTHORITY = "com.bimapp.model.data_access.DataProvider";
+
     public AppDatabase database;
 
     @Override
@@ -19,7 +26,14 @@ public class DataProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        return null;
+        Log.e("DATAPROVIED", selection);
+        Cursor cursor = null;
+        switch (uri.getPath()){
+            case("/" + CommentTable):
+                cursor = database.commentDao().getTopicsComments(selection);
+                break;
+        }
+        return cursor;
     }
 
     @Nullable
@@ -31,7 +45,14 @@ public class DataProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        return null;
+        Log.e("DATAPROVIED", values.toString());
+        Cursor cursor = null;
+        switch (uri.getPath()){
+            case("/" + CommentTable):
+                database.commentDao().insert(new Comment(values));
+                break;
+        }
+        return uri;
     }
 
     @Override

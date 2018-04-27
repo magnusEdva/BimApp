@@ -5,6 +5,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.database.Cursor;
 
 import com.bimapp.model.entity.Project;
 
@@ -16,10 +17,10 @@ public interface ProjectDAO {
     LiveData<List<Project>> loadProjects(int bimsyncId);
 
     @Query("SELECT * FROM project where bimsync_project_id = :bimsyncId")
-    List<Project> loadProjectsSync(int bimsyncId);
+    Cursor loadProjectsSync(int bimsyncId);
 
     @Query("SELECT * FROM project where project_id = :projectId")
-    List<Project> loadBCFproject(int projectId);
+    Cursor loadBCFproject(int projectId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Project> projects);

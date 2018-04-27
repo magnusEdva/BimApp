@@ -1,13 +1,22 @@
 package com.bimapp.model.data_access.entityManagers;
 
+import android.content.AsyncQueryHandler;
+import android.content.ContentProviderClient;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.RemoteException;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.CommentFragmentInterface;
 import com.bimapp.controller.interfaces.TopicFragmentInterface;
+import com.bimapp.model.data_access.AppDatabase;
+import com.bimapp.model.data_access.DataProvider;
 import com.bimapp.model.data_access.network.APICall;
 import com.bimapp.model.data_access.network.Callback;
 import com.bimapp.model.data_access.network.NetworkConnManager;
@@ -27,8 +36,15 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
 
     private BimApp mContext;
 
+    private ContentResolver contentResolver;
+
+    private static CommentDBHandler handler;
+
+
     public CommentEntityManager(BimApp context) {
         mContext = context;
+        contentResolver = context.getContentResolver();
+        handler = new CommentDBHandler(contentResolver);
     }
 
     /**
@@ -39,6 +55,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
      */
     @Override
     public void getComments(TopicFragmentInterface listener, Topic topic) {
+        handler.startQuery(1, listener, ParseUri(), null, topic.getMGuid(), null, null);
         requestComments(new getCommentsCallback(listener), topic);
     }
 
@@ -92,12 +109,12 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
                 callback, comment);
     }
 
-    private class postImage extends AsyncTask<Void, Integer, Boolean>{
+    private class postImage extends AsyncTask<Void, Integer, Boolean> {
         postViewpointCallback mCallback;
         Topic mTopic;
         Viewpoint mVp;
 
-        postImage(postViewpointCallback callback, Topic topic, Viewpoint vp){
+        postImage(postViewpointCallback callback, Topic topic, Viewpoint vp) {
             super();
             mCallback = callback;
             mTopic = topic;
@@ -137,15 +154,16 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
             mControllerCallback.setComments(comments);
+            for(Comment c : comments){
+                handler.startInsert(-1, null, ParseUri(), c.getValues());
+            }
         }
 
         @Override
         public void onError(String response) {
-            if(response != null)
-            Log.d("GetComments", response);
+            if (response != null)
+                Log.d("GetComments", response);
         }
     }
 
@@ -159,7 +177,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
 
         @Override
         public void onError(String response) {
-            if(response != null)
+            if (response != null)
                 Log.d("postComment", response);
             mListener.postedComment(false, null);
         }
@@ -211,7 +229,6 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
     }
 
 
-
     private class getSnapshotCallback implements Callback<Bitmap> {
         TopicFragmentInterface mControllerCallback;
         Viewpoint mViewpoint;
@@ -233,12 +250,12 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
 
         @Override
         public void onError(String response) {
-           if(response != null) Log.d("CommentSnapshot", response);
+            if (response != null) Log.d("CommentSnapshot", response);
         }
     }
 
 
-    private class postViewpointCallback  implements Callback<String> {
+    private class postViewpointCallback implements Callback<String> {
 
         CommentFragmentInterface mListener;
         Topic mTopic;
@@ -253,8 +270,8 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
         @Override
         public void onError(String response) {
             mListener.postedComment(false, null);
-            if(response != null)
-                Log.d("postViewpoint",response);
+            if (response != null)
+                Log.d("postViewpoint", response);
         }
 
         @Override
@@ -270,5 +287,27 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
             }
             postComment(mListener, mTopic, mComment);
         }
+
     }
+
+    private void insertCommentsIntoProvider(List<Comment> comments) {
+        ContentProviderClient client = contentResolver.acquireContentProviderClient(ParseUri());
+        ContentValues values = new ContentValues();
+
+        if (client != null)
+            client.release();
+
+    }
+
+    private static Uri ParseUri() {
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("content");
+        builder.authority(DataProvider.AUTHORITY);
+        builder.path(DataProvider.CommentTable);
+        return builder.build();
+    }
+
+
 }
+
+

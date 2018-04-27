@@ -41,12 +41,13 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract UserDAO userDao();
 
-    protected static AppDatabase getInstance(final Context context) {
+    public static AppDatabase getInstance(final Context context) {
         if (sInstance == null) {
             synchronized (AppDatabase.class) {
                 if (sInstance == null) {
                     sInstance = buildDatabase(context.getApplicationContext());
                     sInstance.updateDatabaseCreated(context.getApplicationContext());
+
                 }
             }
         }
