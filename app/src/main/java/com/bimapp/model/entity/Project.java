@@ -150,9 +150,7 @@ public class Project implements entity {
             name = new String(object.getString(NAME).getBytes("ISO-8859-1"), "UTF-8");
             bimsyncProjectName = object.getString(BIMSYNC_PROJECT_NAME);
             bimsyncProjectId = object.getString(BIMSYNC_PROJECT_ID);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (JSONException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
     }
