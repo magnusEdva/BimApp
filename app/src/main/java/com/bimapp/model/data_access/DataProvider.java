@@ -6,22 +6,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
-
-import com.bimapp.BimApp;
-import com.bimapp.model.entity.Comment;
-import com.bimapp.model.entity.Project;
-import com.bimapp.model.entity.Topic;
-import com.bimapp.model.entity.Viewpoint;
 
 public class DataProvider extends ContentProvider {
-    public static final String COMMENT_TABLE = "comment_table";
-    public static final String PROJECT_TABLE = "Project_table";
-    public static final String VIEWPOINT_TABLE = "viewpoint_table";
-    public static final String TOPIC_TABLE = "topic_table";
-
-    public static final String AUTHORITY = "com.bimapp.model.data_access.DataProvider";
-
     public AppDatabase database;
 
     @Override
@@ -33,23 +19,7 @@ public class DataProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        Cursor cursor = null;
-        switch (uri.getPath()) {
-            case ("/" + COMMENT_TABLE):
-                cursor = database.commentDao().getTopicsComments(selection);
-                break;
-            case ("/" + VIEWPOINT_TABLE):
-                cursor = database.viewpointDAO().getViewpointForComment(selection);
-                break;
-            case ("/" + PROJECT_TABLE):
-                cursor = database.projectDAO().loadBCFproject();
-                break;
-            case ("/" + TOPIC_TABLE):
-                cursor = database.topicDao().getTopics(selection);
-                break;
-
-        }
-        return cursor;
+        return null;
     }
 
     @Nullable
@@ -61,22 +31,7 @@ public class DataProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        Log.d("got here", uri.getPath());
-        switch (uri.getPath()) {
-            case ("/" + COMMENT_TABLE):
-                database.commentDao().insert(new Comment(values));
-                break;
-            case ("/" + VIEWPOINT_TABLE):
-                database.viewpointDAO().insert(new Viewpoint(values));
-                break;
-            case ("/" + PROJECT_TABLE):
-                database.projectDAO().insert(new Project(values));
-                break;
-            case ("/" + TOPIC_TABLE):
-                database.topicDao().insert(new Topic(values));
-                break;
-        }
-        return uri;
+        return null;
     }
 
     @Override
@@ -87,13 +42,5 @@ public class DataProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
         return 0;
-    }
-
-    public static Uri ParseUri(String path) {
-        Uri.Builder builder = new Uri.Builder();
-        builder.scheme("content");
-        builder.authority(DataProvider.AUTHORITY);
-        builder.path(path);
-        return builder.build();
     }
 }

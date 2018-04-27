@@ -4,7 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import com.bimapp.model.DataAccess.SyncAdapter;
+import com.bimapp.model.data_access.SyncAdapter;
 
 /**
  * Define a Service that returns an IBinder for the

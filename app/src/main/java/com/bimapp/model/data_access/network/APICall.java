@@ -1,4 +1,4 @@
-package com.bimapp.model.DataAccess.network;
+package com.bimapp.model.data_access.network;
 
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Project;

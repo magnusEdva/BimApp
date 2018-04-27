@@ -16,11 +16,11 @@ import android.widget.Spinner;
 import com.bimapp.BimApp;
 import com.bimapp.R;
 import com.bimapp.controller.interfaces.CommentFragmentInterface;
+import com.bimapp.model.data_access.entityManagers.CommentEntityManager;
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.Viewpoint;
-import com.bimapp.model.DataAccess.entityManagers.CommentEntityManager;
 import com.bimapp.view.adapters.TemplateAdapter;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 

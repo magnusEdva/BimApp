@@ -9,14 +9,10 @@ import android.util.ArraySet;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.bimapp.model.data_access.AppDatabase;
-import com.bimapp.model.data_access.entityManagers.LogOutHelper;
 import com.bimapp.model.data_access.network.Callback;
 import com.bimapp.model.data_access.network.oauth.OAuthHandler;
 import com.bimapp.model.entity.IssueBoardExtensions;
 import com.bimapp.model.entity.Project;
-import com.bimapp.model.entity.User;
-import com.bimapp.model.entity.Viewpoint;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,12 +29,6 @@ public class BimApp extends Application {
      * acquiring the expected results.
      */
     private Project mActiveProject;
-
-    /**
-     * This is the currently active user. Is set when you log in,
-     * and is set to null when you log out.
-     */
-    private User mCurrentUser;
     /**
      * This object is responsible for all Token handling.
      * Across the entire application.
@@ -52,7 +42,6 @@ public class BimApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Viewpoint.Snapshot.dir = this.getFilesDir().getPath();
         requestQueue = Volley.newRequestQueue(this);
         mOAuth = new OAuthHandler(this);
         checkTokensAndRefresh();
@@ -64,13 +53,11 @@ public class BimApp extends Application {
 
     /**
      * deletes all tokens and cache from storage. After calling this, the presenter should change to the login
-     * view. Also empties the offline storage.
+     * view.
      */
     public void logOut() {
         requestQueue.getCache().clear();
         mOAuth.deleteTokens();
-        mCurrentUser = null;
-        new LogOutHelper(AppDatabase.getInstance(this)).execute();
     }
 
     /**
@@ -192,13 +179,5 @@ public class BimApp extends Application {
         }
 
         return mActiveProject;
-    }
-
-    public void setCurrentUser(User user) {
-        mCurrentUser = user;
-    }
-
-    public User getCurrentUser() {
-        return mCurrentUser;
     }
 }

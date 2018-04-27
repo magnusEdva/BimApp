@@ -17,15 +17,13 @@ import com.bimapp.model.data_access.dao.CommentDAO;
 import com.bimapp.model.data_access.dao.ProjectDAO;
 import com.bimapp.model.data_access.dao.TopicDAO;
 import com.bimapp.model.data_access.dao.UserDAO;
-import com.bimapp.model.data_access.dao.ViewpointDAO;
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.DateMapper;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.User;
-import com.bimapp.model.entity.Viewpoint;
 
-@Database(entities = {Comment.class, Topic.class, User.class, Project.class, Viewpoint.class}, version = 5)
+@Database(entities = {Comment.class, Topic.class, User.class, Project.class}, version = 1)
 @TypeConverters({Topic.class, DateMapper.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -43,15 +41,12 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract UserDAO userDao();
 
-    public abstract ViewpointDAO viewpointDAO();
-
-    public static AppDatabase getInstance(final Context context) {
+    protected static AppDatabase getInstance(final Context context) {
         if (sInstance == null) {
             synchronized (AppDatabase.class) {
                 if (sInstance == null) {
                     sInstance = buildDatabase(context.getApplicationContext());
                     sInstance.updateDatabaseCreated(context.getApplicationContext());
-
                 }
             }
         }
@@ -72,7 +67,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             database.setDatabaseCreated();
 
                     }
-                }).fallbackToDestructiveMigration().build();
+                }).build();
     }
 
     @Override
