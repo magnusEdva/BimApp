@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sync-adapter
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:contentAuthority="com.bimapp.model.data_access.DataProvider"
+    android:contentAuthority="com.bimapp.model.DataAccess.DataProvider"
     android:accountType="com.bimapp"
     android:userVisible="false"
     android:supportsUploading="true"
