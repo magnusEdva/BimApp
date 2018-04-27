@@ -15,6 +15,7 @@ import com.bimapp.model.data_access.network.Callback;
 import com.bimapp.model.data_access.network.oauth.OAuthHandler;
 import com.bimapp.model.entity.IssueBoardExtensions;
 import com.bimapp.model.entity.Project;
+import com.bimapp.model.entity.Viewpoint;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -44,6 +45,7 @@ public class BimApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Viewpoint.Snapshot.dir = this.getFilesDir().getPath();
         requestQueue = Volley.newRequestQueue(this);
         mOAuth = new OAuthHandler(this);
         checkTokensAndRefresh();
