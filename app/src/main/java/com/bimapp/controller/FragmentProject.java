@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
+import com.bimapp.model.data_access.entityManagers.IssueBoardExtensionsEntityManager;
+import com.bimapp.model.data_access.entityManagers.ProjectEntityManager;
 import com.bimapp.model.entity.IssueBoardExtensions;
 import com.bimapp.model.entity.Project;
-import com.bimapp.model.DataAccess.entityManagers.IssueBoardExtensionsEntityManager;
-import com.bimapp.model.DataAccess.entityManagers.ProjectEntityManager;
 import com.bimapp.view.ProjectsView;
 import com.bimapp.view.interfaces.ProjectsViewInterface;
 

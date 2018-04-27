@@ -1,4 +1,4 @@
-package com.bimapp.model.DataAccess.DAO;
+package com.bimapp.model.data_access.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;

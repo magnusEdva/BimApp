@@ -6,8 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import com.bimapp.model.DataAccess.network.Callback;
-import com.bimapp.model.DataAccess.network.oauth.OAuthHandler;
+import com.bimapp.model.data_access.network.Callback;
+import com.bimapp.model.data_access.network.oauth.OAuthHandler;
 
 /**
  * Activity that manages the startup and login of the application.
