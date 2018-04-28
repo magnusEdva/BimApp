@@ -15,6 +15,7 @@ import com.bimapp.model.data_access.network.Callback;
 import com.bimapp.model.data_access.network.oauth.OAuthHandler;
 import com.bimapp.model.entity.IssueBoardExtensions;
 import com.bimapp.model.entity.Project;
+import com.bimapp.model.entity.User;
 import com.bimapp.model.entity.Viewpoint;
 
 import java.util.ArrayList;
@@ -32,6 +33,12 @@ public class BimApp extends Application {
      * acquiring the expected results.
      */
     private Project mActiveProject;
+
+    /**
+     * This is the currently active user. Is set when you log in,
+     * and is set to null when you log out.
+     */
+    private User mCurrentUser;
     /**
      * This object is responsible for all Token handling.
      * Across the entire application.
@@ -62,6 +69,7 @@ public class BimApp extends Application {
     public void logOut() {
         requestQueue.getCache().clear();
         mOAuth.deleteTokens();
+        mCurrentUser = null;
         new LogOutHelper(AppDatabase.getInstance(this)).execute();
     }
 
@@ -184,5 +192,13 @@ public class BimApp extends Application {
         }
 
         return mActiveProject;
+    }
+
+    public void setCurrentUser(User user) {
+        mCurrentUser = user;
+    }
+
+    public User getCurrentUser() {
+        return mCurrentUser;
     }
 }
