@@ -19,7 +19,7 @@ public class CommentDBHandler extends AsyncQueryHandler {
 
     @Override
     protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
-        TopicFragmentInterface listener;
+        TopicFragmentInterface listener = null;
         List<Comment> comments = new ArrayList<>();
         //token == 1 means get Comments command
         if (token == 1) {
@@ -40,23 +40,37 @@ public class CommentDBHandler extends AsyncQueryHandler {
                 String viewpointGuid = cursor.getString(cursor.getColumnIndex(Comment.VIEWPOINT_GUID));
                 comments.add(new Comment(guid, verbalStatus, status, Date, author, topic, modifiedDate, modifiedAuthor, comment, viewpointGuid));
                 if (viewpointGuid != null) {
-                    this.startQuery(2, listener, DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE), null,
-                            viewpointGuid, null, null);
+                    Object[] arr = new Object[2];
+                    arr[0] = listener;
+                    arr[1] = comments.get(comments.size() - 1);
+                    this.startQuery(2, arr, DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE), null,
+                            guid, null, null);
                 }
             }
             listener.setComments(comments);
             //getPictures
         } else if (token == 2) {
-            if (cookie instanceof TopicFragmentInterface)
-                listener = (TopicFragmentInterface) cookie;
-            else throw new UnsupportedOperationException();
-            if(cursor.moveToFirst()) {
+            Object[] array = null;
+            Comment comment = null;
+            if (cookie instanceof Object[]) {
+                array = (Object[]) cookie;
+                if (array[0] instanceof TopicFragmentInterface)
+                    listener = (TopicFragmentInterface) array[0];
+                if (array[1] instanceof Comment)
+                    comment = (Comment) array[1];
+            } else throw new UnsupportedOperationException();
+            if(listener != null && comment != null)
+            if (cursor.moveToFirst()) {
                 String guid = cursor.getString(cursor.getColumnIndex(Viewpoint.GUID));
                 String commentGUID = cursor.getString(cursor.getColumnIndex(Viewpoint.COMMENT_GUID));
                 String type = cursor.getString(cursor.getColumnIndex("type"));
                 String pictureName = cursor.getString(cursor.getColumnIndex("picture_name"));
                 Viewpoint vp = new Viewpoint(guid, commentGUID, type, pictureName);
+                comment.setViewpoint(vp);
+                listener.editComment(comment);
             }
+            
+
         }
     }
 }
