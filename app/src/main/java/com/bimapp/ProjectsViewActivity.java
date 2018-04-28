@@ -102,6 +102,10 @@ public class ProjectsViewActivity extends AppCompatActivity
         mProjectsFragment = new FragmentProject();
         mTopicFragment = new FragmentTopic();
         mNewCommentFragment = new FragmentNewComment();
+
+        NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
+                APICall.GETUser(), this, null);
+
     }
 
     @Override
@@ -113,8 +117,6 @@ public class ProjectsViewActivity extends AppCompatActivity
     public void onResume() {
         super.onResume();
 
-        NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
-                APICall.GETUser(), this, null);
 
         if (mApplication.getActiveProject() == null)
             setInitialActiveProject();
@@ -203,6 +205,7 @@ public class ProjectsViewActivity extends AppCompatActivity
         Log.d("Created user", user.getName());
         TextView textView = findViewById(R.id.nav_header_title);
         textView.setText(user.getName());
+        mApplication.setCurrentUser(user);
     }
 
     /**

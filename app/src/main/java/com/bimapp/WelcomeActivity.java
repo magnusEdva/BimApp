@@ -51,6 +51,9 @@ public class WelcomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Network callback for when a user logs in with a browser.
+     */
     private class networkCallback implements Callback<String>{
 
         @Override
