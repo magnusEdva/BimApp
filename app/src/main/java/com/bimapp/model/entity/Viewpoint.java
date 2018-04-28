@@ -67,6 +67,7 @@ public class Viewpoint implements entity {
         mGuid = guid;
         mCommentGUID = commentGUID;
         mSnapshot = new Snapshot(type, name);
+        hasSnapshot = true;
     }
 
     public Viewpoint(ContentValues values){
@@ -140,7 +141,7 @@ public class Viewpoint implements entity {
 
     public ContentValues getContentValues() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(GUID, getMGuid());
+        contentValues.put(GUID, mGuid);
         contentValues.put(COMMENT_GUID, mCommentGUID);
         contentValues.put("type", mSnapshot.type);
         contentValues.put("picture_name", mSnapshot.name);
@@ -176,28 +177,34 @@ public class Viewpoint implements entity {
 
         public static String dir;
         /**
-         * Upon first initiating a Person stores their picture to disk
+         * Upon first initiating a snapshot stores its image to disk
          * @param picture Bitmap to be stored
-         * @param name candidate for this.picture, changed if already exists
+         * @param name viewpoint GUID for unique id
          * @return
          */
         private String storePicture(Bitmap picture , String name){
-            FileOutputStream out = null;
-            try {
-                Log.d("dir", dir + "/" + name);
-                out = new FileOutputStream(dir + "/" + name);
-                picture.compress(Bitmap.CompressFormat.PNG,100, out);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }finally {
-                try{
-                    if(out != null)
-                        out.close();
-                } catch (IOException e) {
+            File file = new File(dir + "/" + name);
+            if(file.exists()){
+                return name; }
+
+                else {
+                FileOutputStream out = null;
+                try {
+                    Log.d("dir", dir + "/" + name);
+                    out = new FileOutputStream(dir + "/" + name);
+                    picture.compress(Bitmap.CompressFormat.PNG, 100, out);
+                } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    try {
+                        if (out != null)
+                            out.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+                return name;
             }
-            return name ;
         }
 
         public boolean deletePicture() {
@@ -212,14 +219,13 @@ public class Viewpoint implements entity {
         }
 
         /**
-         * fetches Bitmap picture from file with this.picture as path.
-         * @return Bitmap picture
+         * fetches Bitmap picture from file with name as path.
          */
-        private Bitmap fetchPicture(){
+        private void fetchPicture(){
             FileInputStream fileIn = null;
             Bitmap picture = null;
             try{
-                fileIn = new FileInputStream(dir + "/" + name.trim());
+                fileIn = new FileInputStream(dir + "/" + name);
                 picture = BitmapFactory.decodeStream(fileIn);
             } catch(Exception e){
                 e.printStackTrace();
@@ -232,26 +238,8 @@ public class Viewpoint implements entity {
                     e.printStackTrace();
                 }
             }
-            return picture;
+            image = picture;
         }
-
-        /**
-         *
-         * @param picture Bitmap to be stored
-         * @param name candidate for this.picture
-         * @return value for this.picture
-         */
-        private String pathNameValidity(Bitmap picture, String name, int number){
-            File file = new File(dir + "/" + name + number);
-            if(file.exists()){
-                //change name slightly to make a new uniquely named file
-                return pathNameValidity(picture, name, number++);
-            }
-            else
-                return storePicture(picture, name + number);
-        }
-
-
         public String convert() {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             image.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
