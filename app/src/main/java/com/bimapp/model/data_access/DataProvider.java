@@ -28,13 +28,12 @@ public class DataProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        Log.e("DATAPROVIED", selection);
         Cursor cursor = null;
-        switch (uri.getPath()){
-            case("/" + CommentTable):
+        switch (uri.getPath()) {
+            case ("/" + CommentTable):
                 cursor = database.commentDao().getTopicsComments(selection);
                 break;
-            case("/" + VIEWPOINT_TABLE):
+            case ("/" + VIEWPOINT_TABLE):
                 cursor = database.viewpointDAO().getViewpointForComment(selection);
                 break;
         }
@@ -50,12 +49,12 @@ public class DataProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        Cursor cursor = null;
-        switch (uri.getPath()){
-            case("/" + CommentTable):
+        Log.d("got here", uri.getPath());
+        switch (uri.getPath()) {
+            case ("/" + CommentTable):
                 database.commentDao().insert(new Comment(values));
                 break;
-            case("/" + VIEWPOINT_TABLE):
+            case ("/" + VIEWPOINT_TABLE):
                 database.viewpointDAO().insert(new Viewpoint(values));
                 break;
         }
