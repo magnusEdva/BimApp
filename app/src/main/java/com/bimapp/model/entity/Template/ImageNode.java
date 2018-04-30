@@ -14,4 +14,9 @@ public class ImageNode extends TemplateNode {
     public Object getContent() {
         return null;
     }
+
+    @Override
+    public void setContent(String s) {
+
+    }
 }

@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 
 import com.bimapp.BimApp;
 import com.bimapp.R;
@@ -42,6 +40,14 @@ public class NewTopicView implements NewTopicViewInterface {
 
     private Button mSubmit;
     private Bitmap mImage;
+
+
+    // Fields for posting topics
+    private String mTitle;
+    private String mDesription;
+    private String mLabels;
+    private String mDueDate;
+    private String mComment;
 
     private String mCommentString;
 
@@ -119,6 +125,7 @@ public class NewTopicView implements NewTopicViewInterface {
         cm.postComment(new CommentFragmentInterface() {
             @Override
             public void postedComment(boolean success, Comment comment) {
+                mListener.onPostComment();
 
             }
         }, topic, comment, mImage);
@@ -127,6 +134,7 @@ public class NewTopicView implements NewTopicViewInterface {
             cm.postComment(new CommentFragmentInterface() {
                 @Override
                 public void postedComment(boolean success, Comment comment) {
+                    mListener.onPostComment();
 
                 }
             }, topic, comment);
@@ -144,29 +152,39 @@ public class NewTopicView implements NewTopicViewInterface {
      */
     public void makeNewTopic() {
         // Get the fields!
-        Spinner status_input = mRootView.findViewById(R.id.topic_status_input);
-        String topic_status = status_input.getSelectedItem().toString();
+        //Spinner status_input = mRootView.findViewById(R.id.topic_status_input);
+        //String topic_status = status_input.getSelectedItem().toString();
+        String topic_status = mAdapter.getTopicStatus();
 
-        EditText title_input = mRootView.findViewById(R.id.topic_title_input);
-        String title = title_input.getText().toString();
+        //EditText title_input = mRootView.findViewById(R.id.topic_title_input);
+        //String title = title_input.getText().toString();
 
-        Spinner assignedTo_input = mRootView.findViewById(R.id.topic_assigned_to_input);
-        String assignedTo = assignedTo_input.getSelectedItem().toString();
+        String title = mAdapter.getTitle();
 
-        EditText description_input = mRootView.findViewById(R.id.topic_description_input);
-        String description = description_input.getText().toString();
+        //Spinner assignedTo_input = mRootView.findViewById(R.id.topic_assigned_to_input);
+        //String assignedTo = assignedTo_input.getSelectedItem().toString();
+        String assignedTo = mAdapter.getAssignedTo();
 
-        Spinner topicType_input = mRootView.findViewById(R.id.topic_type_input);
-        String topicType = topicType_input.getSelectedItem().toString();
+        // EditText description_input = mRootView.findViewById(R.id.topic_description_input);
+        // String description = description_input.getText().toString();
+
+        String description = mAdapter.getDesription();
+
+        //Spinner topicType_input = mRootView.findViewById(R.id.topic_type_input);
+        //String topicType = topicType_input.getSelectedItem().toString();
+        String topicType = mAdapter.getTopicType();
 
         // Make new topic from fields
         Topic topic = new Topic(title,topicType,topic_status,assignedTo,description);
 
-        EditText comment_input = mRootView.findViewById(R.id.topic_comment_input);
-        mCommentString = comment_input.getText().toString();
+        //EditText comment_input = mRootView.findViewById(R.id.topic_comment_input);
+        //mCommentString = comment_input.getText().toString();
+        mCommentString = mAdapter.getComment();
+
         // Tell fragment that topic has been posted
         Log.d("Posting topic", "Name of topic " + title );
         mListener.onPostTopic(topic);
+
     }
 
     /**

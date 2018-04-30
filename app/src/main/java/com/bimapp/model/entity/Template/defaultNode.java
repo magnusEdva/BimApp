@@ -28,4 +28,9 @@ public class defaultNode extends TemplateNode {
         return defaultValue;
     }
 
+    @Override
+    public void setContent(String s) {
+        defaultValue = s;
+    }
+
 }
