@@ -8,6 +8,7 @@ import android.arch.persistence.room.PrimaryKey;
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -80,12 +81,18 @@ public class Project implements entity {
         bimsyncProjectName = values.getAsString(BIMSYNC_PROJECT_NAME);
         bimsyncProjectId = values.getAsString(BIMSYNC_PROJECT_ID);
         JSONObject obj = new JSONObject();
+        mIssueBoardExtensions = new IssueBoardExtensions();
         try {
-            obj.put(IssueBoardExtensions.USER_ID_TYPE, new JSONObject(values.getAsString(IssueBoardExtensions.USER_ID_TYPE)));
-            obj.put(IssueBoardExtensions.TOPIC_LABELS, new JSONObject(values.getAsString(IssueBoardExtensions.TOPIC_LABELS)));
-            obj.put(IssueBoardExtensions.TOPIC_STATUS, new JSONObject(values.getAsString(IssueBoardExtensions.TOPIC_STATUS)));
-            obj.put(IssueBoardExtensions.TOPIC_TYPE, new JSONObject(values.getAsString(IssueBoardExtensions.TOPIC_TYPE)));
-            mIssueBoardExtensions = new IssueBoardExtensions(obj);
+            if(values.getAsString(IssueBoardExtensions.USER_ID_TYPE) != null)
+                obj.put(IssueBoardExtensions.USER_ID_TYPE, new JSONArray(values.getAsString(IssueBoardExtensions.USER_ID_TYPE)));
+            if(values.getAsString(IssueBoardExtensions.TOPIC_LABELS) != null)
+                obj.put(IssueBoardExtensions.TOPIC_LABELS, new JSONArray(values.getAsString(IssueBoardExtensions.TOPIC_LABELS)));
+            if(values.getAsString(IssueBoardExtensions.TOPIC_STATUS) != null)
+                obj.put(IssueBoardExtensions.TOPIC_STATUS, new JSONArray(values.getAsString(IssueBoardExtensions.TOPIC_STATUS)));
+            if(values.getAsString(IssueBoardExtensions.TOPIC_TYPE) != null)
+                obj.put(IssueBoardExtensions.TOPIC_TYPE, new JSONArray(values.getAsString(IssueBoardExtensions.TOPIC_TYPE)));
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

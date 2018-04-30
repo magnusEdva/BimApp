@@ -1,5 +1,7 @@
 package com.bimapp.controller.interfaces;
 
+import android.arch.lifecycle.LiveData;
+
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Topic;
 
@@ -11,5 +13,6 @@ public interface TopicFragmentInterface {
     }
 
     void setComments(List<Comment> comments);
+    void setLiveComments(LiveData<List<Comment>> comments);
     void editComment(Comment comment);
 }

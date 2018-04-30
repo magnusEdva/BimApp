@@ -121,24 +121,24 @@ public class IssueBoardExtensions {
      */
     public void construct(JSONObject issueBoardExtensions) {
         object = issueBoardExtensions;
+        mTopicType = new ArrayList<>();
+        mTopicStatus = new ArrayList<>();
+        mUserIdType = new ArrayList<>();
+        mTopicLabel = new ArrayList<>();
         try {
             JSONArray type_array = issueBoardExtensions.getJSONArray(TOPIC_TYPE);
-            mTopicType = new ArrayList<>();
             for (int i = 0; i < type_array.length(); i++) {
                 mTopicType.add(type_array.getString(i));
             }
             JSONArray status_array = issueBoardExtensions.getJSONArray(TOPIC_STATUS);
-            mTopicStatus = new ArrayList<>();
             for (int i = 0; i < status_array.length(); i++) {
                 mTopicStatus.add(status_array.getString(i));
             }
             JSONArray user_array = issueBoardExtensions.getJSONArray(USER_ID_TYPE);
-            mUserIdType = new ArrayList<>();
             for (int i = 0; i < user_array.length(); i++) {
                 mUserIdType.add(user_array.getString(i));
             }
             JSONArray label_array = issueBoardExtensions.getJSONArray(TOPIC_LABELS);
-            mTopicLabel = new ArrayList<>();
             for (int i = 0; i < label_array.length(); i++) {
                 mTopicLabel.add(label_array.getString(i));
             }
