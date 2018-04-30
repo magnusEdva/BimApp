@@ -106,10 +106,13 @@ public class ProjectsViewActivity extends AppCompatActivity
         mTopicFragment = new FragmentTopic();
         mNewCommentFragment = new FragmentNewComment();
 
+        NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
+                APICall.GETUser(), this, null);
+
         // Code for testing sync-adapter
         String authority = "com.bimapp.model.data_access.DataProvider";
-        String account_type ="com.bimapp";
-        String account = "default_account23";
+        String account_type ="com.bimapp.sync";
+        String account = "default_account";
         Account mAccount = new Account(account,account_type);
         AccountManager am = (AccountManager) mApplication.getSystemService(ACCOUNT_SERVICE);
         if (am.addAccountExplicitly(mAccount,null,null))
@@ -126,8 +129,6 @@ public class ProjectsViewActivity extends AppCompatActivity
 
         // End of code for sync-adapter testing
 
-        NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
-                APICall.GETUser(), this, null);
 
     }
 
