@@ -35,14 +35,15 @@ public class EntityListConstructor {
     /**
      * Aquires a Topics [] from JSONArray
      * @param topicsJSON contains properly formatted Topic entities
+     * @param projectId
      * @return actual Topics[] of @param topicsJSON
      */
-    public static List<Topic> Topics(JSONArray topicsJSON){
+    public static List<Topic> Topics(JSONArray topicsJSON, String projectId){
         List<Topic> topics = new ArrayList<>();
 
         for(int i = 0; i < topicsJSON.length(); i++){
             try {
-                topics.add(new Topic(topicsJSON.getJSONObject(i)));
+                topics.add(new Topic(topicsJSON.getJSONObject(i), projectId));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

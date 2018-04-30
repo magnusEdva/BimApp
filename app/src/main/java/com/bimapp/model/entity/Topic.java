@@ -103,7 +103,8 @@ public class Topic implements entity {
     @ColumnInfo(name = Project.PROJECT_ID)
     private String projectId;
 
-    public Topic(JSONObject obj) {
+    public Topic(JSONObject obj, String projectId) {
+        this.projectId = projectId;
         construct(obj);
     }
 
