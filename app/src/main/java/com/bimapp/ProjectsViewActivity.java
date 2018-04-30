@@ -110,8 +110,8 @@ public class ProjectsViewActivity extends AppCompatActivity
                 APICall.GETUser(), this, null);
 
         // Code for testing sync-adapter
-        String authority = "com.bimapp.model.data_access.DataProvider";
-        String account_type ="com.bimapp.sync";
+        String authority = getString(R.string.data_provider_authority);
+        String account_type = getString(R.string.sync_account_type);
         String account = "default_account";
         Account mAccount = new Account(account,account_type);
         AccountManager am = (AccountManager) mApplication.getSystemService(ACCOUNT_SERVICE);
