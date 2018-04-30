@@ -49,8 +49,8 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         TOPIC_STATUS(3),
         TOPIC_TYPE(4),
         ASSIGNED_TO(5),
-        LABELS(6),
-        DUE_DATE(7),
+        LABELS(0),
+        DUE_DATE(0),
         IMAGE(8),
         COMMENT(9)
         ;
@@ -144,9 +144,9 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                     mItem_input = itemView.findViewById(R.id.topic_comment_input);
                     break;
                 default: // Defaults to no view
-                    this.mItem_description = itemView.findViewById(R.id.topic_default);
-                    this.mItem_input = itemView.findViewById(R.id.topic_default_input);
-                    this.mSpinner_input = null;
+//                    this.mItem_description = itemView.findViewById(R.id.topic_default);
+//                    this.mItem_input = itemView.findViewById(R.id.topic_default_input);
+//                    this.mSpinner_input = null;
                     break;
             }
             mLayout = itemView.findViewById(R.id.newtopic_list);
@@ -325,9 +325,9 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             default: // DEFAULT
-                holder.mItem_description.setText(mTemplate.getNodes().get(position).getTitle());
-                holder.mItem_input.setHint(mTemplate.getNodes().get(position).getTitle());
-                holder.mItem_input.setText("");
+//                holder.mItem_description.setText(mTemplate.getNodes().get(position).getTitle());
+//                holder.mItem_input.setHint(mTemplate.getNodes().get(position).getTitle());
+//                holder.mItem_input.setText("");
                 break;
 
         }
