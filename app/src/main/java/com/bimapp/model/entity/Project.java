@@ -5,6 +5,7 @@ import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
 import org.json.JSONException;
@@ -22,6 +23,7 @@ public class Project implements entity {
     public static final String BIMSYNC_PROJECT_NAME = "bimsync_project_name";
     public static final String NAME = "name";
     public static final String BIMSYNC_PROJECT_ID = "bimsync_project_id";
+    public static final String ISSUE_BOARD_EXTENSIONS = "issue_board_extensions";
     /**
      * used by the presenter to control which name the view
      * shows. either bimsyncProjectName or name, depending on state.
@@ -66,6 +68,29 @@ public class Project implements entity {
         this.name = name;
         this.mIssueBoardExtensions = issueBoardExtensions;
     }
+
+    /**
+     * recreates this instance in the DataProvider before being inserted into the database.
+     *
+     * @param values
+     */
+    public Project(ContentValues values) {
+        projectId = values.getAsString(PROJECT_ID);
+        name = values.getAsString(NAME);
+        bimsyncProjectName = values.getAsString(BIMSYNC_PROJECT_NAME);
+        bimsyncProjectId = values.getAsString(BIMSYNC_PROJECT_ID);
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put(IssueBoardExtensions.USER_ID_TYPE, new JSONObject(values.getAsString(IssueBoardExtensions.USER_ID_TYPE)));
+            obj.put(IssueBoardExtensions.TOPIC_LABELS, new JSONObject(values.getAsString(IssueBoardExtensions.TOPIC_LABELS)));
+            obj.put(IssueBoardExtensions.TOPIC_STATUS, new JSONObject(values.getAsString(IssueBoardExtensions.TOPIC_STATUS)));
+            obj.put(IssueBoardExtensions.TOPIC_TYPE, new JSONObject(values.getAsString(IssueBoardExtensions.TOPIC_TYPE)));
+            mIssueBoardExtensions = new IssueBoardExtensions(obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public String getProjectId() {
         return projectId;
@@ -154,6 +179,22 @@ public class Project implements entity {
         }
     }
 
+    public ContentValues getContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(PROJECT_ID, projectId);
+        values.put(NAME, name);
+        values.put(BIMSYNC_PROJECT_ID, bimsyncProjectId);
+        values.put(BIMSYNC_PROJECT_NAME, bimsyncProjectName);
+
+        if (mIssueBoardExtensions != null) {
+            values.put(IssueBoardExtensions.TOPIC_TYPE, Topic.getStringFromList(mIssueBoardExtensions.getTopicType()));
+            values.put(IssueBoardExtensions.TOPIC_LABELS, Topic.getStringFromList(mIssueBoardExtensions.getTopicLabel()));
+            values.put(IssueBoardExtensions.TOPIC_STATUS, Topic.getStringFromList(mIssueBoardExtensions.getTopicStatus()));
+            values.put(IssueBoardExtensions.USER_ID_TYPE, Topic.getStringFromList(mIssueBoardExtensions.getUserIdType()));
+        }
+        return values;
+    }
+
     public void setState(boolean state) {
         this.state = state;
     }
@@ -163,6 +204,4 @@ public class Project implements entity {
         if (state) return bimsyncProjectName;
         return name;
     }
-
-
 }
