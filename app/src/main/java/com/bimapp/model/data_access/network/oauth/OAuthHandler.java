@@ -341,10 +341,10 @@ public class OAuthHandler {
         @Override
         public void onErrorResponse(VolleyError error) {
             setFinishedRefresh();
-            mContext.logOut();
             if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                 error.printStackTrace();
             } else if (error instanceof AuthFailureError) {
+                mContext.logOut();
                 error.printStackTrace();
             } else if (error instanceof ServerError) {
                 error.printStackTrace();
