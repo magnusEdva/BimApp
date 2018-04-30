@@ -8,6 +8,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
+import android.util.Log;
+
+import com.bimapp.BimApp;
 
 /**
  * Handle the transfer of data between a server and an
@@ -20,6 +23,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private final AccountManager mAccountManager;
 
+    private BimApp mContext;
+
     /**
      * Set up the sync adapter
      */
@@ -31,6 +36,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
          */
         mContentResolver = context.getContentResolver();
         mAccountManager = AccountManager.get(context);
+        mContext = (BimApp) context;
+        Log.d("SyncAdapter", "Created SyncAdapter" + mContext.checkLogIn());
     }
 
 
@@ -50,6 +57,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
          */
         mContentResolver = context.getContentResolver();
         mAccountManager = AccountManager.get(context);
+        mContext = (BimApp) context;
     }
 
     @Override
@@ -58,6 +66,20 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                               String authority,
                               ContentProviderClient provider,
                               SyncResult syncResult) {
+
+        Log.d("Sync", "Started syncing");
+        // Should somehow determine if server and local db is different
+
+        // Get Projects/IssueBoards
+
+        // Get Topics
+
+        // Get Comments
+
+        // Get ViewPoints
+
+        // Determine what needs to be uploaded
+
 
 
     }

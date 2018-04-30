@@ -1,6 +1,9 @@
 package com.bimapp;
 
 import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -102,6 +105,26 @@ public class ProjectsViewActivity extends AppCompatActivity
         mProjectsFragment = new FragmentProject();
         mTopicFragment = new FragmentTopic();
         mNewCommentFragment = new FragmentNewComment();
+
+        // Code for testing sync-adapter
+        String authority = "com.bimapp.model.data_access.DataProvider";
+        String account_type ="com.bimapp";
+        String account = "default_account23";
+        Account mAccount = new Account(account,account_type);
+        AccountManager am = (AccountManager) mApplication.getSystemService(ACCOUNT_SERVICE);
+        if (am.addAccountExplicitly(mAccount,null,null))
+            Log.d("Account", "Account added");
+        else
+            Log.d("Account", "Didn't add account");
+
+        Bundle b = new Bundle();
+        b.putBoolean(
+                ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        b.putBoolean(
+                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        ContentResolver.requestSync(mAccount,authority,b);
+
+        // End of code for sync-adapter testing
 
         NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
                 APICall.GETUser(), this, null);
