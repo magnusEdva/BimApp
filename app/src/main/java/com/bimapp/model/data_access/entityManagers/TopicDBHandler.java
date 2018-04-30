@@ -39,7 +39,17 @@ public class TopicDBHandler extends AsyncQueryHandler {
             List<String> references = Topic.getListFromString(cursor.getString(cursor.getColumnIndex(Topic.REFERENCE_LINKS)));
             String modAuth = cursor.getString(cursor.getColumnIndex(Topic.MODIFIED_AUTHOR));
             String Stage = cursor.getString(cursor.getColumnIndex(Topic.STAGE));
-            Topic.BimSnippet snippet = new Topic.BimSnippet(cursor.getString(cursor.getColumnIndex(Topic.BIM_SNIPPET)));
+
+             String mSnippet_type = cursor.getString(cursor.getColumnIndex(Topic.BimSnippet.SNIPPET_TYPE));
+
+             String mReference = cursor.getString(cursor.getColumnIndex(Topic.BimSnippet.REFERENCE));
+
+             String mReferenceSchema = cursor.getString(cursor.getColumnIndex(Topic.BimSnippet.REFERENCE_SCHEMA));
+
+             boolean isExternal = cursor.getInt(cursor.getColumnIndex(Topic.BimSnippet.IS_EXTERNAL)) != 0;
+
+            Topic.BimSnippet snippet = new Topic.BimSnippet(mSnippet_type, mReference, mReferenceSchema, isExternal);
+
             String priority = cursor.getString(cursor.getColumnIndex(Topic.PRIORITY));
             String creationAuthor = cursor.getString(cursor.getColumnIndex(Topic.CREATION_AUTHOR));
             String CreationDate = cursor.getString(cursor.getColumnIndex(Topic.CREATION_DATE));

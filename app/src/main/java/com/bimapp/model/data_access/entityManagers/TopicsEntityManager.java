@@ -163,8 +163,10 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            for(Topic t : topics)
-                handler.startInsert(1,null,DataProvider.ParseUri(DataProvider.TOPIC_TABLE),t.getValues() );
+            for(Topic t : topics) {
+                t.setProjectId(mContext.getActiveProject().getProjectId());
+                handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE), t.getValues());
+            }
             mControllerCallback.setTopics(topics);
         }
     }
