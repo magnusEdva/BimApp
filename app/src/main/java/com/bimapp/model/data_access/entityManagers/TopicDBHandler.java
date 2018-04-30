@@ -28,9 +28,9 @@ public class TopicDBHandler extends AsyncQueryHandler {
     private void getTopics(TopicsFragmentInterface mListener, Cursor cursor) {
         List<Topic> topics = new ArrayList<>();
         while (cursor.moveToNext()) {
-           String guid = cursor.getString(cursor.getColumnIndex(Topic.GUID));
+            String guid = cursor.getString(cursor.getColumnIndex(Topic.GUID));
             String description = cursor.getString(cursor.getColumnIndex(Topic.DESCRIPTION));
-            int index =cursor.getInt(cursor.getColumnIndex(Topic.INDEX));
+            int index = cursor.getInt(cursor.getColumnIndex(Topic.INDEX));
             String title = cursor.getString(cursor.getColumnIndex(Topic.TITLE));
             String dueDate = cursor.getString(cursor.getColumnIndex(Topic.DUE_DATE));
             String TopicType = cursor.getString(cursor.getColumnIndex(Topic.TOPIC_TYPE));
@@ -40,13 +40,13 @@ public class TopicDBHandler extends AsyncQueryHandler {
             String modAuth = cursor.getString(cursor.getColumnIndex(Topic.MODIFIED_AUTHOR));
             String Stage = cursor.getString(cursor.getColumnIndex(Topic.STAGE));
 
-             String mSnippet_type = cursor.getString(cursor.getColumnIndex(Topic.BimSnippet.SNIPPET_TYPE));
+            String mSnippet_type = cursor.getString(cursor.getColumnIndex(Topic.BimSnippet.SNIPPET_TYPE));
 
-             String mReference = cursor.getString(cursor.getColumnIndex(Topic.BimSnippet.REFERENCE));
+            String mReference = cursor.getString(cursor.getColumnIndex(Topic.BimSnippet.REFERENCE));
 
-             String mReferenceSchema = cursor.getString(cursor.getColumnIndex(Topic.BimSnippet.REFERENCE_SCHEMA));
+            String mReferenceSchema = cursor.getString(cursor.getColumnIndex(Topic.BimSnippet.REFERENCE_SCHEMA));
 
-             boolean isExternal = cursor.getInt(cursor.getColumnIndex(Topic.BimSnippet.IS_EXTERNAL)) != 0;
+            boolean isExternal = cursor.getInt(cursor.getColumnIndex(Topic.BimSnippet.IS_EXTERNAL)) != 0;
 
             Topic.BimSnippet snippet = new Topic.BimSnippet(mSnippet_type, mReference, mReferenceSchema, isExternal);
 
@@ -56,7 +56,7 @@ public class TopicDBHandler extends AsyncQueryHandler {
             String AssignedTo = cursor.getString(cursor.getColumnIndex(Topic.ASSIGNED_TO));
             String projectId = cursor.getString(cursor.getColumnIndex(Project.PROJECT_ID));
 
-            Topic topic = new Topic(title,TopicType,Status,AssignedTo,description,projectId);
+            Topic topic = new Topic(title, TopicType, Status, AssignedTo, description, projectId);
             topic.setBimSnippet(snippet);
             topic.setCreationAuthor(creationAuthor);
             topic.setGuid(guid);
