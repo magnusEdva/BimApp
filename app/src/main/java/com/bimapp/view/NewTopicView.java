@@ -175,7 +175,8 @@ public class NewTopicView implements NewTopicViewInterface {
         String topicType = mAdapter.getTopicType();
 
         // Make new topic from fields
-        Topic topic = new Topic(title,topicType,topic_status,assignedTo,description);
+        BimApp app = (BimApp) mRootView.getContext().getApplicationContext();
+        Topic topic = new Topic(title,topicType,topic_status,assignedTo,description, app.getActiveProject().getProjectId());
 
         //EditText comment_input = mRootView.findViewById(R.id.topic_comment_input);
         //mCommentString = comment_input.getText().toString();

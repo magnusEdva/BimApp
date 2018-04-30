@@ -7,6 +7,7 @@ import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
 import com.bimapp.controller.interfaces.TopicFragmentInterface;
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
+import com.bimapp.model.data_access.DataProvider;
 import com.bimapp.model.data_access.network.APICall;
 import com.bimapp.model.data_access.network.Callback;
 import com.bimapp.model.data_access.network.NetworkConnManager;
@@ -27,6 +28,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
 
     private BimApp mContext;
     private NewTopicFragmentInterface mListener;
+    private TopicDBHandler handler;
 
 
     /**
@@ -36,6 +38,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
      */
     public TopicsEntityManager(BimApp context) {
         mContext = context;
+        handler = new TopicDBHandler(mContext.getContentResolver());
     }
 
     /**
@@ -47,6 +50,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
     public TopicsEntityManager(BimApp context, NewTopicFragmentInterface listener) {
         mContext = context;
         mListener = listener;
+        handler = new TopicDBHandler(mContext.getContentResolver());
     }
 
     /**
@@ -65,6 +69,8 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
      * @param controllerCallback This is where the onSuccess/onError methods must be implemented
      */
     public void getTopics(TopicsFragmentInterface controllerCallback) {
+        handler.startQuery(1,controllerCallback, DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
+                null, mContext.getActiveProject().getProjectId(),null,null);
         NetworkConnManager.networkRequest(mContext, Request.Method.GET,
                 APICall.GETTopics(mContext.getActiveProject()),
                 new TopicsEntityManager.TopicsCallback(controllerCallback), null);

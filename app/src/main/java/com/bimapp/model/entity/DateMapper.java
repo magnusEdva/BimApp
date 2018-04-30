@@ -29,6 +29,8 @@ public class DateMapper {
      */
     @TypeConverter
     public static Date toDate(final String iso8601string) {
+        if(iso8601string == null)
+            return null;
         if(iso8601string.length() == 10){
             try {
                 return formatter.parse(iso8601string);
