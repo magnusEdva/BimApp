@@ -78,7 +78,7 @@
             android:syncable="true"
             />
         <service
-            android:name=".model.services.AuthenticatorService">
+            android:name="com.bimapp.model.services.AuthenticatorService">
             <intent-filter>
                 <action
                     android:name="android.accounts.AccountAuthenticator"/>
@@ -86,6 +86,21 @@
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator"
+                />
+        </service>
+        <service
+            android:name=".model.services.SyncService"
+            android:exported="true"
+            android:process=":sync"
+            >
+            <intent-filter>
+                <action
+                    android:name="android.content.SyncAdapter"
+                    />
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter"
                 />
         </service>
     </application>
