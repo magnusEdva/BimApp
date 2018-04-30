@@ -135,11 +135,12 @@ public class Topic implements entity {
 
         projectId = values.getAsString(Project.PROJECT_ID);
         mModifiedAuthor = values.getAsString(MODIFIED_AUTHOR);
-        try {
-            mBimSnippet = new BimSnippet(new JSONObject(values.getAsString(BIM_SNIPPET)));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        if (values.getAsString(BIM_SNIPPET) != null)
+            try {
+                mBimSnippet = new BimSnippet(new JSONObject(values.getAsString(BIM_SNIPPET)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
     }
 
 
@@ -174,8 +175,8 @@ public class Topic implements entity {
                 mAssignedTo = obj.getString(ASSIGNED_TO);
             if (obj.has(STAGE))
                 mStage = obj.getString(STAGE);
-            if(obj.has(BIM_SNIPPET))
-             mBimSnippet = new BimSnippet(obj.getJSONObject("bim_snippet"));
+            if (obj.has(BIM_SNIPPET))
+                mBimSnippet = new BimSnippet(obj.getJSONObject("bim_snippet"));
             if (obj.has(DUE_DATE))
                 mDueDate = obj.getString(DUE_DATE);
         } catch (JSONException e) {
@@ -207,7 +208,7 @@ public class Topic implements entity {
                 map.put(STAGE, mStage);
             if (mDescription != null)
                 map.put(DESCRIPTION, mDescription);
-            if(mBimSnippet != null)
+            if (mBimSnippet != null)
                 map.put(BIM_SNIPPET, mBimSnippet.getJSON());
             if (mDueDate != null)
                 map.put(DUE_DATE, mDueDate);
@@ -218,29 +219,30 @@ public class Topic implements entity {
         return map;
     }
 
-    public ContentValues getValues(){
+    public ContentValues getValues() {
         ContentValues values = new ContentValues();
-        values.put(GUID,mGuid);
+        values.put(GUID, mGuid);
         values.put(TOPIC_STATUS, mTopicStatus);
         values.put(REFERENCE_LINKS, getStringFromList(mReferenceLinks));
         values.put(LABELS, getStringFromList(mLabels));
         values.put(TOPIC_TYPE, mTopicType);
         values.put(TITLE, mTitle);
-        values.put(PRIORITY,mPriority);
-        values.put(INDEX,mIndex);
-        values.put(ASSIGNED_TO,mAssignedTo);
+        values.put(PRIORITY, mPriority);
+        values.put(INDEX, mIndex);
+        values.put(ASSIGNED_TO, mAssignedTo);
         values.put(STAGE, mStage);
-        values.put(DESCRIPTION,mDescription);
-        values.put(BIM_SNIPPET, mBimSnippet.getJSON().toString());
+        values.put(DESCRIPTION, mDescription);
+        if (mBimSnippet != null)
+            values.put(BIM_SNIPPET, mBimSnippet.getJSON().toString());
         values.put(Project.PROJECT_ID, projectId);
-        values.put(DUE_DATE,mDueDate);
+        values.put(DUE_DATE, mDueDate);
         values.put(CREATION_AUTHOR, mCreationAuthor);
         values.put(CREATION_DATE, mCreationDate);
         return values;
     }
 
     public static List<String> getListFromJSonArray(JSONArray array) {
-        if(array == null)
+        if (array == null)
             return null;
         List<String> strings = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
@@ -252,30 +254,33 @@ public class Topic implements entity {
         }
         return strings;
     }
-    public static JSONArray getJSONArrayFromList(List<String> list){
-        if(list == null)
+
+    public static JSONArray getJSONArrayFromList(List<String> list) {
+        if (list == null)
             return null;
         JSONArray array = new JSONArray();
-        for(String s : list){
+        for (String s : list) {
             array.put(s);
         }
         return array;
     }
+
     @TypeConverter
-    public static String getStringFromList(List<String> list){
+    public static String getStringFromList(List<String> list) {
         JSONArray arr = getJSONArrayFromList(list);
-        if(arr != null)
+        if (arr != null)
             return arr.toString();
         else
             return null;
     }
+
     @TypeConverter
-    public static List<String> getListFromString(String string){
-        if(string == null)
+    public static List<String> getListFromString(String string) {
+        if (string == null)
             return null;
         JSONArray array = null;
         try {
-             array = new JSONArray(string);
+            array = new JSONArray(string);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -291,7 +296,9 @@ public class Topic implements entity {
         return mGuid;
     }
 
-    public void setGuid(String guid){mGuid = guid;}
+    public void setGuid(String guid) {
+        mGuid = guid;
+    }
 
     public String getMTopicType() {
         return mTopicType;
@@ -313,7 +320,9 @@ public class Topic implements entity {
         return mReferenceLinks;
     }
 
-    public void setReferenceLinks(List<String> links){mReferenceLinks = links;}
+    public void setReferenceLinks(List<String> links) {
+        mReferenceLinks = links;
+    }
 
     public String getMTitle() {
         return mTitle;
@@ -323,13 +332,15 @@ public class Topic implements entity {
         return mPriority;
     }
 
-    public void setPriority(String priority){mPriority = priority;}
+    public void setPriority(String priority) {
+        mPriority = priority;
+    }
 
     public Integer getMIndex() {
         return mIndex;
     }
 
-    public void setIndex(Integer index){
+    public void setIndex(Integer index) {
         mIndex = index;
     }
 
@@ -337,7 +348,7 @@ public class Topic implements entity {
         return mCreationDate;
     }
 
-    public void setCreationDate(String creationDate){
+    public void setCreationDate(String creationDate) {
         mCreationDate = creationDate;
     }
 
@@ -345,7 +356,7 @@ public class Topic implements entity {
         return mCreationAuthor;
     }
 
-    public void setCreationAuthor(String author){
+    public void setCreationAuthor(String author) {
         mCreationAuthor = author;
     }
 
@@ -353,9 +364,10 @@ public class Topic implements entity {
         return mModifiedAuthor;
     }
 
-    public void setModifiedAuthor(String modifiedAuthor){
+    public void setModifiedAuthor(String modifiedAuthor) {
         mModifiedAuthor = modifiedAuthor;
     }
+
     public String getMAssignedTo() {
         return mAssignedTo;
     }
@@ -364,7 +376,7 @@ public class Topic implements entity {
         return mStage;
     }
 
-    public void setStage(String stage){
+    public void setStage(String stage) {
         mStage = stage;
     }
 
@@ -376,35 +388,40 @@ public class Topic implements entity {
         return mDueDate;
     }
 
-    public void setDueDate(String dueDate){
+    public void setDueDate(String dueDate) {
         mDueDate = dueDate;
     }
 
     public BimSnippet getMBimSnippet() {
         return mBimSnippet;
     }
-    public void setBimSnippet(BimSnippet snippet){
+
+    public void setBimSnippet(BimSnippet snippet) {
         mBimSnippet = snippet;
     }
-    public List<String> getMLabels(){
+
+    public List<String> getMLabels() {
         return mLabels;
     }
-    public void setLabels(List<String> labels){
+
+    public void setLabels(List<String> labels) {
         mLabels = labels;
     }
-    public String getProjectId(){
+
+    public String getProjectId() {
         return projectId;
     }
-    public void setProjectId(String projectId){
+
+    public void setProjectId(String projectId) {
         this.projectId = projectId;
     }
 
 
     public static class BimSnippet {
-        final static String SNIPPET_TYPE = "snippet_type";
-        final static String IS_EXTERNAL = "is_external";
-        final static String REFERENCE = "reference";
-        final static String REFERENCE_SCHEMA = "reference_schema";
+       public final static String SNIPPET_TYPE = "snippet_type";
+       public final static String IS_EXTERNAL = "is_external";
+       public final static String REFERENCE = "reference";
+       public final static String REFERENCE_SCHEMA = "reference_schema";
 
 
         @ColumnInfo(name = SNIPPET_TYPE)
@@ -419,25 +436,21 @@ public class Topic implements entity {
         @ColumnInfo(name = REFERENCE_SCHEMA)
         public String mReferenceSchema;
 
-        public BimSnippet(){}
+        public BimSnippet() {
+        }
 
         public BimSnippet(JSONObject snippet) {
-           construct(snippet);
+            construct(snippet);
         }
 
-        /**
-         * @param string * JSON formatted String
-         */
-        public BimSnippet(String string) {
-            try {
-                JSONObject obj = new JSONObject(string);
-                construct(obj);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        public BimSnippet(String Snippet_type, String Reference, String ReferenceSchema, boolean isExternal) {
+            mSnippet_type = Snippet_type;
+            mReference = Reference;
+            mReferenceSchema = ReferenceSchema;
+            mExternal = isExternal;
         }
 
-        public JSONObject getJSON(){
+        public JSONObject getJSON() {
             JSONObject map = new JSONObject();
             try {
                 map.put(SNIPPET_TYPE, mSnippet_type);
@@ -450,7 +463,7 @@ public class Topic implements entity {
             return map;
         }
 
-        private void construct(JSONObject snippet){
+        private void construct(JSONObject snippet) {
             try {
                 if (snippet.has(SNIPPET_TYPE))
                     mSnippet_type = snippet.getString(SNIPPET_TYPE);
