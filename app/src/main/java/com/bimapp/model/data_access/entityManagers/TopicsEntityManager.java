@@ -127,7 +127,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
                 e.printStackTrace();
             }
             if (object != null) {
-                Topic topic = new Topic(object);
+                Topic topic = new Topic(object, mContext.getActiveProject().getProjectId());
                 makeToast(true, topic);
             }
         }
@@ -159,12 +159,11 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
             List<Topic> topics = null;
             try {
                 JSONArray jsonArray = new JSONArray(response);
-                topics = EntityListConstructor.Topics(jsonArray);
+                topics = EntityListConstructor.Topics(jsonArray,mContext.getActiveProject().getProjectId());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             for(Topic t : topics) {
-                t.setProjectId(mContext.getActiveProject().getProjectId());
                 handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE), t.getValues());
             }
             mControllerCallback.setTopics(topics);
