@@ -130,6 +130,12 @@ public class Comment implements entity {
         mCommentsGUID = Math.random() + "";
     }
 
+    public Comment(String comment, String topicGUiD){
+        mComment = comment;
+        mTopicGUID = topicGUiD;
+        mCommentsGUID = Math.random() + "";
+    }
+
     /**
      * constructs a comment from a correspong JSON file
      *

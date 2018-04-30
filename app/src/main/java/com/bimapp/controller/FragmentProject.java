@@ -69,6 +69,7 @@ public class FragmentProject extends Fragment
     @Override
     public void onResume() {
         super.onResume();
+        BCF = false;
         mProjectsManager.getProjects(this);
     }
 
@@ -82,6 +83,7 @@ public class FragmentProject extends Fragment
     @Override
     public void onDetach() {
         super.onDetach();
+        BCF = false;
         mProjectsManager = null;
 
     }
@@ -99,7 +101,6 @@ public class FragmentProject extends Fragment
             mProject = project;
             mExtensionManager = new IssueBoardExtensionsEntityManager(mContext);
             mExtensionManager.getIssueBoardExtensions(project, this);
-            Log.d("ID : ", project.getProjectId());
             BCF = false;
         } else {
             BCF = true;

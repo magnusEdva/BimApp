@@ -1,8 +1,12 @@
 package com.bimapp.controller;
 
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.TopicFragmentInterface;
+import com.bimapp.model.data_access.AppDatabase;
 import com.bimapp.model.data_access.entityManagers.CommentEntityManager;
 import com.bimapp.model.data_access.entityManagers.TopicsEntityManager;
 import com.bimapp.model.entity.Comment;
@@ -53,7 +58,21 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface, T
         mContext = (BimApp) this.getActivity().getApplication();
         commentManager = new CommentEntityManager(mContext);
         mTopicManager = new TopicsEntityManager(mContext);
-        mComments = new ArrayList<>();
+//        Observer<List<Comment>> obs = new Observer<List<Comment>>() {
+//            @Override
+//            public void onChanged(@Nullable List<Comment> comments) {
+//                setComments(comments);
+//            }
+//        };
+//        mComments = new LiveData<List<Comment>>() {
+//            @Override
+//            protected void setValue(List<Comment> value) {
+//                super.setValue(value);
+//                setComments(value);
+//            }
+//        };
+//        mComments.observe(this,obs);
+
     }
 
     @Override
@@ -80,21 +99,25 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface, T
     @Override
     public void setComments(List<Comment> comments) {
         mTopicView.setComments(comments);
-        mComments.clear();
-        mComments.addAll(comments);
+        comments.get(0).setComment("endret");
+    }
+
+    @Override
+    public void setLiveComments(LiveData<List<Comment>> comments) {
+      //  mComments = comments;
     }
 
     @Override
     public void editComment(Comment comment) {
-        boolean found = false;
-        for(int i = 0; i < mComments.size() && !found; i++){
-            if(mComments.get(i).equals(comment)){
-                mComments.remove(i);
-                mComments.add(i,comment);
-                found = true;
-            }
-        }
-        mTopicView.setComments(mComments);
+//        boolean found = false;
+//        for(int i = 0; i < mComments.size() && !found; i++){
+//            if(mComments.get(i).equals(comment)){
+//                mComments.remove(i);
+//                mComments.add(i,comment);
+//                found = true;
+//            }
+//        }
+//        mTopicView.setComments(mComments);
             }
 
     @Override
