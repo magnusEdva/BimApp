@@ -2,9 +2,12 @@ package com.bimapp.view.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,6 +42,36 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     private int mDefaultAsssignedTo;
 
     //private final NewTopicViewInterface mListener;
+    private String mTitle;
+    private String mDesription;
+    private String mComment;
+    private String mAssignedTo;
+    private String mIssueType;
+    private String mIssueStatus;
+
+    public String getTitle() {
+        return mTitle;
+    }
+
+    public String getDesription() {
+        return mDesription;
+    }
+
+    public String getComment() {
+        return mComment;
+    }
+
+    public String getAssignedTo() {
+        return mAssignedTo;
+    }
+
+    public String getTopicType() {
+        return mIssueType;
+    }
+
+    public String getTopicStatus() {
+        return mIssueStatus;
+    }
 
     /**
      * Enum to separate node types
@@ -140,7 +173,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                     mItem_button = itemView.findViewById(R.id.topic_image_button);
                     break;
                 case 9: // COMMENT
-                    mItem_description = itemView.findViewById(R.id.topic_comment);
+                    //mItem_description = itemView.findViewById(R.id.topic_comment);
                     mItem_input = itemView.findViewById(R.id.topic_comment_input);
                     break;
                 default: // Defaults to no view
@@ -270,6 +303,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 viewHolder = new ViewHolder(view, viewType, context);
                 break;
         }
+        viewHolder.setIsRecyclable(false);
         return viewHolder;
     }
 
@@ -280,32 +314,96 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
      * @param position the position of this view in the RecyclerView, corresponds to the position in the data set
      */
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         switch (this.getItemViewType(position)) {
             case 1: // IssueTitle
                 //holder.mItem_description.setText(R.string.issue_name);
                 holder.mItem_input.setText(mList.get(position).getContent().toString());
+                holder.mItem_input.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        mTitle = s.toString();
+                        mList.get(position).setContent(s.toString());
+                    }
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                    }
+                });
                 break;
             case 2: // IssueDescription
                 //holder.mItem_description.setText(R.string.issue_description);
                 holder.mItem_input.setText(mList.get(position).getContent().toString());
+                holder.mItem_input.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        mDesription = s.toString();
+                        mList.get(position).setContent(s.toString());
+                    }
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                    }
+                });
                 break;
             case 3: // IssueStatus
                 holder.mItem_description.setText(R.string.issue_status);
                 holder.mSpinner_input.setAdapter(holder.mAdapter);
                 holder.mSpinner_input.setSelection(mDefaultStatus);
+                mIssueStatus = (String) holder.mSpinner_input.getSelectedItem();
+                holder.mSpinner_input.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        mDefaultStatus = parent.getSelectedItemPosition();
+                        mIssueStatus = (String) parent.getSelectedItem();
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
                 //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 4: // TOPIC_TYPE
                 holder.mItem_description.setText(R.string.topic_type);
                 holder.mSpinner_input.setAdapter(holder.mAdapter);
                 holder.mSpinner_input.setSelection(mDefaultType);
+                mIssueType = (String) holder.mSpinner_input.getSelectedItem();
+                holder.mSpinner_input.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        mDefaultType = parent.getSelectedItemPosition();
+                        mIssueType = (String) parent.getSelectedItem();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
                 //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 5: // Assigned to
                 holder.mItem_description.setText(R.string.assigned_to);
                 holder.mSpinner_input.setAdapter(holder.mAdapter);
                 holder.mSpinner_input.setSelection(mDefaultAsssignedTo);
+                mAssignedTo = (String) holder.mSpinner_input.getSelectedItem();
+                holder.mSpinner_input.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        mDefaultAsssignedTo = parent.getSelectedItemPosition();
+                        mAssignedTo = (String) parent.getSelectedItem();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
                 //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 6: // LABELS
@@ -321,8 +419,21 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 holder.mItem_button.setOnClickListener(mListener);
                 break;
             case 9: // COMMENT
-                holder.mItem_description.setText("Comment");
+                //holder.mItem_description.setText("Comment");
                 holder.mItem_input.setText(mList.get(position).getContent().toString());
+                holder.mItem_input.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    mComment = s.toString();
+                    mList.get(position).setContent(s.toString());
+                }
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
                 break;
             default: // DEFAULT
 //                holder.mItem_description.setText(mTemplate.getNodes().get(position).getTitle());
