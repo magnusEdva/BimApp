@@ -8,13 +8,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.bimapp.BimApp;
 import com.bimapp.model.entity.Comment;
+import com.bimapp.model.entity.Project;
+import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.Viewpoint;
 
 public class DataProvider extends ContentProvider {
-    public static final String CommentTable = "comment_table";
-    public static final String ProjectTable = "Project_table";
+    public static final String COMMENT_TABLE = "comment_table";
+    public static final String PROJECT_TABLE = "Project_table";
     public static final String VIEWPOINT_TABLE = "viewpoint_table";
+    public static final String TOPIC_TABLE = "topic_table";
+
     public static final String AUTHORITY = "com.bimapp.model.data_access.DataProvider";
 
     public AppDatabase database;
@@ -30,12 +35,19 @@ public class DataProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         Cursor cursor = null;
         switch (uri.getPath()) {
-            case ("/" + CommentTable):
+            case ("/" + COMMENT_TABLE):
                 cursor = database.commentDao().getTopicsComments(selection);
                 break;
             case ("/" + VIEWPOINT_TABLE):
                 cursor = database.viewpointDAO().getViewpointForComment(selection);
                 break;
+            case ("/" + PROJECT_TABLE):
+                cursor = database.projectDAO().loadBCFproject();
+                break;
+            case ("/" + TOPIC_TABLE):
+                cursor = database.topicDao().getTopics(selection);
+                break;
+
         }
         return cursor;
     }
@@ -51,11 +63,17 @@ public class DataProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         Log.d("got here", uri.getPath());
         switch (uri.getPath()) {
-            case ("/" + CommentTable):
+            case ("/" + COMMENT_TABLE):
                 database.commentDao().insert(new Comment(values));
                 break;
             case ("/" + VIEWPOINT_TABLE):
                 database.viewpointDAO().insert(new Viewpoint(values));
+                break;
+            case ("/" + PROJECT_TABLE):
+                database.projectDAO().insert(new Project(values));
+                break;
+            case ("/" + TOPIC_TABLE):
+                database.topicDao().insert(new Topic(values));
                 break;
         }
         return uri;

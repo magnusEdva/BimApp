@@ -25,7 +25,7 @@ import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.User;
 import com.bimapp.model.entity.Viewpoint;
 
-@Database(entities = {Comment.class, Topic.class, User.class, Project.class, Viewpoint.class}, version = 4)
+@Database(entities = {Comment.class, Topic.class, User.class, Project.class, Viewpoint.class}, version = 5)
 @TypeConverters({Topic.class, DateMapper.class})
 public abstract class AppDatabase extends RoomDatabase {
 
