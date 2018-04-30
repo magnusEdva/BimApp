@@ -34,4 +34,9 @@ public class LabelsNode extends TemplateNode {
     public Object getContent() {
         return labels;
     }
+
+    @Override
+    public void setContent(String s) {
+
+    }
 }
