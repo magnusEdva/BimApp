@@ -58,20 +58,7 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface, T
         mContext = (BimApp) this.getActivity().getApplication();
         commentManager = new CommentEntityManager(mContext);
         mTopicManager = new TopicsEntityManager(mContext);
-//        Observer<List<Comment>> obs = new Observer<List<Comment>>() {
-//            @Override
-//            public void onChanged(@Nullable List<Comment> comments) {
-//                setComments(comments);
-//            }
-//        };
-//        mComments = new LiveData<List<Comment>>() {
-//            @Override
-//            protected void setValue(List<Comment> value) {
-//                super.setValue(value);
-//                setComments(value);
-//            }
-//        };
-//        mComments.observe(this,obs);
+        mComments = new ArrayList<>();
 
     }
 
@@ -99,25 +86,26 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface, T
     @Override
     public void setComments(List<Comment> comments) {
         mTopicView.setComments(comments);
-        comments.get(0).setComment("endret");
+        mComments.clear();
+        mComments.addAll(comments);
     }
 
     @Override
     public void setLiveComments(LiveData<List<Comment>> comments) {
-      //  mComments = comments;
+     //   mComments = comments;
     }
 
     @Override
     public void editComment(Comment comment) {
-//        boolean found = false;
-//        for(int i = 0; i < mComments.size() && !found; i++){
-//            if(mComments.get(i).equals(comment)){
-//                mComments.remove(i);
-//                mComments.add(i,comment);
-//                found = true;
-//            }
-//        }
-//        mTopicView.setComments(mComments);
+        boolean found = false;
+        for(int i = 0; i < mComments.size() && !found; i++){
+            if(mComments.get(i).equals(comment)){
+                mComments.remove(i);
+                mComments.add(i,comment);
+                found = true;
+            }
+        }
+        mTopicView.setComments(mComments);
             }
 
     @Override

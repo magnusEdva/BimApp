@@ -108,15 +108,38 @@ public class Topic implements entity {
     }
 
     public Topic(@NonNull String title, @Nullable String topicType, @Nullable String topicStatus,
-                 @Nullable String assignedTo, @Nullable String description) {
+                 @Nullable String assignedTo, @Nullable String description, @NonNull String projectId) {
         mTitle = title;
         mTopicType = topicType;
         mTopicStatus = topicStatus;
         mAssignedTo = assignedTo;
         mDescription = description;
+        this.projectId = projectId;
     }
 
     public Topic(ContentValues values) {
+        mGuid = values.getAsString(GUID);
+        mTitle = values.getAsString(TITLE);
+        mTopicType = values.getAsString(TOPIC_TYPE);
+        mTopicStatus = values.getAsString(TOPIC_STATUS);
+        mLabels = getListFromString(values.getAsString(LABELS));
+        mReferenceLinks = getListFromString((values.getAsString(REFERENCE_LINKS)));
+        mDueDate = values.getAsString(DUE_DATE);
+        mPriority = values.getAsString(PRIORITY);
+        mDescription = values.getAsString(DESCRIPTION);
+        mIndex = values.getAsInteger(INDEX);
+        mCreationAuthor = values.getAsString(CREATION_AUTHOR);
+        mCreationDate = values.getAsString(CREATION_DATE);
+        mAssignedTo = values.getAsString(ASSIGNED_TO);
+        mStage = values.getAsString(STAGE);
+
+        projectId = values.getAsString(Project.PROJECT_ID);
+        mModifiedAuthor = values.getAsString(MODIFIED_AUTHOR);
+        try {
+            mBimSnippet = new BimSnippet(new JSONObject(values.getAsString(BIM_SNIPPET)));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -195,7 +218,30 @@ public class Topic implements entity {
         return map;
     }
 
+    public ContentValues getValues(){
+        ContentValues values = new ContentValues();
+        values.put(GUID,mGuid);
+        values.put(TOPIC_STATUS, mTopicStatus);
+        values.put(REFERENCE_LINKS, getStringFromList(mReferenceLinks));
+        values.put(LABELS, getStringFromList(mLabels));
+        values.put(TOPIC_TYPE, mTopicType);
+        values.put(TITLE, mTitle);
+        values.put(PRIORITY,mPriority);
+        values.put(INDEX,mIndex);
+        values.put(ASSIGNED_TO,mAssignedTo);
+        values.put(STAGE, mStage);
+        values.put(DESCRIPTION,mDescription);
+        values.put(BIM_SNIPPET, mBimSnippet.getJSON().toString());
+        values.put(Project.PROJECT_ID, projectId);
+        values.put(DUE_DATE,mDueDate);
+        values.put(CREATION_AUTHOR, mCreationAuthor);
+        values.put(CREATION_DATE, mCreationDate);
+        return values;
+    }
+
     public static List<String> getListFromJSonArray(JSONArray array) {
+        if(array == null)
+            return null;
         List<String> strings = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
             try {
@@ -207,6 +253,8 @@ public class Topic implements entity {
         return strings;
     }
     public static JSONArray getJSONArrayFromList(List<String> list){
+        if(list == null)
+            return null;
         JSONArray array = new JSONArray();
         for(String s : list){
             array.put(s);
@@ -215,10 +263,16 @@ public class Topic implements entity {
     }
     @TypeConverter
     public static String getStringFromList(List<String> list){
-        return getJSONArrayFromList(list).toString();
+        JSONArray arr = getJSONArrayFromList(list);
+        if(arr != null)
+            return arr.toString();
+        else
+            return null;
     }
     @TypeConverter
     public static List<String> getListFromString(String string){
+        if(string == null)
+            return null;
         JSONArray array = null;
         try {
              array = new JSONArray(string);
@@ -368,6 +422,35 @@ public class Topic implements entity {
         public BimSnippet(){}
 
         public BimSnippet(JSONObject snippet) {
+           construct(snippet);
+        }
+
+        /**
+         * @param string * JSON formatted String
+         */
+        public BimSnippet(String string) {
+            try {
+                JSONObject obj = new JSONObject(string);
+                construct(obj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public JSONObject getJSON(){
+            JSONObject map = new JSONObject();
+            try {
+                map.put(SNIPPET_TYPE, mSnippet_type);
+                map.put(IS_EXTERNAL, mExternal);
+                map.put(REFERENCE, mReference);
+                map.put(REFERENCE_SCHEMA, mReferenceSchema);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return map;
+        }
+
+        private void construct(JSONObject snippet){
             try {
                 if (snippet.has(SNIPPET_TYPE))
                     mSnippet_type = snippet.getString(SNIPPET_TYPE);
@@ -380,18 +463,6 @@ public class Topic implements entity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
-        public JSONObject getJSON(){
-            JSONObject map = new JSONObject();
-            try {
-                map.put(SNIPPET_TYPE, mSnippet_type);
-                map.put(IS_EXTERNAL, mExternal);
-                map.put(REFERENCE, mReference);
-                map.put(REFERENCE_SCHEMA, mReferenceSchema);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return map;
         }
     }
 
