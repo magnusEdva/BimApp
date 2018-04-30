@@ -72,13 +72,13 @@
                 />
         </provider>
         <provider
-            android:name="com.bimapp.model.data_access.DataProvider"
+            android:name=".model.data_access.DataProvider"
             android:authorities="com.bimapp.model.data_access.DataProvider"
             android:exported="false"
             android:syncable="true"
             />
         <service
-            android:name="com.bimapp.model.services.AuthenticatorService">
+            android:name=".model.services.AuthenticatorService">
             <intent-filter>
                 <action
                     android:name="android.accounts.AccountAuthenticator"/>

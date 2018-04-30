@@ -37,7 +37,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         mContentResolver = context.getContentResolver();
         mAccountManager = AccountManager.get(context);
         mContext = (BimApp) context;
-        Log.d("SyncAdapter", "Created SyncAdapter" + mContext.checkLogIn());
+        Log.d("SyncAdapter", "Created SyncAdapter") ;
     }
 
 
@@ -58,6 +58,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         mContentResolver = context.getContentResolver();
         mAccountManager = AccountManager.get(context);
         mContext = (BimApp) context;
+        Log.d("SyncAdapter", "Created SyncAdapter, Compat ");
     }
 
     @Override
@@ -67,8 +68,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                               ContentProviderClient provider,
                               SyncResult syncResult) {
 
-        Log.d("Sync", "Started syncing");
+        Log.d("SyncAdapter", "Started syncing");
         // Should somehow determine if server and local db is different
+
 
         // Get Projects/IssueBoards
 
