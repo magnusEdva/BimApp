@@ -48,7 +48,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
      */
     @Override
     public void getComments(TopicFragmentInterface listener, Topic topic) {
-        handler.startQuery(1, listener, DataProvider.ParseUri(DataProvider.CommentTable),
+        handler.startQuery(1, listener, DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
                 null, topic.getMGuid(), null, null);
         requestComments(new getCommentsCallback(listener), topic);
     }
@@ -150,7 +150,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
             }
             mControllerCallback.setComments(comments);
             for(Comment c : comments){
-                handler.startInsert(-1, null, DataProvider.ParseUri(DataProvider.CommentTable), c.getContentValues());
+                handler.startInsert(-1, null, DataProvider.ParseUri(DataProvider.COMMENT_TABLE), c.getContentValues());
             }
         }
 
