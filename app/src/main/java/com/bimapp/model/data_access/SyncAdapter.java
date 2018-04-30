@@ -72,6 +72,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         // Should somehow determine if server and local db is different
 
 
+
         // Get Projects/IssueBoards
 
         // Get Topics

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -87,6 +88,15 @@ public class ProjectsViewActivity extends AppCompatActivity
     private Fragment mTopicFragment;
     private FragmentNewComment mNewCommentFragment;
 
+    // Variables for accounts
+    // The authority for the sync adapter's content provider
+    public static final String AUTHORITY = "com.bimapp.model.data_access.DataProvider";
+    // An account type, in the form of a domain name
+    public static final String ACCOUNT_TYPE = "com.bimapp.sync";
+    // The account name
+    public static final String ACCOUNT = "BimAppSync";
+    // Instance fields
+    Account mAccount;
 
     /**
      * Used to manage the backstack Primarily.
@@ -109,6 +119,8 @@ public class ProjectsViewActivity extends AppCompatActivity
         NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
                 APICall.GETUser(), this, null);
 
+        mAccount = CreateSyncAccount(this.getApplicationContext());
+/*
         // Code for testing sync-adapter
         String authority = getString(R.string.data_provider_authority);
         String account_type = getString(R.string.sync_account_type);
@@ -119,13 +131,13 @@ public class ProjectsViewActivity extends AppCompatActivity
             Log.d("Account", "Account added");
         else
             Log.d("Account", "Didn't add account");
-
+*/
         Bundle b = new Bundle();
         b.putBoolean(
                 ContentResolver.SYNC_EXTRAS_MANUAL, true);
         b.putBoolean(
                 ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        ContentResolver.requestSync(mAccount,authority,b);
+        ContentResolver.requestSync(mAccount,AUTHORITY,b);
 
         // End of code for sync-adapter testing
 
@@ -481,5 +493,39 @@ public class ProjectsViewActivity extends AppCompatActivity
                 break;
         }
     }
-
+    /**
+     * Create a new dummy account for the sync adapter
+     *
+     * @param context The application context
+     */
+    public static Account CreateSyncAccount(Context context) {
+        // Create the account type and default account
+        Account newAccount = new Account(
+                ACCOUNT, ACCOUNT_TYPE);
+        // Get an instance of the Android account manager
+        AccountManager accountManager =
+                (AccountManager) context.getSystemService(
+                        ACCOUNT_SERVICE);
+        /*
+         * Add the account and account type, no password or user data
+         * If successful, return the Account object, otherwise report an error.
+         */
+        if (accountManager.addAccountExplicitly(newAccount, null, null)) {
+            /*
+             * If you don't set android:syncable="true" in
+             * in your <provider> element in the manifest,
+             * then call context.setIsSyncable(account, AUTHORITY, 1)
+             * here.
+             */
+            return newAccount;
+        } else {
+            /*
+             * The account exists or some other error occurred. Log this, report it,
+             * or handle it internally.
+             */
+            newAccount = accountManager.getAccountsByType(ACCOUNT_TYPE)[0];
+            return  newAccount;
+        }
+    }
 }
+
