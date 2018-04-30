@@ -81,9 +81,11 @@
                 android:clipChildren="true"
                 android:clipToPadding="true"
                 android:visibility="visible" />
+
+
+
         </RelativeLayout>
     </ScrollView>
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/view_Topic_floating_button"
         style="@style/BimAppDefaultTheme"
@@ -104,5 +106,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />
-
 </RelativeLayout>
