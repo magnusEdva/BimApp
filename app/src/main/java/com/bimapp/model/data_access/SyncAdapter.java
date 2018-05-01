@@ -85,6 +85,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         PostTopics();
         // This post un-synced updated Topics to the server
         PutTopics();
+        //
+
         // This gets projects from the server as well as Topics, Comments and ViewPoints
         GetProjects();
 
@@ -238,13 +240,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         }
         else {
             // if ViewPoint IS found on the server, set ViewPoint to the Comment
-            if (cursor.moveToFirst()) {
-                String guid = cursor.getString(cursor.getColumnIndex(Viewpoint.GUID));
+            if (cursor.moveToFirst()) {       String guid = cursor.getString(cursor.getColumnIndex(Viewpoint.GUID));
                 String commentGUID = cursor.getString(cursor.getColumnIndex(Viewpoint.COMMENT_GUID));
                 String type = cursor.getString(cursor.getColumnIndex("type"));
                 String pictureName = cursor.getString(cursor.getColumnIndex("picture_name"));
-                Viewpoint vp = new Viewpoint(guid, commentGUID, type, pictureName);
-                vp.setCommentGUID(comment.getMCommentsGUID());
+                AppDatabase.statusTypes localStatus = AppDatabase.convertStringToStatus
+                        (cursor.getString(cursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
+                Long dateAcquired = cursor.getLong(cursor.getColumnIndex(AppDatabase.STATUS_COLUMN));
+                Viewpoint vp = new Viewpoint(guid, commentGUID, type, pictureName, dateAcquired, localStatus);
                 comment.setViewpoint(vp);
                 mContentResolver.insert(DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
                         vp.getContentValues());
