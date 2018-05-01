@@ -10,12 +10,10 @@ import android.content.SyncResult;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.telecom.Call;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.bimapp.BimApp;
-import com.bimapp.model.data_access.entityManagers.TopicDBHandler;
 import com.bimapp.model.data_access.network.APICall;
 import com.bimapp.model.data_access.network.Callback;
 import com.bimapp.model.data_access.network.NetworkConnManager;
@@ -45,7 +43,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
 
     private final BimApp mContext;
 
-    TopicDBHandler mTopicDBHandler;
 
     /**
      * Set up the sync adapter
@@ -55,7 +52,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         mContentResolver = context.getContentResolver();
         mAccountManager = AccountManager.get(context);
         mContext = (BimApp) context;
-        mTopicDBHandler = new TopicDBHandler(mContentResolver);
         Log.d("SyncAdapter", "Created SyncAdapter") ;
     }
 
@@ -73,7 +69,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         mContentResolver = context.getContentResolver();
         mAccountManager = AccountManager.get(context);
         mContext = (BimApp) context;
-        mTopicDBHandler = new TopicDBHandler(mContentResolver);
         Log.d("SyncAdapter", "Created SyncAdapter, Compat ");
     }
 
@@ -86,28 +81,33 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
 
         Log.d("SyncAdapter", "Started syncing");
 
-        // This posts un-synced Topics to the server
+        // This posts un-synced new Topics to the server
         PostTopics();
-
-        // This gets projects from the server
+        // This post un-synced updated Topics to the server
+        PutTopics();
+        // This gets projects from the server as well as Topics, Comments and ViewPoints
         GetProjects();
 
+    }
 
-        // This updates un-synced Topics to the server
-        PutTopics();
-
+    private void PostTopics(){
+        UpdateTopics(DataProvider.NEW_ROWS);
     }
 
     private void PutTopics() {
-
+        UpdateTopics(DataProvider.UPDATED_ROWS);
     }
 
-    private void PostTopics() {
+    /**
+     * This POST or PUT Topics from the Database to the server depending on the @param provided
+     * @param newRowsOrUpdatedRows if this is NEW_ROWS, posts those, if this is UPDATED_ROWS, puts those
+     */
+    private void UpdateTopics(String newRowsOrUpdatedRows) {
         // Find un-synced topics
         Cursor cursor = mContentResolver.query(DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
                 null,
                 null,
-                new String[]{DataProvider.NEW_ROWS},
+                new String[]{newRowsOrUpdatedRows},
                 null);
 
         if (cursor != null && cursor.getCount() != 0){
@@ -167,9 +167,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                 topics.add(topic);
             }
             cursor.close();
-            for (Topic topic: topics) {
-                NetworkConnManager.networkRequest(mContext, Request.Method.POST,
-                        APICall.POSTTopics(topic.getProjectId()), new PostTopicCallback(topic), topic);
+            if (newRowsOrUpdatedRows.equals(DataProvider.NEW_ROWS)) {
+                for (Topic topic : topics) {
+                    NetworkConnManager.networkRequest(mContext, Request.Method.POST,
+                            APICall.POSTTopics(topic.getProjectId()), new PostTopicCallback(topic), topic);
+                }
+            } else if (newRowsOrUpdatedRows.equals(DataProvider.UPDATED_ROWS)){
+                for (Topic topic: topics){
+                    NetworkConnManager.networkRequest(mContext, Request.Method.PUT,
+                            APICall.PUTTopic(topic.getProjectId(), topic),new PutTopicCallabck(topic), topic);
+                }
             }
         }
     }
@@ -216,9 +223,39 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
      * @param comment The Comment the ViewPoint should be linked to
      */
     private void GetViewPoint(Project project, Comment comment) {
-        NetworkConnManager.networkRequest(mContext, Request.Method.GET,
-                APICall.GETViewpoint(project, comment.getMTopicGuid(), comment),
-                new ViewPointCallback(project, comment), null);
+        // Should check if this ViewPoint is already in the Database
+        Cursor cursor = mContentResolver.query(
+                DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
+                null,
+                comment.getMCommentsGUID(),
+                null,
+                null);
+        if (cursor == null || cursor.getCount() == 0){
+            // If ViewPoint is not found on the Database, get it from server
+            NetworkConnManager.networkRequest(mContext, Request.Method.GET,
+                    APICall.GETViewpoint(project, comment.getMTopicGuid(), comment),
+                    new ViewPointCallback(project, comment), null);
+        }
+        else {
+            // if ViewPoint IS found on the server, set ViewPoint to the Comment
+            if (cursor.moveToFirst()) {
+                String guid = cursor.getString(cursor.getColumnIndex(Viewpoint.GUID));
+                String commentGUID = cursor.getString(cursor.getColumnIndex(Viewpoint.COMMENT_GUID));
+                String type = cursor.getString(cursor.getColumnIndex("type"));
+                String pictureName = cursor.getString(cursor.getColumnIndex("picture_name"));
+                Viewpoint vp = new Viewpoint(guid, commentGUID, type, pictureName);
+                vp.setCommentGUID(comment.getMCommentsGUID());
+                comment.setViewpoint(vp);
+                mContentResolver.insert(DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
+                        vp.getContentValues());
+                mContentResolver.insert(DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
+                        comment.getContentValues());
+                Log.d("SyncAdapter", "Added ViewPoint from database!");
+                Log.d("SyncAdapter", "Added Comment " + comment.getMComment());
+            }
+        }
+        if (cursor != null)
+            cursor.close();
     }
 
     // Private classes implements Volley Callbacks for specific API-calls
@@ -277,7 +314,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
             List<Topic> topics = null;
             try {
                 JSONArray jsonArray = new JSONArray(response);
-                topics = EntityListConstructor.Topics(jsonArray,mContext.getActiveProject().getProjectId());
+                topics = EntityListConstructor.Topics(jsonArray,mProject.getProjectId());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -421,6 +458,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         }
     }
 
+    /**
+     * Class which handles the callback from network when un-posted topics gets pushed to server
+     * Should update server with new status of topic!
+     */
     private class PostTopicCallback implements Callback<String> {
         Topic mTopic;
 
@@ -437,6 +478,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         public void onSuccess(String response) {
             // Should update DB on
             Log.d("SyncAdapterPost", "Successfully posted offline topic to server");
+            // Add new
         }
     }
 
