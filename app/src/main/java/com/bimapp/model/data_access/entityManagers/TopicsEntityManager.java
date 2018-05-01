@@ -83,8 +83,9 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
      * @param topic              The topic you want to post
      */
     public void postTopic(NewTopicFragmentInterface controllerCallback, Topic topic) {
+        handler.startInsert(1,null,DataProvider.ParseUri(DataProvider.TOPIC_TABLE), topic.getValues());
         NetworkConnManager.networkRequest(mContext, Request.Method.POST,
-                APICall.POSTTopics(mContext.getActiveProject()), new TopicPostCallback(controllerCallback), topic);
+                APICall.POSTTopics(mContext.getActiveProject()), new TopicPostCallback(controllerCallback, topic), topic);
 
     }
 
@@ -95,8 +96,9 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
      * @param topic              the topic you wish to update
      */
     public void putTopic(TopicFragmentInterface controllerCallback, Topic topic) {
+        topic.updatedLocally();
         NetworkConnManager.networkRequest(mContext, Request.Method.PUT,
-                APICall.PUTTopic(mContext.getActiveProject(), topic), new putTopicsCallback(controllerCallback), topic);
+                APICall.PUTTopic(mContext.getActiveProject(), topic), new putTopicsCallback(controllerCallback, topic.getProjectId()), topic);
     }
     /**
      * Inner class which handles the Callbacks from Volley on a postTopic request
@@ -104,9 +106,11 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
     private class TopicPostCallback implements Callback<String> {
 
         NewTopicFragmentInterface mTopicsFragmentInterface;
+        Topic localUnGuidedVersion;
 
-        public TopicPostCallback(NewTopicFragmentInterface callback) {
+        public TopicPostCallback(NewTopicFragmentInterface callback, Topic topic) {
             mTopicsFragmentInterface = callback;
+            localUnGuidedVersion = topic;
         }
 
         @Override
@@ -127,6 +131,8 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
                 e.printStackTrace();
             }
             if (object != null) {
+                handler.startDelete(1,null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
+                        localUnGuidedVersion.getMGuid(), null);
                 Topic topic = new Topic(object, mContext.getActiveProject().getProjectId());
                 makeToast(true, topic);
             }
@@ -176,9 +182,11 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
     private class putTopicsCallback implements Callback<String> {
 
         TopicFragmentInterface mControllerCallback;
+        String mProjectId;
 
-        public putTopicsCallback(TopicFragmentInterface controllerCallback) {
+        public putTopicsCallback(TopicFragmentInterface controllerCallback, String projectId) {
             mControllerCallback = controllerCallback;
+            mProjectId = projectId;
         }
 
         @Override
@@ -189,6 +197,14 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
         @Override
         public void onSuccess(String response) {
             Log.d("PUTCOMMENT:", response);
+            try{
+                JSONObject object = new JSONObject(response);
+                Topic Topic = new Topic(object, mProjectId);
+                handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE), Topic.getValues());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 

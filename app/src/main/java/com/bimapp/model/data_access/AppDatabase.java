@@ -9,6 +9,7 @@ import android.arch.persistence.room.DatabaseConfiguration;
 import android.arch.persistence.room.InvalidationTracker;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverter;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -25,9 +26,39 @@ import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.User;
 import com.bimapp.model.entity.Viewpoint;
 
-@Database(entities = {Comment.class, Topic.class, User.class, Project.class, Viewpoint.class}, version = 5)
+@Database(entities = {Comment.class, Topic.class, User.class, Project.class, Viewpoint.class}, version = 6)
 @TypeConverters({Topic.class, DateMapper.class})
 public abstract class AppDatabase extends RoomDatabase {
+    /**
+     * a date column contains the date of
+     * when an item was inserted into the database.
+     * Used for synchronising with the API in posting order.
+     */
+    public static final String DATE_COLUMN = "date_column";
+    /**
+     * A status column shows wether a row is posted to the server or not.
+     * Has value from statusTypes.
+     */
+    public static final String STATUS_COLUMN = "status_column";
+
+    /**
+     * New represents an item created on the local device, not yet posted
+     * to the remote server.
+     *
+     * updated represents an item that has been changed by the local device, but without having
+     * the change registered remotely.
+     *
+     * live represents unchanged data from the server. But it is not necessarily up to date.
+     */
+    public enum statusTypes{
+        New("NEW"), updated("UPDATED"), live("LIVE");
+
+        public final String status;
+
+        statusTypes(String status){
+            this.status = status;
+        }
+    }
 
     private static AppDatabase sInstance;
 
@@ -100,5 +131,20 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public LiveData<Boolean> getDatabaseCreated() {
         return mIsDatabaseCreated;
+    }
+
+    @TypeConverter
+    public static statusTypes convertStringToStatus(String status){
+        statusTypes convertedValue = null;
+        for (int i = 0; i < statusTypes.values().length && convertedValue == null; i++){
+            if(statusTypes.values()[i].status.equals(status))
+                convertedValue = statusTypes.values()[i];
+        }
+        return convertedValue;
+    }
+
+    @TypeConverter
+    public static String convertStatusToString(statusTypes status){
+        return status.status;
     }
 }
