@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.bimapp.controller.FragmentManualSync;
 import com.bimapp.controller.FragmentDashboard;
 import com.bimapp.controller.FragmentNewComment;
 import com.bimapp.controller.FragmentNewTopic;
@@ -73,9 +74,11 @@ public class ProjectsViewActivity extends AppCompatActivity
     public final static String PROJECTS_FRAGMENT_TAG = "fragment_projects";
     public final static String TOPIC_FRAGMENT_TAG = "fragment_topic";
     public final static String COMMENT_FRAGMENT_TAG = "fragment_comment";
+    public static final String SYNC_TAG = "sync_manual";
 
     // Variables to select unique requests to other apps, and provides a way for this activity to handle those callbacks
     private final static int TAKE_PHOTO_INTENT = 91;
+
 
     private BimApp mApplication;
     private DrawerLayout mDrawerLayout;
@@ -88,6 +91,7 @@ public class ProjectsViewActivity extends AppCompatActivity
     private Fragment mProjectsFragment;
     private Fragment mTopicFragment;
     private FragmentNewComment mNewCommentFragment;
+    private Fragment mSyncFragment;
 
     // Variables for accounts
     // The authority for the sync adapter's content provider
@@ -104,6 +108,7 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     final FragmentManager fragmentManager = ProjectsViewActivity.this.getSupportFragmentManager();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +121,7 @@ public class ProjectsViewActivity extends AppCompatActivity
         mProjectsFragment = new FragmentProject();
         mTopicFragment = new FragmentTopic();
         mNewCommentFragment = new FragmentNewComment();
+        //mSyncFragment = new FragmentManualSync();
 
         NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
                 APICall.GETUser(), this, null);
@@ -139,7 +145,7 @@ public class ProjectsViewActivity extends AppCompatActivity
         b.putBoolean(
                 ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         ContentResolver.setSyncAutomatically(mAccount,DataProvider.AUTHORITY,true);
-        ContentResolver.requestSync(mAccount,DataProvider.AUTHORITY,b);
+        //ContentResolver.requestSync(mAccount,DataProvider.AUTHORITY,b);
 
         // End of code for sync-adapter testing
 
@@ -199,6 +205,9 @@ public class ProjectsViewActivity extends AppCompatActivity
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 break;
+                         //   case R.id.nav_sync:
+                           //     openFragment(SYNC_TAG);
+                             //   break;
                         }
                         return true;
                     }
@@ -492,6 +501,9 @@ public class ProjectsViewActivity extends AppCompatActivity
                 break;
             case(PROJECTS_FRAGMENT_TAG):
                 openFragment(mProjectsFragment,tag);
+                break;
+            case(SYNC_TAG):
+                openFragment(mSyncFragment, tag);
                 break;
         }
     }
