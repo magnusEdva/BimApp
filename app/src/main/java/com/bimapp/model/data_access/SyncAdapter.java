@@ -478,10 +478,22 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         }
 
         @Override
-        public void onSuccess(String response) {
-            // Should update DB on
-            Log.d("SyncAdapterPost", "Successfully posted offline topic to server");
-            // Add new
+        public void onSuccess(String JSONResponse) {
+            // Should update DB on success
+            JSONObject object = null;
+            try {
+                object = new JSONObject(JSONResponse);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (object != null) {
+                // Deletes the old entry from DB
+                mContentResolver.delete(DataProvider.ParseUri(DataProvider.TOPIC_TABLE), mTopic.getMGuid(), null);
+                Topic topic = new Topic(object, mTopic.getProjectId());
+                // Creates a new entry in DB with updated IDs
+                mContentResolver.insert(DataProvider.ParseUri(DataProvider.TOPIC_TABLE), topic.getValues());
+                Log.d("SyncAdapterPost", "Successfully posted offline topic " + topic.getMTitle() + " to server");
+            }
         }
     }
 
@@ -499,8 +511,21 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         }
 
         @Override
-        public void onSuccess(String response) {
-
-        }
-    }
+        public void onSuccess(String JSONResponse) {
+            // Should update DB on success
+            JSONObject object = null;
+            try {
+                object = new JSONObject(JSONResponse);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (object != null) {
+                // Deletes the old entry from DB
+                mContentResolver.delete(DataProvider.ParseUri(DataProvider.TOPIC_TABLE), mTopic.getMGuid(), null);
+                Topic topic = new Topic(object, mTopic.getProjectId());
+                // Creates a new entry in DB with updated IDs
+                mContentResolver.insert(DataProvider.ParseUri(DataProvider.TOPIC_TABLE), topic.getValues());
+                Log.d("SyncAdapterPost", "Successfully posted offline topic " + topic.getMTitle() + " to server");
+            }
+        }    }
 }
