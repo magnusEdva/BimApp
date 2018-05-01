@@ -19,6 +19,9 @@ public class DataProvider extends ContentProvider {
     public static final String PROJECT_TABLE = "Project_table";
     public static final String VIEWPOINT_TABLE = "viewpoint_table";
     public static final String TOPIC_TABLE = "topic_table";
+    public static final String NEW_ROWS = "new_rows";
+    public static final String UPDATED_ROWS = "updated_rows";
+
 
     public static final String AUTHORITY = "com.bimapp.model.data_access.DataProvider";
 
@@ -45,7 +48,10 @@ public class DataProvider extends ContentProvider {
                 cursor = database.projectDAO().loadBCFproject();
                 break;
             case ("/" + TOPIC_TABLE):
-                cursor = database.topicDao().getTopics(selection);
+                if (selectionArgs != null)
+                    cursor = database.topicDao().getTopics(selection, selectionArgs[0]);
+                else
+                    cursor = database.topicDao().getTopics(selection);
                 break;
 
         }
@@ -81,6 +87,11 @@ public class DataProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        switch (uri.getPath()) {
+            case ("/" + TOPIC_TABLE):
+                database.topicDao().delete(selection);
+                break;
+        }
         return 0;
     }
 

@@ -1,14 +1,18 @@
 package com.bimapp.model.entity;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverter;
 import android.arch.persistence.room.TypeConverters;
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.bimapp.model.data_access.AppDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -102,12 +106,31 @@ public class Topic implements entity {
 
     @ColumnInfo(name = Project.PROJECT_ID)
     private String projectId;
+    /**
+     * local variable representing when the Topic was created on the local device.
+     */
+    @ColumnInfo(name = AppDatabase.DATE_COLUMN)
+    private Long dateAcquired;
+    /**
+     * Signifies this Topics situation relative to the server.
+     */
+    @TypeConverters(AppDatabase.class)
+    @ColumnInfo(name = AppDatabase.STATUS_COLUMN)
+    private AppDatabase.statusTypes localStatus;
+
+    @Ignore
+    public Topic(){}
 
     public Topic(JSONObject obj, String projectId) {
         this.projectId = projectId;
+        dateAcquired = System.currentTimeMillis();
+        localStatus = AppDatabase.statusTypes.live;
         construct(obj);
     }
 
+    /**
+     * Creates a NEW topic on the local device, to be posted to the server.
+     */
     public Topic(@NonNull String title, @Nullable String topicType, @Nullable String topicStatus,
                  @Nullable String assignedTo, @Nullable String description, @NonNull String projectId) {
         mTitle = title;
@@ -115,6 +138,12 @@ public class Topic implements entity {
         mTopicStatus = topicStatus;
         mAssignedTo = assignedTo;
         mDescription = description;
+
+        mGuid = Math.random() + "";
+
+        localStatus = AppDatabase.statusTypes.New;
+        dateAcquired = System.currentTimeMillis();
+
         this.projectId = projectId;
     }
 
@@ -133,7 +162,8 @@ public class Topic implements entity {
         mCreationDate = values.getAsString(CREATION_DATE);
         mAssignedTo = values.getAsString(ASSIGNED_TO);
         mStage = values.getAsString(STAGE);
-
+        dateAcquired = values.getAsLong(AppDatabase.DATE_COLUMN);
+        localStatus = AppDatabase.convertStringToStatus(values.getAsString(AppDatabase.STATUS_COLUMN));
         projectId = values.getAsString(Project.PROJECT_ID);
         mModifiedAuthor = values.getAsString(MODIFIED_AUTHOR);
         if (values.getAsString(BIM_SNIPPET) != null)
@@ -233,13 +263,29 @@ public class Topic implements entity {
         values.put(ASSIGNED_TO, mAssignedTo);
         values.put(STAGE, mStage);
         values.put(DESCRIPTION, mDescription);
+        values.put(AppDatabase.DATE_COLUMN, dateAcquired);
+        values.put(AppDatabase.STATUS_COLUMN, localStatus.status);
         if (mBimSnippet != null)
             values.put(BIM_SNIPPET, mBimSnippet.getJSON().toString());
         values.put(Project.PROJECT_ID, projectId);
         values.put(DUE_DATE, mDueDate);
         values.put(CREATION_AUTHOR, mCreationAuthor);
         values.put(CREATION_DATE, mCreationDate);
+        values.put(AppDatabase.STATUS_COLUMN, AppDatabase.convertStatusToString(localStatus));
+        values.put(AppDatabase.DATE_COLUMN, dateAcquired);
         return values;
+    }
+
+    /**
+     * Sets the status Column in the database to be updated and the date aqcuired to now.
+     * only changes something if the status was LIVE.
+     */
+    public void updatedLocally(){
+        if(localStatus == AppDatabase.statusTypes.live) {
+            localStatus = AppDatabase.statusTypes.updated;
+            dateAcquired = System.currentTimeMillis();
+        }
+
     }
 
     public static List<String> getListFromJSonArray(JSONArray array) {
@@ -329,6 +375,10 @@ public class Topic implements entity {
         return mTitle;
     }
 
+    public void setTitle(String title){
+        mTitle = title;
+    }
+
     public String getMPriority() {
         return mPriority;
     }
@@ -369,6 +419,9 @@ public class Topic implements entity {
         mModifiedAuthor = modifiedAuthor;
     }
 
+    public void setAssignedTo(String assignedTo){
+        mAssignedTo = assignedTo;
+    }
     public String getMAssignedTo() {
         return mAssignedTo;
     }
@@ -381,6 +434,9 @@ public class Topic implements entity {
         mStage = stage;
     }
 
+    public void setDescription(String description){
+        mDescription = description;
+    }
     public String getMDescription() {
         return mDescription;
     }
@@ -417,6 +473,20 @@ public class Topic implements entity {
         this.projectId = projectId;
     }
 
+    public Long getDateAcquired(){
+        return dateAcquired;
+    }
+
+    public void setDateAcquired(Long newDate){
+        dateAcquired = newDate;
+    }
+
+    public void setLocalStatus(AppDatabase.statusTypes status){
+        localStatus = status;
+    }
+    public AppDatabase.statusTypes getLocalStatus(){
+        return localStatus;
+    }
 
     public static class BimSnippet {
        public final static String SNIPPET_TYPE = "snippet_type";

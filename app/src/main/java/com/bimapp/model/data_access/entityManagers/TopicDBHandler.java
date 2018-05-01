@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
+import com.bimapp.model.data_access.AppDatabase;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Topic;
 
@@ -56,7 +57,15 @@ public class TopicDBHandler extends AsyncQueryHandler {
             String AssignedTo = cursor.getString(cursor.getColumnIndex(Topic.ASSIGNED_TO));
             String projectId = cursor.getString(cursor.getColumnIndex(Project.PROJECT_ID));
 
-            Topic topic = new Topic(title, TopicType, Status, AssignedTo, description, projectId);
+            String statusColumn = cursor.getString(cursor.getColumnIndex(AppDatabase.DATE_COLUMN));
+            Long dateAcquired = cursor.getLong(cursor.getColumnIndex(AppDatabase.STATUS_COLUMN));
+
+            Topic topic = new Topic();
+            topic.setTitle(title);
+            topic.setTopicType(TopicType);
+            topic.setTopicStatus(Status);
+            topic.setAssignedTo(AssignedTo);
+            topic.setDescription(description);
             topic.setBimSnippet(snippet);
             topic.setCreationAuthor(creationAuthor);
             topic.setGuid(guid);
@@ -68,6 +77,9 @@ public class TopicDBHandler extends AsyncQueryHandler {
             topic.setStage(Stage);
             topic.setPriority(priority);
             topic.setCreationDate(CreationDate);
+            topic.setProjectId(projectId);
+            topic.setDateAcquired(dateAcquired);
+            topic.setLocalStatus(AppDatabase.convertStringToStatus(statusColumn));
             topics.add(topic);
         }
         mListener.setTopics(topics);
