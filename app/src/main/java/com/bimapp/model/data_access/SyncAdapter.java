@@ -7,12 +7,15 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SyncResult;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.telecom.Call;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.bimapp.BimApp;
+import com.bimapp.model.data_access.entityManagers.TopicDBHandler;
 import com.bimapp.model.data_access.network.APICall;
 import com.bimapp.model.data_access.network.Callback;
 import com.bimapp.model.data_access.network.NetworkConnManager;
@@ -26,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,22 +40,22 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
     // Define a variable to contain a content resolver instance
     private final ContentResolver mContentResolver;
 
+    // Should eventually move OAuth into the account manager?
     private final AccountManager mAccountManager;
 
     private final BimApp mContext;
+
+    TopicDBHandler mTopicDBHandler;
 
     /**
      * Set up the sync adapter
      */
     public SyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
-        /*
-         * If your app uses a content resolver, get an instance of it
-         * from the incoming Context
-         */
         mContentResolver = context.getContentResolver();
         mAccountManager = AccountManager.get(context);
         mContext = (BimApp) context;
+        mTopicDBHandler = new TopicDBHandler(mContentResolver);
         Log.d("SyncAdapter", "Created SyncAdapter") ;
     }
 
@@ -66,14 +70,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
             boolean autoInitialize,
             boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
-        /*
-         * If your app uses a content resolver, get an instance of it
-         * from the incoming Context
-         */
         mContentResolver = context.getContentResolver();
-
         mAccountManager = AccountManager.get(context);
         mContext = (BimApp) context;
+        mTopicDBHandler = new TopicDBHandler(mContentResolver);
         Log.d("SyncAdapter", "Created SyncAdapter, Compat ");
     }
 
@@ -86,25 +86,96 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
 
         Log.d("SyncAdapter", "Started syncing");
 
+        // This posts un-synced Topics to the server
+        PostTopics();
+
         // This gets projects from the server
         GetProjects();
 
-        // This posts un-synced Topics to the server
-        PostTopics();
+
+        // This updates un-synced Topics to the server
+        PutTopics();
+
+    }
+
+    private void PutTopics() {
 
     }
 
     private void PostTopics() {
+        // Find un-synced topics
+        Cursor cursor = mContentResolver.query(DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
+                null,
+                null,
+                new String[]{DataProvider.NEW_ROWS},
+                null);
 
-        // Post un-synced topics
+        if (cursor != null && cursor.getCount() != 0){
+            List<Topic> topics = new ArrayList<>();
+            while (cursor.moveToNext()) {
+                String guid = cursor.getString(cursor.getColumnIndex(Topic.GUID));
+                String description = cursor.getString(cursor.getColumnIndex(Topic.DESCRIPTION));
+                int index = cursor.getInt(cursor.getColumnIndex(Topic.INDEX));
+                String title = cursor.getString(cursor.getColumnIndex(Topic.TITLE));
+                String dueDate = cursor.getString(cursor.getColumnIndex(Topic.DUE_DATE));
+                String TopicType = cursor.getString(cursor.getColumnIndex(Topic.TOPIC_TYPE));
+                String Status = cursor.getString(cursor.getColumnIndex(Topic.TOPIC_STATUS));
+                List<String> Labels = Topic.getListFromString(cursor.getString(cursor.getColumnIndex(Topic.LABELS)));
+                List<String> references = Topic.getListFromString(cursor.getString(cursor.getColumnIndex(Topic.REFERENCE_LINKS)));
+                String modAuth = cursor.getString(cursor.getColumnIndex(Topic.MODIFIED_AUTHOR));
+                String Stage = cursor.getString(cursor.getColumnIndex(Topic.STAGE));
 
-        // Then if Comment has ViewPoint, post ViewPoints
+                String mSnippet_type = cursor.getString(cursor.getColumnIndex(Topic.BimSnippet.SNIPPET_TYPE));
 
-        // Then post Comment
+                String mReference = cursor.getString(cursor.getColumnIndex(Topic.BimSnippet.REFERENCE));
+
+                String mReferenceSchema = cursor.getString(cursor.getColumnIndex(Topic.BimSnippet.REFERENCE_SCHEMA));
+
+                boolean isExternal = cursor.getInt(cursor.getColumnIndex(Topic.BimSnippet.IS_EXTERNAL)) != 0;
+
+                Topic.BimSnippet snippet = new Topic.BimSnippet(mSnippet_type, mReference, mReferenceSchema, isExternal);
+
+                String priority = cursor.getString(cursor.getColumnIndex(Topic.PRIORITY));
+                String creationAuthor = cursor.getString(cursor.getColumnIndex(Topic.CREATION_AUTHOR));
+                String CreationDate = cursor.getString(cursor.getColumnIndex(Topic.CREATION_DATE));
+                String AssignedTo = cursor.getString(cursor.getColumnIndex(Topic.ASSIGNED_TO));
+                String projectId = cursor.getString(cursor.getColumnIndex(Project.PROJECT_ID));
+
+                String statusColumn = cursor.getString(cursor.getColumnIndex(AppDatabase.DATE_COLUMN));
+                Long dateAcquired = cursor.getLong(cursor.getColumnIndex(AppDatabase.STATUS_COLUMN));
+
+                Topic topic = new Topic();
+                topic.setTitle(title);
+                topic.setTopicType(TopicType);
+                topic.setTopicStatus(Status);
+                topic.setAssignedTo(AssignedTo);
+                topic.setDescription(description);
+                topic.setBimSnippet(snippet);
+                topic.setCreationAuthor(creationAuthor);
+                topic.setGuid(guid);
+                topic.setLabels(Labels);
+                topic.setIndex(index);
+                topic.setReferenceLinks(references);
+                topic.setDueDate(dueDate);
+                topic.setModifiedAuthor(modAuth);
+                topic.setStage(Stage);
+                topic.setPriority(priority);
+                topic.setCreationDate(CreationDate);
+                topic.setProjectId(projectId);
+                topic.setDateAcquired(dateAcquired);
+                topic.setLocalStatus(AppDatabase.convertStringToStatus(statusColumn));
+                topics.add(topic);
+            }
+            cursor.close();
+            for (Topic topic: topics) {
+                NetworkConnManager.networkRequest(mContext, Request.Method.POST,
+                        APICall.POSTTopics(topic.getProjectId()), new PostTopicCallback(topic), topic);
+            }
+        }
     }
 
     /**
-     * Method to get projects (IssueBoards) from the server.
+     * Method to get projects (IssueBoards) from the server for CurrentUser
      *
      * Callback from the result of this methods call should implement getting Topics from said
      * IssueBoard
@@ -114,17 +185,36 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                 , null);
     }
 
+    /**
+     * Method to get Topics from the server for current Project
+     * @param project The project you want the topics for
+     */
     private void GetTopics(Project project) {
         NetworkConnManager.networkRequest(mContext, Request.Method.GET,
                 APICall.GETTopics(project),
                 new TopicsCallback(project), null);
     }
 
+    /**
+     * Method to get Comments from the server for current Project and Topic
+     *
+     * Note: Topics do not belong to Projects by default. This is something bimsync does
+     *
+     * @param mProject The project the comment belongs to
+     * @param topic The topic the comment belongs to
+     */
     private void GetComments(Project mProject, Topic topic) {
         NetworkConnManager.networkRequest(mContext, Request.Method.GET,
                 APICall.GETComments(mProject, topic),
                 new CommentsCallback(mProject, topic), null);
     }
+
+    /**
+     * Gets the ViewPoint from the server for current Project and Topic
+     *
+     * @param project ViewPoints belong to this project
+     * @param comment The Comment the ViewPoint should be linked to
+     */
     private void GetViewPoint(Project project, Comment comment) {
         NetworkConnManager.networkRequest(mContext, Request.Method.GET,
                 APICall.GETViewpoint(project, comment.getMTopicGuid(), comment),
@@ -298,7 +388,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
             }
         }
     }
-
+    /**
+     * Class which handles the callback from network with Snapshots
+     * Should add Snapshot, ViewPoint and Comment to topics
+     */
     private class SnapshotCallback implements Callback<Bitmap>{
         private Comment mComment;
         private Viewpoint mViewpoint;
@@ -325,6 +418,44 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                     mComment.getContentValues());
 
             Log.d("SyncAdapter", "Added Comment " + mComment.getMComment());
+        }
+    }
+
+    private class PostTopicCallback implements Callback<String> {
+        Topic mTopic;
+
+        private PostTopicCallback(Topic topic){
+            mTopic = topic;
+        }
+
+        @Override
+        public void onError(String response) {
+            Log.d("SyncAdapter", "Error on posting topic");
+        }
+
+        @Override
+        public void onSuccess(String response) {
+            // Should update DB on
+            Log.d("SyncAdapterPost", "Successfully posted offline topic to server");
+        }
+    }
+
+    private class PutTopicCallabck implements Callback<String>{
+        Topic mTopic;
+
+        private PutTopicCallabck(Topic topic){
+            mTopic = topic;
+        }
+
+
+        @Override
+        public void onError(String response) {
+            Log.d("SyncAdapter", "Error on updating topic");
+        }
+
+        @Override
+        public void onSuccess(String response) {
+
         }
     }
 }
