@@ -26,4 +26,7 @@ public interface CommentDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Comment comment);
+
+    @Query("DELETE FROM comment WHERE guid = :commentGUID")
+    void delete(String commentGUID);
 }

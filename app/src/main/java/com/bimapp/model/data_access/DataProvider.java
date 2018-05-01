@@ -91,6 +91,12 @@ public class DataProvider extends ContentProvider {
             case ("/" + TOPIC_TABLE):
                 database.topicDao().delete(selection);
                 break;
+            case ("/" + COMMENT_TABLE):
+                database.commentDao().delete(selection);
+                break;
+            case ("/" + VIEWPOINT_TABLE):
+                database.viewpointDAO().deleteViewpoint(selection);
+                break;
         }
         return 0;
     }
