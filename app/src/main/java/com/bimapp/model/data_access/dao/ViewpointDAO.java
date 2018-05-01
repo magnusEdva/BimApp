@@ -19,4 +19,7 @@ public interface ViewpointDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Viewpoint viewpoint);
+
+    @Query("DELETE FROM viewpoint WHERE guid = :guid")
+    void deleteViewpoint(String guid);
 }

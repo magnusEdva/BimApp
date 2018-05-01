@@ -7,6 +7,7 @@ import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
 import com.bimapp.controller.interfaces.TopicFragmentInterface;
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
+import com.bimapp.model.data_access.AppDatabase;
 import com.bimapp.model.data_access.DataProvider;
 import com.bimapp.model.data_access.network.APICall;
 import com.bimapp.model.data_access.network.Callback;
@@ -69,8 +70,8 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
      * @param controllerCallback This is where the onSuccess/onError methods must be implemented
      */
     public void getTopics(TopicsFragmentInterface controllerCallback) {
-        handler.startQuery(1,controllerCallback, DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
-                null, mContext.getActiveProject().getProjectId(),null,null);
+        handler.startQuery(1, controllerCallback, DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
+                null, mContext.getActiveProject().getProjectId(), null, null);
         NetworkConnManager.networkRequest(mContext, Request.Method.GET,
                 APICall.GETTopics(mContext.getActiveProject()),
                 new TopicsEntityManager.TopicsCallback(controllerCallback), null);
@@ -83,7 +84,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
      * @param topic              The topic you want to post
      */
     public void postTopic(NewTopicFragmentInterface controllerCallback, Topic topic) {
-        handler.startInsert(1,null,DataProvider.ParseUri(DataProvider.TOPIC_TABLE), topic.getValues());
+        handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE), topic.getValues());
         NetworkConnManager.networkRequest(mContext, Request.Method.POST,
                 APICall.POSTTopics(mContext.getActiveProject()), new TopicPostCallback(controllerCallback, topic), topic);
 
@@ -97,9 +98,11 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
      */
     public void putTopic(TopicFragmentInterface controllerCallback, Topic topic) {
         topic.updatedLocally();
-        NetworkConnManager.networkRequest(mContext, Request.Method.PUT,
-                APICall.PUTTopic(mContext.getActiveProject(), topic), new putTopicsCallback(controllerCallback, topic.getProjectId()), topic);
+        if (topic.getLocalStatus() != AppDatabase.statusTypes.New)
+            NetworkConnManager.networkRequest(mContext, Request.Method.PUT,
+                    APICall.PUTTopic(mContext.getActiveProject(), topic), new putTopicsCallback(controllerCallback, topic.getProjectId()), topic);
     }
+
     /**
      * Inner class which handles the Callbacks from Volley on a postTopic request
      */
@@ -131,9 +134,10 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
                 e.printStackTrace();
             }
             if (object != null) {
-                handler.startDelete(1,null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
+                handler.startDelete(1, null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
                         localUnGuidedVersion.getMGuid(), null);
                 Topic topic = new Topic(object, mContext.getActiveProject().getProjectId());
+                handler.startInsert(1,null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE), topic.getValues());
                 makeToast(true, topic);
             }
         }
@@ -157,7 +161,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
 
         @Override
         public void onError(String response) {
-              if(response != null)  Log.d("getTopicsError", response);
+            if (response != null) Log.d("getTopicsError", response);
         }
 
         @Override
@@ -165,11 +169,11 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
             List<Topic> topics = null;
             try {
                 JSONArray jsonArray = new JSONArray(response);
-                topics = EntityListConstructor.Topics(jsonArray,mContext.getActiveProject().getProjectId());
+                topics = EntityListConstructor.Topics(jsonArray, mContext.getActiveProject().getProjectId());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            for(Topic t : topics) {
+            for (Topic t : topics) {
                 handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE), t.getValues());
             }
             mControllerCallback.setTopics(topics);
@@ -192,12 +196,12 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
         @Override
         public void onError(String response) {
             Log.d("TopicsEntityManager", response);
-            }
+        }
 
         @Override
         public void onSuccess(String response) {
             Log.d("PUTCOMMENT:", response);
-            try{
+            try {
                 JSONObject object = new JSONObject(response);
                 Topic Topic = new Topic(object, mProjectId);
                 handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE), Topic.getValues());

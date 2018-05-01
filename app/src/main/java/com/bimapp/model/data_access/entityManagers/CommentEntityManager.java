@@ -62,7 +62,9 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
      */
     @Override
     public void postComment(CommentFragmentInterface listener, Topic topic, Comment comment) {
-        postComment(new postCommentCallback(listener), topic, comment);
+        comment.setTopicGUID(topic.getMGuid());
+        handler.startInsert(1,null, DataProvider.ParseUri(DataProvider.COMMENT_TABLE), comment.getContentValues());
+        postComment(new postCommentCallback(listener, comment), topic, comment);
     }
 
     /**
@@ -76,7 +78,9 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
     @Override
     public void postComment(CommentFragmentInterface listener, Topic topic, Comment comment, Bitmap file) {
         Viewpoint vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, file, null);
-        new postImage(new postViewpointCallback(listener, topic, comment), topic, vp).execute();
+        comment.setViewpoint(vp);
+        handler.startInsert(1,null,DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE), vp.getContentValues());
+        new postImage(new postViewpointCallback(listener, topic, comment, vp), topic, vp).execute();
     }
 
     private void requestViewpoint(TopicFragmentInterface listener, Comment comment) {
@@ -164,9 +168,11 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
     private class postCommentCallback implements Callback<String> {
 
         CommentFragmentInterface mListener;
+        Comment mToBeDeleted;
 
-        postCommentCallback(CommentFragmentInterface listener) {
+        postCommentCallback(CommentFragmentInterface listener, Comment comment) {
             mListener = listener;
+            mToBeDeleted = comment;
         }
 
         @Override
@@ -182,6 +188,8 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 comment = new Comment(jsonObject);
+                handler.startDelete(1, null, DataProvider.ParseUri(DataProvider.COMMENT_TABLE), mToBeDeleted.getMCommentsGUID(), null);
+                handler.startInsert(1,null, DataProvider.ParseUri(DataProvider.COMMENT_TABLE), comment.getContentValues());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -208,7 +216,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            if (vp != null && vp.hasSnapshot())
+            if (vp != null && vp.hasSnapshot() && !vp.checkIfImageIsAlreadyStored())
                 requestSnapshot(mControllerCallback, mComment, vp);
             else {
                 mComment.setViewpoint(vp);
@@ -255,11 +263,13 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
         CommentFragmentInterface mListener;
         Topic mTopic;
         Comment mComment;
+        Viewpoint toBeDeleted;
 
-        postViewpointCallback(CommentFragmentInterface listener, Topic topic, Comment comment) {
+        postViewpointCallback(CommentFragmentInterface listener, Topic topic, Comment comment, Viewpoint toBeDeleted) {
             mListener = listener;
             mTopic = topic;
             mComment = comment;
+            this.toBeDeleted = toBeDeleted;
         }
 
         @Override
@@ -276,7 +286,8 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
                 JSONObject jsonObject = new JSONObject(response);
                 vp = new Viewpoint(jsonObject, mComment.getMCommentsGUID());
                 mComment.setViewpointGuid(vp.getMGuid());
-
+                handler.startDelete(1,null,DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),toBeDeleted.getMGuid(),null);
+                handler.startInsert(1,null,DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE), vp.getContentValues());
             } catch (JSONException e) {
                 e.printStackTrace();
             }

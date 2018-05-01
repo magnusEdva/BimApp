@@ -6,6 +6,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,9 +15,11 @@ import android.util.Log;
 import android.view.View;
 
 import com.bimapp.model.Base64;
+import com.bimapp.model.data_access.AppDatabase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,29 +53,46 @@ public class Viewpoint implements entity {
     @ColumnInfo(name = COMMENT_GUID)
     private String mCommentGUID;
 
-    public Viewpoint(){}
+
+    @ColumnInfo(name = AppDatabase.DATE_COLUMN)
+    private Long dateAcquired;
+    @TypeConverters(AppDatabase.class)
+    @ColumnInfo(name = AppDatabase.STATUS_COLUMN)
+    private AppDatabase.statusTypes localStatus;
+
+    public Viewpoint() {
+    }
 
     public Viewpoint(JSONObject jsonObject, String guid) {
         mCommentGUID = guid;
         construct(jsonObject);
+        dateAcquired = System.currentTimeMillis();
+        localStatus = AppDatabase.statusTypes.live;
     }
 
     public Viewpoint(String type, Bitmap data, String guid) {
         mSnapshot = new Snapshot(type, data);
         hasSnapshot = true;
         mCommentGUID = guid;
+        dateAcquired = System.currentTimeMillis();
+        localStatus = AppDatabase.statusTypes.New;
     }
 
-    public Viewpoint(String guid, String commentGUID, String type, String name){
+    public Viewpoint(String guid, String commentGUID, String type, String name,
+                     Long dateAcquired, AppDatabase.statusTypes localStatus) {
         mGuid = guid;
         mCommentGUID = commentGUID;
         mSnapshot = new Snapshot(type, name);
         hasSnapshot = true;
+        this.dateAcquired = dateAcquired;
+        this.localStatus = localStatus;
     }
 
-    public Viewpoint(ContentValues values){
+    public Viewpoint(ContentValues values) {
         mGuid = values.getAsString(GUID);
         mCommentGUID = values.getAsString(COMMENT_GUID);
+        dateAcquired = values.getAsLong(AppDatabase.DATE_COLUMN);
+        localStatus = AppDatabase.convertStringToStatus(values.getAsString(AppDatabase.STATUS_COLUMN));
         mSnapshot = new Snapshot(values.getAsString("type"), values.getAsString("picture_name"));
     }
 
@@ -93,32 +113,51 @@ public class Viewpoint implements entity {
     }
 
     public Bitmap getSnapshot() {
-        if(mSnapshot.image == null)
+        if (mSnapshot.image == null)
             mSnapshot.fetchPicture();
         return mSnapshot.image;
     }
 
-    public Snapshot getMSnapshot(){return mSnapshot; }
+    public Snapshot getMSnapshot() {
+        return mSnapshot;
+    }
 
-    public void setGuid(String guid){
+    public void setGuid(String guid) {
         mGuid = guid;
     }
 
-    public void setSnapshot(Snapshot snapshot){
+    public void setSnapshot(Snapshot snapshot) {
         mSnapshot = snapshot;
         mSnapshot.name = mGuid;
     }
 
-    public void setCommentGUID(String commentGuid){
+    public void setCommentGUID(String commentGuid) {
         mCommentGUID = commentGuid;
     }
-    public String getMCommentGUID(){
+
+    public String getMCommentGUID() {
         return mCommentGUID;
     }
 
     public boolean hasSnapshot() {
 
         return hasSnapshot;
+    }
+
+    public void setDateAcquired(Long date) {
+        dateAcquired = date;
+    }
+
+    public Long getDateAcquired() {
+        return dateAcquired;
+    }
+
+    public void setLocalStatus(AppDatabase.statusTypes date) {
+        localStatus = date;
+    }
+
+    public AppDatabase.statusTypes getLocalStatus() {
+        return localStatus;
     }
 
     public void constructSnapshot(Bitmap snapshot) {
@@ -145,7 +184,15 @@ public class Viewpoint implements entity {
         contentValues.put(COMMENT_GUID, mCommentGUID);
         contentValues.put("type", mSnapshot.type);
         contentValues.put("picture_name", mSnapshot.name);
+        contentValues.put(AppDatabase.DATE_COLUMN, dateAcquired);
+        contentValues.put(AppDatabase.STATUS_COLUMN, AppDatabase.convertStatusToString(localStatus));
         return contentValues;
+    }
+
+    public Boolean checkIfImageIsAlreadyStored() {
+        File file = new File(Snapshot.dir + "/" + mGuid);
+        return file.exists();
+
     }
 
 
@@ -163,7 +210,7 @@ public class Viewpoint implements entity {
             image = data;
         }
 
-        public Snapshot(String type, String name){
+        public Snapshot(String type, String name) {
             this.type = type;
             this.name = name;
         }
@@ -176,18 +223,19 @@ public class Viewpoint implements entity {
         }
 
         public static String dir;
+
         /**
          * Upon first initiating a snapshot stores its image to disk
+         *
          * @param picture Bitmap to be stored
-         * @param name viewpoint GUID for unique id
+         * @param name    viewpoint GUID for unique id
          * @return
          */
-        private String storePicture(Bitmap picture , String name){
+        private String storePicture(Bitmap picture, String name) {
             File file = new File(dir + "/" + name);
-            if(file.exists()){
-                return name; }
-
-                else {
+            if (file.exists()) {
+                return name;
+            } else {
                 FileOutputStream out = null;
                 try {
                     Log.d("dir", dir + "/" + name);
@@ -210,10 +258,9 @@ public class Viewpoint implements entity {
         public boolean deletePicture() {
             File picture = new File(dir + "/" + name);
             boolean deleted = false;
-            if (!picture.exists()){
+            if (!picture.exists()) {
                 Log.d("Picture", "No picture upon deleting " + name);
-            }
-            else
+            } else
                 deleted = picture.delete();
             return deleted;
         }
@@ -221,31 +268,32 @@ public class Viewpoint implements entity {
         /**
          * fetches Bitmap picture from file with name as path.
          */
-        private void fetchPicture(){
+        private void fetchPicture() {
             FileInputStream fileIn = null;
             Bitmap picture = null;
-            try{
+            try {
                 fileIn = new FileInputStream(dir + "/" + name);
                 picture = BitmapFactory.decodeStream(fileIn);
-            } catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             } finally {
 
                 try {
-                    if(fileIn!= null)
-                     fileIn.close();
+                    if (fileIn != null)
+                        fileIn.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
             image = picture;
         }
+
         public String convert() {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             image.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
 
             try {
-                return new String (Base64.getEncoder().encode(outputStream.toByteArray()), "UTF-8");
+                return new String(Base64.getEncoder().encode(outputStream.toByteArray()), "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

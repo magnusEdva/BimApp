@@ -1,25 +1,24 @@
 package com.bimapp.model.entity;
 
 import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverter;
+import android.arch.persistence.room.TypeConverters;
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
+
+import com.bimapp.model.data_access.AppDatabase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Comment belonging to a Topic. This Class belongs to said topic,
@@ -38,8 +37,6 @@ public class Comment implements entity {
     public static final String MODIFIED_AUTHOR = "modified_author";
     public static final String VIEWPOINT_GUID = "viewpoint_guid";
 
-    private static DateFormat formatter = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss.SSSZ");
-    private static DateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
     /**
      * Unique identifier for a comment.
      */
@@ -95,12 +92,20 @@ public class Comment implements entity {
     @Ignore
     private Viewpoint mViewpoint;
 
+    @ColumnInfo(name = AppDatabase.DATE_COLUMN)
+    private Long dateAcquired;
+    @TypeConverters(AppDatabase.class)
+    @ColumnInfo(name = AppDatabase.STATUS_COLUMN)
+    private AppDatabase.statusTypes localStatus;
+
     public Comment(JSONObject obj) {
         construct(obj);
+        dateAcquired = System.currentTimeMillis();
     }
 
     public Comment(String guid, String verbalStatus, String status,String Date, String author, String topic,
-                   String modifiedDate, String modifiedAuthor, String comment, String viewpointGuid){
+                   String modifiedDate, String modifiedAuthor, String comment,
+                   String viewpointGuid, Long dateAcquired, AppDatabase.statusTypes localStatus){
         mCommentsGUID = guid;
         mVerbalStatus = verbalStatus;
         mStatus = status;
@@ -111,6 +116,9 @@ public class Comment implements entity {
         mModifiedAuthor = modifiedAuthor;
         mComment = comment;
         mViewpointGuid = viewpointGuid;
+
+        this.dateAcquired = dateAcquired;
+        this.localStatus = localStatus;
     }
     public Comment(ContentValues values){
         mCommentsGUID = values.getAsString("mCommentsGUID");
@@ -123,16 +131,23 @@ public class Comment implements entity {
         mModifiedDate = values.getAsString(MODIFIED_DATE);
         mModifiedAuthor = values.getAsString(MODIFIED_AUTHOR);
         mViewpointGuid = values.getAsString(VIEWPOINT_GUID);
+
+        dateAcquired = values.getAsLong(AppDatabase.DATE_COLUMN);
+        localStatus = AppDatabase.convertStringToStatus(values.getAsString(AppDatabase.STATUS_COLUMN));
     }
 
     public Comment(String comment) {
         mComment = comment;
         mCommentsGUID = Math.random() + "";
+        dateAcquired = System.currentTimeMillis();
+        localStatus = AppDatabase.statusTypes.New;
     }
 
     public Comment(String comment, String topicGUiD){
         mComment = comment;
         mTopicGUID = topicGUiD;
+        dateAcquired = System.currentTimeMillis();
+        localStatus = AppDatabase.statusTypes.New;
         mCommentsGUID = Math.random() + "";
     }
 
@@ -194,6 +209,8 @@ public class Comment implements entity {
         values.put(MODIFIED_DATE, mModifiedDate);
         values.put(MODIFIED_AUTHOR, mModifiedAuthor);
         values.put(VIEWPOINT_GUID, mViewpointGuid);
+        values.put(AppDatabase.DATE_COLUMN, dateAcquired);
+        values.put(AppDatabase.STATUS_COLUMN, AppDatabase.convertStatusToString(localStatus));
         return values;
     }
 
@@ -314,4 +331,21 @@ public class Comment implements entity {
         vp.setCommentGUID(mCommentsGUID);
         mViewpoint = vp;
     }
+
+    public void setDateAcquired(Long date){
+        dateAcquired = date;
+    }
+
+    public Long getDateAcquired() {
+        return dateAcquired;
+    }
+
+    public void setLocalStatus(AppDatabase.statusTypes date){
+        localStatus = date;
+    }
+
+    public AppDatabase.statusTypes getLocalStatus() {
+        return localStatus;
+    }
+
 }
