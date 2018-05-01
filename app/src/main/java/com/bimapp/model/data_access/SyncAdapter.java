@@ -85,10 +85,20 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         PostTopics();
         // This post un-synced updated Topics to the server
         PutTopics();
-        //
-
+        // Posts un-synced new Comments to the server
+        PostComments();
+        // Puts un-synced updated Comments to the server
+        PutComments();
         // This gets projects from the server as well as Topics, Comments and ViewPoints
         GetProjects();
+
+    }
+
+    private void PutComments() {
+
+    }
+
+    private void PostComments() {
 
     }
 
