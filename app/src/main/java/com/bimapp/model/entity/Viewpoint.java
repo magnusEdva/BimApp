@@ -76,6 +76,7 @@ public class Viewpoint implements entity {
         mCommentGUID = guid;
         dateAcquired = System.currentTimeMillis();
         localStatus = AppDatabase.statusTypes.New;
+        mGuid = Math.random() + "";
     }
 
     public Viewpoint(String guid, String commentGUID, String type, String name,
@@ -100,8 +101,10 @@ public class Viewpoint implements entity {
     private void construct(JSONObject jsonObject) {
         try {
             mGuid = jsonObject.getString(GUID);
-            if (jsonObject.has(SNAPSHOT))
+            if (jsonObject.has(SNAPSHOT)) {
                 hasSnapshot = true;
+                mSnapshot = new Snapshot(SNAPSHOT_TYPE_PNG, mGuid);
+                }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -113,7 +116,9 @@ public class Viewpoint implements entity {
     }
 
     public Bitmap getSnapshot() {
-        if (mSnapshot.image == null)
+        if(mSnapshot == null)
+            mSnapshot = new Snapshot(SNAPSHOT_TYPE_PNG, mGuid);
+        if ( mSnapshot.image == null)
             mSnapshot.fetchPicture();
         return mSnapshot.image;
     }
