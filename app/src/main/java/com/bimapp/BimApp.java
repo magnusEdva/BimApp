@@ -49,6 +49,8 @@ public class BimApp extends Application {
      */
     private RequestQueue requestQueue;
 
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -111,6 +113,7 @@ public class BimApp extends Application {
      * @return true if valid access token or false otherwise.
      */
     public boolean checkLogIn() {
+
         return mOAuth.isLoggedIn();
     }
 
@@ -119,7 +122,12 @@ public class BimApp extends Application {
      * @return true if logged in or false otherwise.
      */
     public boolean checkTokensAndRefresh(){
-        return mOAuth.hasTokens();
+        try {
+            return mOAuth.hasTokens();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public RequestQueue getRequestQueue() {
