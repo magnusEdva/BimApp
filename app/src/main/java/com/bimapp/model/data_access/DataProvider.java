@@ -67,7 +67,6 @@ public class DataProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        Log.d("got here", uri.getPath());
         switch (uri.getPath()) {
             case ("/" + COMMENT_TABLE):
                 database.commentDao().insert(new Comment(values));

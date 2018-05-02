@@ -10,6 +10,7 @@ import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
 import com.bimapp.model.data_access.AppDatabase;
+import com.bimapp.model.data_access.DataProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -101,6 +102,7 @@ public class Comment implements entity {
     public Comment(JSONObject obj) {
         construct(obj);
         dateAcquired = System.currentTimeMillis();
+        localStatus = AppDatabase.statusTypes.live;
     }
 
     public Comment(String guid, String verbalStatus, String status,String Date, String author, String topic,
