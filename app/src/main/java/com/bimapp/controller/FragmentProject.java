@@ -122,9 +122,15 @@ public class FragmentProject extends Fragment
 
     @Override
     public void setExtensions(IssueBoardExtensions issueBoardExtensions) {
-        mProject.setIssueBoardExtensions(issueBoardExtensions);
-        mContext.setActiveProject(mProject);
-        mCallback.onFragmentProjectInteraction(mProject);
+        if(issueBoardExtensions == null) {
+            mContext.setActiveProject(mProject);
+            mCallback.onFragmentProjectInteraction(mProject);
+        }
+        else {
+            mProject.setIssueBoardExtensions(issueBoardExtensions);
+            mContext.setActiveProject(mProject);
+            mCallback.onFragmentProjectInteraction(mProject);
+        }
 
     }
 
