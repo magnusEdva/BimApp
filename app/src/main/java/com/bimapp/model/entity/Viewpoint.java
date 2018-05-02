@@ -113,7 +113,9 @@ public class Viewpoint implements entity {
     }
 
     public Bitmap getSnapshot() {
-        if (mSnapshot.image == null)
+        if(mSnapshot == null)
+            mSnapshot = new Snapshot(SNAPSHOT_TYPE_PNG, mGuid);
+        if ( mSnapshot.image == null)
             mSnapshot.fetchPicture();
         return mSnapshot.image;
     }
