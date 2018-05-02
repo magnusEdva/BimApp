@@ -39,7 +39,10 @@ public class DataProvider extends ContentProvider {
         Cursor cursor = null;
         switch (uri.getPath()) {
             case ("/" + COMMENT_TABLE):
-                cursor = database.commentDao().getTopicsComments(selection);
+                if (selectionArgs != null)
+                    cursor = database.commentDao().getTopicsComments(selection, selectionArgs[0]);
+                else
+                    cursor = database.commentDao().getTopicsComments(selection);
                 break;
             case ("/" + VIEWPOINT_TABLE):
                 cursor = database.viewpointDAO().getViewpointForComment(selection);
