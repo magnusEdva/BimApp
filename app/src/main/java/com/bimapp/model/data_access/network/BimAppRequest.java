@@ -15,6 +15,7 @@ import com.bimapp.model.entity.entity;
 
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,11 +31,17 @@ class BimAppRequest {
 
         StringRequest getUserRequest = new StringRequest(
                 method, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        onResponseString(response, callback);
-                    }
-                },
+            @Override
+            public void onResponse(String response) {
+                try {
+                    String UTF8String = new String(response.getBytes("ISO-8859-1"), "UTF8");
+                    onResponseString(UTF8String, callback);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
@@ -64,6 +71,7 @@ class BimAppRequest {
                 }
                 return volleyError;
             }
+
             @Override
             protected String getParamsEncoding() {
                 return "UTF-8";
@@ -80,7 +88,15 @@ class BimAppRequest {
         JsonObjectRequest getUserRequest = new JsonObjectRequest(method, url, params.getJsonParams(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                callback.onSuccess(response.toString());
+                String responseString = response.toString();
+                try {
+
+                    String UTF8String = new String(responseString.getBytes("ISO-8859-1"), "UTF8");
+                    callback.onSuccess(UTF8String);
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         },
                 new Response.ErrorListener() {
@@ -118,6 +134,7 @@ class BimAppRequest {
                 }
                 return volleyError;
             }
+
             @Override
             protected String getParamsEncoding() {
                 return "UTF-8";
@@ -130,7 +147,7 @@ class BimAppRequest {
 
 
     static void GETImage(final BimApp mContext, final int method, String url,
-                     final Callback<Bitmap> callback) {
+                         final Callback<Bitmap> callback) {
         ImageRequest imageRequest = new ImageRequest(
                 url,
                 new Response.Listener<Bitmap>() { // Bitmap listener
@@ -151,13 +168,14 @@ class BimAppRequest {
                     }
                 }
 
-        ){
+        ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + mContext.getAcessToken());
                 return headers;
             }
+
             @Override
             protected VolleyError parseNetworkError(VolleyError volleyError) {
                 if (volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
@@ -166,6 +184,7 @@ class BimAppRequest {
                 }
                 return volleyError;
             }
+
             @Override
             protected String getParamsEncoding() {
                 return "UTF-8";
