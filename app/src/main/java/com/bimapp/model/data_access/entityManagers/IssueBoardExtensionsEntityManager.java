@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.android.volley.Request;
 import com.bimapp.BimApp;
+import com.bimapp.model.data_access.DataProvider;
 import com.bimapp.model.data_access.network.APICall;
 import com.bimapp.model.data_access.network.Callback;
 import com.bimapp.model.data_access.network.NetworkConnManager;
@@ -12,6 +13,8 @@ import com.bimapp.model.entity.Project;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import static com.bimapp.model.data_access.DataProvider.PROJECT_TABLE;
 
 public class IssueBoardExtensionsEntityManager {
 
@@ -25,8 +28,11 @@ public class IssueBoardExtensionsEntityManager {
 
     private BimApp mContext;
 
+    private ProjectDBHandler handler;
+
     public IssueBoardExtensionsEntityManager(BimApp mContext) {
         this.mContext = mContext;
+        handler = new ProjectDBHandler(mContext.getContentResolver());
     }
 
     /**
@@ -35,14 +41,18 @@ public class IssueBoardExtensionsEntityManager {
     public class IssueBoardExtensionsCallback implements Callback<String>{
 
         IssueBoardExtensionsProjectCallback mProjectCallback;
-        public IssueBoardExtensionsCallback(IssueBoardExtensionsProjectCallback issueBoardExtensionsCallback){
+        Project mProject;
+        public IssueBoardExtensionsCallback(IssueBoardExtensionsProjectCallback issueBoardExtensionsCallback,
+                                            Project project){
             mProjectCallback = issueBoardExtensionsCallback;
+            mProject = project;
         }
 
         @Override
         public void onError(String response) {
             Log.d("IssueBoardExtensions", "Error on getting IssueBoardExtensions.\n"
                     + response);
+            mProjectCallback.setExtensions(null);
         }
 
         @Override
@@ -52,9 +62,12 @@ public class IssueBoardExtensionsEntityManager {
             try {
                 JSONObject jsonObject = new JSONObject(JSONResponse);
                 issueBoardExtensions = new IssueBoardExtensions(jsonObject);
+                mProject.setIssueBoardExtensions(issueBoardExtensions);
+                handler.startInsert(1,null, DataProvider.ParseUri(PROJECT_TABLE),mProject.getContentValues());
             } catch (JSONException e){
                 e.printStackTrace();
             }
+
             mProjectCallback.setExtensions(issueBoardExtensions);
         }
     }
@@ -63,7 +76,7 @@ public class IssueBoardExtensionsEntityManager {
         NetworkConnManager.networkRequest(mContext
                 , Request.Method.GET
                 , APICall.GETIssueBoardExtensions(project)
-                , new IssueBoardExtensionsCallback( controllerCallback)
+                , new IssueBoardExtensionsCallback( controllerCallback, project)
                 ,null);
     }
 }
