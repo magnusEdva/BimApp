@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -81,6 +82,9 @@ public class OAuthHandler {
      * @param context a BimApp application
      */
 
+    private static final int MAX_AVAILABLE = 1;
+    private final Semaphore available = new Semaphore(MAX_AVAILABLE, true);
+
     public OAuthHandler(BimApp context) {
         mContext = context;
         refreshCycleCheck = 0;
@@ -99,8 +103,6 @@ public class OAuthHandler {
      * @param callback  used when acquiring the first token.
      */
     public void getAccessToken(@NonNull final String code, @NonNull final String grantType, @Nullable final Callback callback) {
-
-
         if (checkActiveRefresh())
             return;
         setActiveRefresh();
@@ -192,6 +194,7 @@ public class OAuthHandler {
      */
     public void getAccessToken(@NonNull final String code, @NonNull final String grantType) {
         getAccessToken(code, grantType, null);
+
     }
 
     private String getOAuthUri() {
@@ -289,29 +292,38 @@ public class OAuthHandler {
      *
      * @return whether the app has a valid token or not.
      */
-    public boolean isLoggedIn() {
+    public boolean isLoggedIn()  {
+
         if (isValidAccessToken()) {
             return true;
-        } else
-            return hasTokens();
+        } else {
+            try {
+                return hasTokens();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }return false;
     }
 
     /**
-     * checks initialLogin. Used only at app creation.
+     * checks tokens and acquires new if necessary
      */
-    public boolean hasTokens() {
-        if (getRefreshToken() != null) {
+    public boolean hasTokens() throws InterruptedException {
+        available.acquire();
+        if (getRefreshToken() != null && !isValidAccessToken()) {
             getAccessToken(getRefreshToken(), GRANT_TYPE_REFRESH_TOKEN);
+            available.release();
             return true;
         } else
             return false;
+
 
     }
 
     private class CallbackHandler implements OAuthCallback {
         @Override
         public void onSuccessResponse(String result, Callback callback) {
-
+            available.release();
             JSONObject response;
 
             String access_token;
@@ -337,7 +349,7 @@ public class OAuthHandler {
 
         @Override
         public void onErrorResponse(VolleyError error) {
-            setFinishedRefresh();
+            available.release();
             if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                 error.printStackTrace();
             } else if (error instanceof AuthFailureError) {

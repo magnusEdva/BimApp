@@ -123,8 +123,9 @@ public class ProjectsViewActivity extends AppCompatActivity
         mNewCommentFragment = new FragmentNewComment();
         //mSyncFragment = new FragmentManualSync();
 
-        NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
-                APICall.GETUser(), this, null);
+        if (mApplication.checkLogIn())
+            NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
+                    APICall.GETUser(), this, null);
 
         mAccount = CreateSyncAccount(this.getApplicationContext());
 /*
@@ -144,7 +145,7 @@ public class ProjectsViewActivity extends AppCompatActivity
                 ContentResolver.SYNC_EXTRAS_MANUAL, true);
         b.putBoolean(
                 ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        ContentResolver.setSyncAutomatically(mAccount,DataProvider.AUTHORITY,true);
+        ContentResolver.setSyncAutomatically(mAccount, DataProvider.AUTHORITY, true);
         //ContentResolver.requestSync(mAccount,DataProvider.AUTHORITY,b);
 
         // End of code for sync-adapter testing
@@ -205,9 +206,9 @@ public class ProjectsViewActivity extends AppCompatActivity
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 break;
-                         //   case R.id.nav_sync:
-                           //     openFragment(SYNC_TAG);
-                             //   break;
+                            //   case R.id.nav_sync:
+                            //     openFragment(SYNC_TAG);
+                            //   break;
                         }
                         return true;
                     }
@@ -406,7 +407,7 @@ public class ProjectsViewActivity extends AppCompatActivity
     public void onFragmentFinish() {
         int backStackEntryCount = fragmentManager.getBackStackEntryCount();
         String tag = DASHBOARD_FRAGMENT_TAG;
-        if(backStackEntryCount > 1){
+        if (backStackEntryCount > 1) {
             tag = fragmentManager.getBackStackEntryAt
                     (backStackEntryCount - 2).getName();
         }
@@ -440,14 +441,14 @@ public class ProjectsViewActivity extends AppCompatActivity
         }
     }
 
-    private void sendImageTOFragment(Bitmap bitmap){
+    private void sendImageTOFragment(Bitmap bitmap) {
         String tag = fragmentManager.getBackStackEntryAt
                 (fragmentManager.getBackStackEntryCount() - 1).getName();
-        switch (tag){
-            case(NEWTOPIC_FRAGMENT_TAG):
+        switch (tag) {
+            case (NEWTOPIC_FRAGMENT_TAG):
                 mNewTopicFragment.setImage(bitmap);
                 break;
-            case(COMMENT_FRAGMENT_TAG):
+            case (COMMENT_FRAGMENT_TAG):
                 mNewCommentFragment.setImage(bitmap);
                 break;
         }
@@ -480,33 +481,35 @@ public class ProjectsViewActivity extends AppCompatActivity
     /**
      * tag is one of the public static final String variables belonging
      * to this class.
+     *
      * @param tag a String connected to a certain fragment.
      */
-    public void openFragment(String tag){
-        switch (tag){
-            case(DASHBOARD_FRAGMENT_TAG):
-                openFragment(mDashboardFragment,tag);
+    public void openFragment(String tag) {
+        switch (tag) {
+            case (DASHBOARD_FRAGMENT_TAG):
+                openFragment(mDashboardFragment, tag);
                 break;
-            case(TOPIC_FRAGMENT_TAG):
-                openFragment(mTopicFragment,tag);
+            case (TOPIC_FRAGMENT_TAG):
+                openFragment(mTopicFragment, tag);
                 break;
-            case(NEWTOPIC_FRAGMENT_TAG):
-                openFragment(mNewTopicFragment,tag);
+            case (NEWTOPIC_FRAGMENT_TAG):
+                openFragment(mNewTopicFragment, tag);
                 break;
-            case(COMMENT_FRAGMENT_TAG):
-                openFragment(mNewCommentFragment,tag);
+            case (COMMENT_FRAGMENT_TAG):
+                openFragment(mNewCommentFragment, tag);
                 break;
-            case(TOPICLIST_FRAGMENT_TAG):
-                openFragment(mTopicListFragment,tag);
+            case (TOPICLIST_FRAGMENT_TAG):
+                openFragment(mTopicListFragment, tag);
                 break;
-            case(PROJECTS_FRAGMENT_TAG):
-                openFragment(mProjectsFragment,tag);
+            case (PROJECTS_FRAGMENT_TAG):
+                openFragment(mProjectsFragment, tag);
                 break;
-            case(SYNC_TAG):
+            case (SYNC_TAG):
                 openFragment(mSyncFragment, tag);
                 break;
         }
     }
+
     /**
      * Create a new dummy account for the sync adapter
      *
@@ -532,8 +535,8 @@ public class ProjectsViewActivity extends AppCompatActivity
              * here.
              */
             Log.d("Account", "Added new account");
-            ContentResolver.setIsSyncable(newAccount, DataProvider.AUTHORITY,1);
-            ContentResolver.setSyncAutomatically(newAccount,DataProvider.AUTHORITY,true);
+            ContentResolver.setIsSyncable(newAccount, DataProvider.AUTHORITY, 1);
+            ContentResolver.setSyncAutomatically(newAccount, DataProvider.AUTHORITY, true);
             return newAccount;
         } else {
             /*
@@ -542,7 +545,7 @@ public class ProjectsViewActivity extends AppCompatActivity
              */
             Log.d("Account", "Not added account");
             newAccount = accountManager.getAccountsByType(ACCOUNT_TYPE)[0];
-            return  newAccount;
+            return newAccount;
         }
     }
 }
