@@ -17,8 +17,8 @@ public interface TopicDAO {
     @Query("SELECT * FROM topic WHERE project_id = :projectId")
     Cursor getTopics(String projectId);
 
-    @Query("SELECT * FROM topic WHERE status_column = :updatedOrNew AND project_id = :projectId ORDER BY date_column ASC")
-    Cursor getTopics(String projectId, String updatedOrNew);
+    @Query("SELECT * FROM topic WHERE status_column = :updatedOrNew  ORDER BY date_column ASC")
+    Cursor getLocalTopics( String updatedOrNew);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Topic> topic);

@@ -19,9 +19,7 @@ public class DataProvider extends ContentProvider {
     public static final String PROJECT_TABLE = "Project_table";
     public static final String VIEWPOINT_TABLE = "viewpoint_table";
     public static final String TOPIC_TABLE = "topic_table";
-    public static final String NEW_ROWS = "new_rows";
-    public static final String UPDATED_ROWS = "updated_rows";
-
+    public static final String LOCAL_ROWS = "local_rows";
 
     public static final String AUTHORITY = "com.bimapp.model.data_access.DataProvider";
 
@@ -51,8 +49,8 @@ public class DataProvider extends ContentProvider {
                 cursor = database.projectDAO().loadBCFproject();
                 break;
             case ("/" + TOPIC_TABLE):
-                if (selectionArgs != null)
-                    cursor = database.topicDao().getTopics(selection, selectionArgs[0]);
+                if (selectionArgs != null && selectionArgs[0].equals(LOCAL_ROWS))
+                    cursor = database.topicDao().getLocalTopics(selection);
                 else
                     cursor = database.topicDao().getTopics(selection);
                 break;
