@@ -95,19 +95,100 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
     }
 
     private void PutComments() {
-
+        UpdateComments(AppDatabase.statusTypes.updated.status);
     }
 
     private void PostComments() {
+        UpdateComments(AppDatabase.statusTypes.New.status);
+    }
+
+    private void UpdateComments(String newOrUpdatedRows){
+        // Find un-synced comments
+        Cursor commentCursor = mContentResolver.query(DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
+                null,
+                null,
+                new String[]{ (newOrUpdatedRows)},
+                null);
+
+        List<Comment> comments = new ArrayList<>();
+        if (commentCursor != null && commentCursor.getCount() !=0 ){
+            // If there are new/updated comments, create new objects
+            while (commentCursor.moveToNext()) {
+                String commentGuid = commentCursor.getString(commentCursor.getColumnIndex(Comment.GUID));
+                String verbalStatus = commentCursor.getString(commentCursor.getColumnIndex(Comment.VERBAL_STATUS));
+                String status = commentCursor.getString(commentCursor.getColumnIndex(Comment.STATUS));
+                String Date = commentCursor.getString(commentCursor.getColumnIndex(Comment.DATE));
+                String author = commentCursor.getString(commentCursor.getColumnIndex(Comment.AUTHOR));
+                String topicGUID = commentCursor.getString(commentCursor.getColumnIndex(Comment.TOPIC_GUID));
+                String modifiedDate = commentCursor.getString(commentCursor.getColumnIndex(Comment.MODIFIED_DATE));
+                String modifiedAuthor = commentCursor.getString(commentCursor.getColumnIndex(Comment.MODIFIED_AUTHOR));
+                String comment_content = commentCursor.getString(commentCursor.getColumnIndex(Comment.COMMENT));
+                String viewpointGuid = commentCursor.getString(commentCursor.getColumnIndex(Comment.VIEWPOINT_GUID));
+                Long dateAcquired = commentCursor.getLong(commentCursor.getColumnIndex(AppDatabase.DATE_COLUMN));
+                AppDatabase.statusTypes localStatus = AppDatabase.convertStringToStatus
+                        (commentCursor.getString(commentCursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
+                Comment comment = (new Comment(commentGuid, verbalStatus, status, Date, author, topicGUID,
+                        modifiedDate, modifiedAuthor, comment_content, viewpointGuid, dateAcquired, localStatus));
+
+                if (viewpointGuid != null) {
+                    // If the comment has a ViewPoint, it needs to be posted BEFORE the comment is posted
+                    Cursor viewPointCursor = mContentResolver.query(
+                            DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
+                            null,
+                            commentGuid,
+                            null,
+                            null
+                            );
+                    if (viewPointCursor != null && viewPointCursor.getCount() != 0){
+                        // Add Viewpoint to Comment and send ViewPoint to server.
+                        // onSuccess should then post the comment
+                        if (viewPointCursor.moveToFirst()) {
+
+                            String guid = viewPointCursor.getString(viewPointCursor.getColumnIndex(Viewpoint.GUID));
+                            String commentGUID = viewPointCursor.getString(viewPointCursor.getColumnIndex(Viewpoint.COMMENT_GUID));
+                            String type = viewPointCursor.getString(viewPointCursor.getColumnIndex("type"));
+                            String pictureName = viewPointCursor.getString(viewPointCursor.getColumnIndex("picture_name"));
+                            AppDatabase.statusTypes vp_localStatus = AppDatabase.convertStringToStatus
+                                    (viewPointCursor.getString(viewPointCursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
+                            Long vp_dateAcquired = viewPointCursor.getLong(viewPointCursor.getColumnIndex(AppDatabase.DATE_COLUMN));
+                            Viewpoint vp = new Viewpoint(guid, commentGUID, type, pictureName, dateAcquired, localStatus);
+                            comment.setViewpoint(vp);
+                            // Post the ViewPoint, send the Comment to the method
+
+                        }
+                    } else{
+                        // If no ViewPoint was found in DB, should it post the comment directly instead?
+
+                    }
+                    if (viewPointCursor != null)
+                        viewPointCursor.close();
+
+                } else {
+                    // Found no ViewPoint, add the Comment to the list of those to be pushed to server
+                    comments.add(comment);
+                }
+            }
+        }
+        if (comments.size() != 0){
+            // Post to server
+            for (Comment comment: comments){
+                NetworkConnManager.networkRequest(mContext,
+                        Request.Method.POST,
+                        APICall.POSTComment(null, ""),new PostCommentCallback(comment, null, null), null);
+            }
+
+        }
+        if (commentCursor!= null)
+            commentCursor.close();
 
     }
 
     private void PostTopics(){
-        UpdateTopics(DataProvider.NEW_ROWS);
+        UpdateTopics(AppDatabase.statusTypes.New.status);
     }
 
     private void PutTopics() {
-        UpdateTopics(DataProvider.UPDATED_ROWS);
+        UpdateTopics(AppDatabase.statusTypes.updated.status);
     }
 
     /**
@@ -118,11 +199,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         // Find un-synced topics
         Cursor cursor = mContentResolver.query(DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
                 null,
-                null,
-                new String[]{newRowsOrUpdatedRows},
+                newRowsOrUpdatedRows,
+                new String[]{DataProvider.LOCAL_ROWS},
                 null);
 
         if (cursor != null && cursor.getCount() != 0){
+            Log.d("SyncAdapter", "Found " + cursor.getCount() + " new posts");
             List<Topic> topics = new ArrayList<>();
             while (cursor.moveToNext()) {
                 String guid = cursor.getString(cursor.getColumnIndex(Topic.GUID));
@@ -179,18 +261,20 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                 topics.add(topic);
             }
             cursor.close();
-            if (newRowsOrUpdatedRows.equals(DataProvider.NEW_ROWS)) {
+            if (newRowsOrUpdatedRows.equals(AppDatabase.statusTypes.New.status)) {
                 for (Topic topic : topics) {
                     NetworkConnManager.networkRequest(mContext, Request.Method.POST,
                             APICall.POSTTopics(topic.getProjectId()), new PostTopicCallback(topic), topic);
                 }
-            } else if (newRowsOrUpdatedRows.equals(DataProvider.UPDATED_ROWS)){
+            } else if (newRowsOrUpdatedRows.equals(AppDatabase.statusTypes.updated.status)){
                 for (Topic topic: topics){
                     NetworkConnManager.networkRequest(mContext, Request.Method.PUT,
-                            APICall.PUTTopic(topic.getProjectId(), topic),new PutTopicCallabck(topic), topic);
+                            APICall.PUTTopic(topic.getProjectId(), topic),new PutTopicCallback(topic), topic);
                 }
             }
         }
+        else
+            Log.d("SyncAdapter", "Found no new Topics");
     }
 
     /**
@@ -200,7 +284,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
      * IssueBoard
      */
     private void GetProjects() {
-        NetworkConnManager.networkRequest(mContext, Request.Method.GET, APICall.GETProjects(),new ProjectCallback()
+        NetworkConnManager.networkRequest(mContext,
+                Request.Method.GET,
+                APICall.GETProjects(),
+                new ProjectCallback()
                 , null);
     }
 
@@ -476,10 +563,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
      * Should update server with new status of topic!
      */
     private class PostTopicCallback implements Callback<String> {
-        Topic mTopic;
+        Topic mLocalTopic;
 
         private PostTopicCallback(Topic topic){
-            mTopic = topic;
+            mLocalTopic = topic;
         }
 
         @Override
@@ -498,19 +585,72 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
             }
             if (object != null) {
                 // Deletes the old entry from DB
-                mContentResolver.delete(DataProvider.ParseUri(DataProvider.TOPIC_TABLE), mTopic.getMGuid(), null);
-                Topic topic = new Topic(object, mTopic.getProjectId());
+                mContentResolver.delete(DataProvider.ParseUri(DataProvider.TOPIC_TABLE), mLocalTopic.getMGuid(), null);
+                Topic serverTopic = new Topic(object, mLocalTopic.getProjectId());
                 // Creates a new entry in DB with updated IDs
-                mContentResolver.insert(DataProvider.ParseUri(DataProvider.TOPIC_TABLE), topic.getValues());
-                Log.d("SyncAdapterPost", "Successfully posted offline topic " + topic.getMTitle() + " to server");
+                mContentResolver.insert(DataProvider.ParseUri(DataProvider.TOPIC_TABLE), serverTopic.getValues());
+                Log.d("SyncAdapterPost", "Successfully posted offline topic " + serverTopic.getMTitle() + " to server");
+
+                // Get all Comments belonging to this topic, if any, and post them with the new GUID
+                Cursor commentsCursor = mContentResolver.query(
+                        DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
+                        null,
+                        mLocalTopic.getMGuid(), // Gets local Comments from the OLD topicGUID
+                        new String[]{DataProvider.LOCAL_ROWS},
+                        null);
+                if (commentsCursor != null){
+                    if (commentsCursor.getCount() != 0){
+                        while (commentsCursor.moveToNext()) {
+
+                            String guid = commentsCursor.getString(commentsCursor.getColumnIndex(Comment.GUID));
+                            String verbalStatus = commentsCursor.getString(commentsCursor.getColumnIndex(Comment.VERBAL_STATUS));
+                            String status = commentsCursor.getString(commentsCursor.getColumnIndex(Comment.STATUS));
+                            String Date = commentsCursor.getString(commentsCursor.getColumnIndex(Comment.DATE));
+                            String author = commentsCursor.getString(commentsCursor.getColumnIndex(Comment.AUTHOR));
+                            String topic = commentsCursor.getString(commentsCursor.getColumnIndex(Comment.TOPIC_GUID));
+                            String modifiedDate = commentsCursor.getString(commentsCursor.getColumnIndex(Comment.MODIFIED_DATE));
+                            String modifiedAuthor = commentsCursor.getString(commentsCursor.getColumnIndex(Comment.MODIFIED_AUTHOR));
+                            String comment_content = commentsCursor.getString(commentsCursor.getColumnIndex(Comment.COMMENT));
+                            String viewpointGuid = commentsCursor.getString(commentsCursor.getColumnIndex(Comment.VIEWPOINT_GUID));
+                            Long dateAcquired = commentsCursor.getLong(commentsCursor.getColumnIndex(AppDatabase.DATE_COLUMN));
+                            AppDatabase.statusTypes localStatus = AppDatabase.convertStringToStatus
+                                    (commentsCursor.getString(commentsCursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
+                            Comment comment = new Comment(guid, verbalStatus, status, Date, author, topic,
+                                    modifiedDate, modifiedAuthor, comment_content, viewpointGuid, dateAcquired, localStatus);
+                            // Method responsible for posting a single comment, with potential
+                            // Viewpoint, to the server
+                            PostComment(mLocalTopic, serverTopic, comment);
+                        }
+                    }
+                    commentsCursor.close();
+                }
+
             }
         }
     }
 
-    private class PutTopicCallabck implements Callback<String>{
+    /**
+     * Method responsible for posting a single comment, with a potential Viewpoint, to the server
+     *
+     * Should delete the old comment from server on successful response
+     * @param localTopic the local topic, needed to find the comment locally
+     * @param serverTopic the topic received from the server, needed to link the comment
+     * @param comment the comment that should be posted
+     */
+    private void PostComment(Topic localTopic, Topic serverTopic, Comment comment) {
+        Log.d("SyncAdapter", "Tried to post new comment from new topic");
+        // TODO Implement method!
+        // TODO Check if comment has ViewPoint, if so, post that first!
+    }
+
+    /**
+     * Class which handles the callback from network when un-posted topics gets pushed to server
+     * Should update server with new status of topic!
+     */
+    private class PutTopicCallback implements Callback<String>{
         Topic mTopic;
 
-        private PutTopicCallabck(Topic topic){
+        private PutTopicCallback(Topic topic){
             mTopic = topic;
         }
 
@@ -537,5 +677,30 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                 mContentResolver.insert(DataProvider.ParseUri(DataProvider.TOPIC_TABLE), topic.getValues());
                 Log.d("SyncAdapterPost", "Successfully posted offline topic " + topic.getMTitle() + " to server");
             }
-        }    }
+        }
+    }
+
+    private class PostCommentCallback implements Callback<String>{
+        private Comment mComment;
+        private Topic mTopic;
+        private Viewpoint mViewpoint;
+
+        private PostCommentCallback(Comment comment, Topic topic, Viewpoint viewpoint) {
+            mComment = comment;
+            mTopic = topic;
+            mViewpoint = viewpoint;
+        }
+
+
+        @Override
+        public void onError(String response) {
+            Log.d("SyncAdapter", "Error on posting comment " + response);
+        }
+
+        @Override
+        public void onSuccess(String response) {
+            // TODO Make new Comment from response, get ViewPoint if it has, then delete from
+
+        }
+    }
 }
