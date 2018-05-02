@@ -25,7 +25,7 @@ public interface CommentDAO {
     Cursor getTopicsComments(String topicGUID);
 
     @Query(("SELECT * FROM comment WHERE topic_guid = :topicGUID AND status_column = :status"))
-    Cursor getTopicsProject(String topicGUID, String status);
+    Cursor getTopicsComments(String topicGUID, String status);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Comment comment);
