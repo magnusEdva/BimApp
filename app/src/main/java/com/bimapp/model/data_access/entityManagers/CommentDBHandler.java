@@ -72,7 +72,7 @@ public class CommentDBHandler extends AsyncQueryHandler {
                 String pictureName = cursor.getString(cursor.getColumnIndex("picture_name"));
                 AppDatabase.statusTypes localStatus = AppDatabase.convertStringToStatus
                         (cursor.getString(cursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
-                Long dateAcquired = cursor.getLong(cursor.getColumnIndex(AppDatabase.STATUS_COLUMN));
+                Long dateAcquired = cursor.getLong(cursor.getColumnIndex(AppDatabase.DATE_COLUMN));
                 Viewpoint vp = new Viewpoint(guid, commentGUID, type, pictureName, dateAcquired, localStatus);
                 comment.setViewpoint(vp);
                 listener.editComment(comment);
