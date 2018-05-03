@@ -9,6 +9,7 @@ import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.CommentFragmentInterface;
 import com.bimapp.controller.interfaces.TopicFragmentInterface;
+import com.bimapp.controller.interfaces.TopicsFragmentInterface;
 import com.bimapp.model.data_access.DataProvider;
 import com.bimapp.model.data_access.network.APICall;
 import com.bimapp.model.data_access.network.Callback;
@@ -244,10 +245,8 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
 
         @Override
         public void onSuccess(Bitmap response) {
-            mViewpoint.constructSnapshot(response);
-            mComment.setViewpoint(mViewpoint);
-            handler.startInsert(2,null, DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE), mViewpoint.getContentValues());
-            mControllerCallback.editComment(mComment);
+            AsyncStoreImage imageStorer = new AsyncStoreImage(mControllerCallback, mComment, mViewpoint, response);
+            imageStorer.execute();
 
         }
 
@@ -293,7 +292,36 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
             }
             postComment(mListener, mTopic, mComment);
         }
+    }
 
+    /**
+     * Viewpoint.ConstructSnapshot needs to be run on a non UI thread - very expensive operation.
+     */
+    private static class AsyncStoreImage extends AsyncTask<Void,Void,Void>{
+        TopicFragmentInterface mPresenter;
+        Comment mComment;
+        Viewpoint mViewpoint;
+        Bitmap mImage;
+
+        AsyncStoreImage(TopicFragmentInterface callback, Comment comment, Viewpoint viewpoint, Bitmap image ){
+            mPresenter = callback;
+            mComment = comment;
+            mViewpoint = viewpoint;
+            mImage = image;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mViewpoint.constructSnapshot(mImage);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mComment.setViewpoint(mViewpoint);
+            handler.startInsert(2,null, DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE), mViewpoint.getContentValues());
+            mPresenter.editComment(mComment);
+        }
     }
 }
 

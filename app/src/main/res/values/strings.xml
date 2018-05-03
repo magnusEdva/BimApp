@@ -46,4 +46,5 @@
     <string name="sync_account_type">com.bimapp.sync</string>
     <string name="data_provider_authority">com.bimapp.model.data_access.DataProvider</string>
     <string name="comment">Comment</string>
+    <string name="search">Search</string>
 </resources>

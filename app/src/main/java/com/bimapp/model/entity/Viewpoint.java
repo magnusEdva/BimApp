@@ -274,6 +274,7 @@ public class Viewpoint implements entity {
          * fetches Bitmap picture from file with name as path.
          */
         private void fetchPicture() {
+
             FileInputStream fileIn = null;
             Bitmap picture = null;
             try {

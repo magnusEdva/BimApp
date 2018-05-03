@@ -4,9 +4,11 @@ package com.bimapp.controller;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
@@ -59,7 +61,10 @@ public class FragmentTopicList extends Fragment
         super.onCreate(savedInstanceState);
         mApplication = (BimApp) this.getActivity().getApplication();
         mTopicsEntityManager = new TopicsEntityManager(mApplication);
+        mTopicsEntityManager.getTopics(this);
 
+        if(mTopicsView != null)
+            mTopicsView.clearSearch();
     }
 
     @Override
@@ -70,7 +75,6 @@ public class FragmentTopicList extends Fragment
         // Set this as the callback from the view
         mTopicsView.registerListener(this);
         // Inflate the layout for this fragment
-
         return mTopicsView.getRootView();
     }
 
@@ -81,13 +85,10 @@ public class FragmentTopicList extends Fragment
             mListener = (TopicSelectionInterface) context;
         else
             throw new UnsupportedOperationException();
-
-
     }
     @Override
     public void onResume(){
         super.onResume();
-        mTopicsEntityManager.getTopics(this);
     }
 
     @Override
@@ -109,6 +110,18 @@ public class FragmentTopicList extends Fragment
     }
 
     @Override
+    public void onSearch(String searchString){
+        mTopicsEntityManager.searchTopics(this, searchString);
+    }
+
+    /**
+     *
+     */
+    public void loadAllTopics(){
+
+    }
+
+    @Override
     public void onSelectedItem(Topic topic) {
         mListener.onTopicSelected(topic);
     }
@@ -116,4 +129,5 @@ public class FragmentTopicList extends Fragment
     public interface TopicSelectionInterface{
         void onTopicSelected(Topic topic);
     }
+
 }

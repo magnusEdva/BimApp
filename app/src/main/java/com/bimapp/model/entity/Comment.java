@@ -173,14 +173,14 @@ public class Comment implements entity {
             if (obj.has(AUTHOR))
                 mAuthor = obj.getString(AUTHOR);
             if (obj.has(COMMENT))
-                mComment = new String(obj.getString(COMMENT).getBytes("ISO-8859-1"), "UTF-8");
+                mComment = obj.getString(COMMENT);
             if (obj.has(MODIFIED_DATE))
                 mModifiedDate = obj.getString(MODIFIED_DATE);
             if (obj.has(MODIFIED_AUTHOR))
                 mModifiedAuthor = obj.getString(MODIFIED_AUTHOR);
             if(obj.has(VIEWPOINT_GUID))
                 mViewpointGuid = obj.getString(VIEWPOINT_GUID);
-        } catch (JSONException | UnsupportedEncodingException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
