@@ -130,7 +130,7 @@ public class NewTopicView implements NewTopicViewInterface {
         Viewpoint vp = null;
         Comment comment = new Comment(mCommentString);
         if(mImage != null){
-            vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, mImage, null);
+            vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, mImage, comment.getMCommentsGUID());
             comment.setViewpoint(vp);
         }
         // Tell fragment that topic has been posted

@@ -4,8 +4,8 @@ import android.util.Log;
 
 import com.android.volley.Request;
 import com.bimapp.BimApp;
-import com.bimapp.controller.interfaces.CommentFragmentInterface;
 import com.bimapp.controller.FragmentTopicList;
+import com.bimapp.controller.interfaces.CommentFragmentInterface;
 import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
 import com.bimapp.controller.interfaces.TopicFragmentInterface;
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
@@ -144,8 +144,9 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
             handler.startInsert(1,null,DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
                     mComment.getContentValues());
             mViewpoint.setCommentGUID(mComment.getMCommentsGUID());
-            handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
+            handler.startInsert(2, null, DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
                     mViewpoint.getContentValues());
+
             mTopicsFragmentInterface.postedTopic(false, localUnGuidedVersion);
         }
 
@@ -169,7 +170,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
                     cm.postComment(new CommentFragmentInterface() {
                         @Override
                         public void postedComment(boolean success, Comment comment) {
-                            mTopicsFragmentInterface.postedTopic(true, topic);
+                            mListener.postedTopic(true, topic);
 
                         }
                     }, topic, mComment, mViewpoint.getSnapshot());
@@ -178,7 +179,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
                     cm.postComment(new CommentFragmentInterface() {
                         @Override
                         public void postedComment(boolean success, Comment comment) {
-                            mTopicsFragmentInterface.postedTopic(true, topic);
+                            mListener.postedTopic(true, topic);
 
                         }
                     }, topic, mComment);
