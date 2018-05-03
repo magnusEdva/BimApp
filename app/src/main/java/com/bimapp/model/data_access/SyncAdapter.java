@@ -172,9 +172,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         if (comments.size() != 0){
             // Post to server
             for (Comment comment: comments){
-                NetworkConnManager.networkRequest(mContext,
+                NetworkConnManager.networkRequest(
+                        mContext,
                         Request.Method.POST,
-                        APICall.POSTComment(null, ""),new PostCommentCallback(comment, null, null), null);
+                        APICall.POSTComment(null, ""),
+                        new PostCommentCallback(comment,
+                                null,
+                                null,
+                                null
+                        ),
+                        null
+                );
             }
 
         }
@@ -592,6 +600,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                 Log.d("SyncAdapterPost", "Successfully posted offline topic " + serverTopic.getMTitle() + " to server");
 
                 // Get all Comments belonging to this topic, if any, and post them with the new GUID
+                // Needs to take into account that Comments can have ViewPoints
                 Cursor commentsCursor = mContentResolver.query(
                         DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
                         null,
@@ -624,7 +633,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                     }
                     commentsCursor.close();
                 }
-
             }
         }
     }
@@ -641,11 +649,54 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         Log.d("SyncAdapter", "Tried to post new comment from new topic");
         // TODO Implement method!
         // TODO Check if comment has ViewPoint, if so, post that first!
+        if (comment.getMViewpointGuid() != null){
+            // Get the Viewpoint from server
+            Cursor vpCursor = mContentResolver.query(
+                    DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
+                    null,
+                    comment.getMViewpointGuid(),
+                    null,
+                    null
+            );
+            if (vpCursor != null){
+                if (vpCursor.getCount() != 0){
+                    while (vpCursor.moveToNext()){
+                        String guid = vpCursor.getString(vpCursor.getColumnIndex(Viewpoint.GUID));
+                        String commentGUID = vpCursor.getString(vpCursor.getColumnIndex(Viewpoint.COMMENT_GUID));
+                        String type = vpCursor.getString(vpCursor.getColumnIndex("type"));
+                        String pictureName = vpCursor.getString(vpCursor.getColumnIndex("picture_name"));
+                        AppDatabase.statusTypes localStatus = AppDatabase.convertStringToStatus
+                                (vpCursor.getString(vpCursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
+                        Long dateAcquired = vpCursor.getLong(vpCursor.getColumnIndex(AppDatabase.DATE_COLUMN));
+                        Viewpoint vp = new Viewpoint(guid, commentGUID, type, pictureName, dateAcquired, localStatus);
+                        comment.setViewpoint(vp);
+                    }
+                }
+                vpCursor.close();
+            }
+            NetworkConnManager.networkRequest(
+                    mContext,
+                    Request.Method.POST,
+                    APICall.POSTViewpoints(serverTopic.getProjectId(), serverTopic.getMGuid()),
+                    new PostViewpointCallback(localTopic, serverTopic,comment, comment.getMViewpoint()),
+                    comment.getMViewpoint()
+            );
+
+        } else {
+            // Posts the comment if there is no ViewPoint
+            NetworkConnManager.networkRequest(
+                    mContext,
+                    Request.Method.POST,
+                    APICall.POSTComment(serverTopic.getProjectId(), serverTopic.getMTopicType()),
+                    new PostCommentCallback(comment,localTopic,serverTopic,null),
+                    comment
+            );
+        }
     }
 
     /**
      * Class which handles the callback from network when un-posted topics gets pushed to server
-     * Should update server with new status of topic!
+     * Should delete local version of topic and add response to DB
      */
     private class PutTopicCallback implements Callback<String>{
         Topic mTopic;
@@ -680,15 +731,21 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         }
     }
 
+    /**
+     * Class which handles the callback from network when un-posted Comments gets pushed to server
+     * Should delete old comment and add new comment to topic
+     */
     private class PostCommentCallback implements Callback<String>{
         private Comment mComment;
-        private Topic mTopic;
+        private Topic mLocalTopic;
+        private Topic mServerTopic;
         private Viewpoint mViewpoint;
 
-        private PostCommentCallback(Comment comment, Topic topic, Viewpoint viewpoint) {
+        private PostCommentCallback(Comment comment, Topic localTopic, Topic serverTopic, Viewpoint viewpoint) {
             mComment = comment;
-            mTopic = topic;
+            mLocalTopic = localTopic;
             mViewpoint = viewpoint;
+            mServerTopic = serverTopic;
         }
 
 
@@ -700,7 +757,79 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         @Override
         public void onSuccess(String response) {
             // TODO Make new Comment from response, get ViewPoint if it has, then delete from
+            // Make new Comment from response, attach to new topic, delete old Comment from DB and add new Comment to DB
+            Comment comment = null;
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                comment = new Comment(jsonObject);
+                comment.setTopicGUID(mServerTopic.getMGuid());
+                if (mViewpoint != null){
+                    comment.setViewpoint(mViewpoint);
+                    // Overwrites Viewpoint, now has correct CommentGUID
+                    mContentResolver.insert(DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
+                            mViewpoint.getContentValues()
+                    );
+                }
+                mContentResolver.insert(DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
+                        comment.getContentValues());
+                mContentResolver.delete(DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
+                        mComment.getMCommentsGUID(),
+                        null);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 
+    }
+
+    /**
+     * Class which handles the callback from network on a POST Viewpoint request
+     *
+     * Must post the associated Comment as well
+     */
+    private class PostViewpointCallback implements Callback<String> {
+        Topic mLocalTopic;
+        Topic mServerTopic;
+        Comment mComment;
+        Viewpoint mViewpoint;
+
+        private PostViewpointCallback(Topic localTopic, Topic serverTopic, Comment comment, Viewpoint viewpoint) {
+            mLocalTopic = localTopic;
+            mServerTopic = serverTopic;
+            mComment = comment;
+            mViewpoint = viewpoint;
+        }
+
+        @Override
+        public void onError(String response) {
+            Log.d("SyncAdapter", "Error on posting Viewpoint" + response);
+        }
+
+        @Override
+        public void onSuccess(String  response) {
+            Log.d("SyncAdapter", "Posted viewpoint to server");
+            Viewpoint vp;
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                vp = new Viewpoint(jsonObject,mComment.getMCommentsGUID());
+                // Deletes old Viewpoint and inserts new
+                mContentResolver.insert(DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
+                        vp.getContentValues()
+                );
+                mContentResolver.delete(DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
+                        mViewpoint.getMGuid(),
+                        null
+                );
+                NetworkConnManager.networkRequest(
+                        mContext,
+                        Request.Method.POST,
+                        APICall.POSTComment(mServerTopic.getProjectId(), mServerTopic.getMGuid()),
+                        new PostCommentCallback(mComment, mLocalTopic, mServerTopic, vp),
+                        mComment
+                );
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
         }
     }
 }

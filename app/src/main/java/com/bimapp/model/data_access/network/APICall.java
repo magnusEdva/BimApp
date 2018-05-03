@@ -55,8 +55,8 @@ public class APICall {
     public static String POSTComment(Project project,Topic topic){
         return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getMGuid() + "/comments";
     }
-    public static String POSTComment(Project project,String topicId){
-        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topicId + "/comments";
+    public static String POSTComment(String projectId,String topicId){
+        return BuildBcfURL() + "/projects/" + projectId + "/topics/" + topicId + "/comments";
     }
     public static String PUTTopic(Project project, Topic topic){
         return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getMGuid();
@@ -74,6 +74,9 @@ public class APICall {
     public static String POSTViewpoints(Project project, Topic topic){
         return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getMGuid() + "/viewpoints";
        // return "http:/10.0.0.8:8097/bcf/2.1" + "/projects/" + project.getProjectId() + "/topics/" + topic.getMGuid() + "/viewpoints";
+    }
+    public static String POSTViewpoints(String projectId, String topicId){
+        return BuildBcfURL() + "/projects/" + projectId + "/topics/" + topicId + "/viewpoints";
     }
 
     public static String GETSnapshot(Project project, String topicGuid, Viewpoint vp){
