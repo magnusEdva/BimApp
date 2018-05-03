@@ -84,6 +84,7 @@ public class OAuthHandler {
 
     private static final int MAX_AVAILABLE = 1;
     private final Semaphore available = new Semaphore(MAX_AVAILABLE, true);
+    private final Semaphore AlreadyLooksForToken = new Semaphore(MAX_AVAILABLE, true);
 
     public OAuthHandler(BimApp context) {
         mContext = context;
@@ -103,9 +104,11 @@ public class OAuthHandler {
      * @param callback  used when acquiring the first token.
      */
     public void getAccessToken(@NonNull final String code, @NonNull final String grantType, @Nullable final Callback callback) {
-        if (checkActiveRefresh())
-            return;
-        setActiveRefresh();
+        try {
+            AlreadyLooksForToken.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         //TODO auth_url and token_url can be gotten from GET /bcf/{version}/auth
         String url = mContext.getString(R.string.api_token);
@@ -310,6 +313,7 @@ public class OAuthHandler {
      */
     public boolean hasTokens() throws InterruptedException {
         available.acquire();
+        AlreadyLooksForToken.release();
         if (getRefreshToken() != null && !isValidAccessToken()) {
             getAccessToken(getRefreshToken(), GRANT_TYPE_REFRESH_TOKEN);
             available.release();
@@ -324,6 +328,7 @@ public class OAuthHandler {
         @Override
         public void onSuccessResponse(String result, Callback callback) {
             available.release();
+            AlreadyLooksForToken.release();
             JSONObject response;
 
             String access_token;
