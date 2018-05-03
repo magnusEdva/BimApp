@@ -149,12 +149,6 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
      */
     @Override
     public void postedTopic(boolean success, Topic topic) {
-        /*if (success && topic != null){
-            mNewTopicView.postedTopic(topic);
-        } else
-            mNewTopicView.postedTopic(topic);
-        //if (mListener != null)
-        // mListener.onPostingTopic(success);*/
     }
 
     public void setImage(Bitmap image){

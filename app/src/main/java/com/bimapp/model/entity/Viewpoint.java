@@ -3,7 +3,6 @@ package com.bimapp.model.entity;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
@@ -12,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.View;
 
 import com.bimapp.model.Base64;
 import com.bimapp.model.data_access.AppDatabase;
@@ -26,9 +24,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Map;
-
-import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "viewpoint")
 public class Viewpoint implements entity {
@@ -72,6 +67,9 @@ public class Viewpoint implements entity {
 
     public Viewpoint(String type, Bitmap data, String guid) {
         mSnapshot = new Snapshot(type, data);
+        if(!checkIfImageIsAlreadyStored()){
+            mSnapshot.storePicture(data,mGuid);
+        }
         hasSnapshot = true;
         mCommentGUID = guid;
         dateAcquired = System.currentTimeMillis();

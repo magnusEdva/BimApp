@@ -648,18 +648,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
      */
     private void PostComment(Topic localTopic, Topic serverTopic, Comment comment) {
         Log.d("SyncAdapter", "Tried to post new comment from new topic");
-        // TODO Implement method!
-        // TODO Check if comment has ViewPoint, if so, post that first!
-        if (comment.getMViewpointGuid() != null){
-            // Get the Viewpoint from server
+        if (comment.getMCommentsGUID() != null){
+            // Get the Viewpoint from database
             Cursor vpCursor = mContentResolver.query(
                     DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
                     null,
-                    comment.getMViewpointGuid(),
+                    comment.getMCommentsGUID(),
                     null,
                     null
             );
             if (vpCursor != null){
+                Log.d("SyncAdapter", "Got " + vpCursor.getCount() + " viewpoints");
                 if (vpCursor.getCount() != 0){
                     while (vpCursor.moveToNext()){
                         String guid = vpCursor.getString(vpCursor.getColumnIndex(Viewpoint.GUID));
