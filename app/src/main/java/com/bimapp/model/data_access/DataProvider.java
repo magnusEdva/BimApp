@@ -20,6 +20,8 @@ public class DataProvider extends ContentProvider {
     public static final String VIEWPOINT_TABLE = "viewpoint_table";
     public static final String TOPIC_TABLE = "topic_table";
     public static final String LOCAL_ROWS = "local_rows";
+    public static final String SEARCH = "search";
+
 
     public static final String AUTHORITY = "com.bimapp.model.data_access.DataProvider";
 
@@ -37,8 +39,8 @@ public class DataProvider extends ContentProvider {
         Cursor cursor = null;
         switch (uri.getPath()) {
             case ("/" + COMMENT_TABLE):
-                if (selectionArgs != null)
-                    cursor = database.commentDao().getTopicsComments(selection, selectionArgs[0]);
+                if (selectionArgs != null && selectionArgs[0].equals(LOCAL_ROWS))
+                    cursor = database.commentDao().getTopicsComments(selection, selectionArgs[1]);
                 else
                     cursor = database.commentDao().getTopicsComments(selection);
                 break;
@@ -51,6 +53,9 @@ public class DataProvider extends ContentProvider {
             case ("/" + TOPIC_TABLE):
                 if (selectionArgs != null && selectionArgs[0].equals(LOCAL_ROWS))
                     cursor = database.topicDao().getLocalTopics(selection);
+                else if(selectionArgs != null && selectionArgs[0].equals(SEARCH))
+                    cursor = database.topicDao().getTopics(selection, selectionArgs[1]);
+
                 else
                     cursor = database.topicDao().getTopics(selection);
                 break;
