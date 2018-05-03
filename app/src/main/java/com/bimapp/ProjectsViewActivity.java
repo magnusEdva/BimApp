@@ -87,7 +87,7 @@ public class ProjectsViewActivity extends AppCompatActivity
 
     private Fragment mDashboardFragment;
     private FragmentNewTopic mNewTopicFragment;
-    private Fragment mTopicListFragment;
+    private FragmentTopicList mTopicListFragment;
     private Fragment mProjectsFragment;
     private Fragment mTopicFragment;
     private FragmentNewComment mNewCommentFragment;
@@ -500,6 +500,7 @@ public class ProjectsViewActivity extends AppCompatActivity
                 break;
             case (TOPICLIST_FRAGMENT_TAG):
                 openFragment(mTopicListFragment, tag);
+                mTopicListFragment.loadAllTopics();
                 break;
             case (PROJECTS_FRAGMENT_TAG):
                 openFragment(mProjectsFragment, tag);

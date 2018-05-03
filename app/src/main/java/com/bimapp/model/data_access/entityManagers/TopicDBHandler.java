@@ -3,6 +3,7 @@ package com.bimapp.model.data_access.entityManagers;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
 import com.bimapp.model.data_access.AppDatabase;
