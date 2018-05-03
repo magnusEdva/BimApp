@@ -13,8 +13,6 @@ import android.widget.Button;
 
 import com.bimapp.BimApp;
 import com.bimapp.R;
-import com.bimapp.controller.interfaces.CommentFragmentInterface;
-import com.bimapp.model.data_access.entityManagers.CommentEntityManager;
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Topic;
@@ -104,44 +102,9 @@ public class NewTopicView implements NewTopicViewInterface {
 
     @Override
     public void setImage(Bitmap image) {
-
         mImage = image;
-
     }
 
-    @Override
-    public void postedTopic(final Topic topic) {
-        Viewpoint vp = null;
-        Comment comment = new Comment(mCommentString);
-        if(mImage != null){
-            vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, mImage, null);
-            comment.setViewpoint(vp);
-            //comment.setViewpointGuid(topic.getMGuid());
-        }
-        BimApp context = (BimApp) mRootView.getContext().getApplicationContext();
-
-        if(mCommentString != "" && mImage != null){
-        CommentEntityManager cm = new CommentEntityManager(context);
-        cm.postComment(new CommentFragmentInterface() {
-            @Override
-            public void postedComment(boolean success, Comment comment) {
-                mListener.onPostComment();
-
-            }
-        }, topic, comment, mImage);
-        } else if (mCommentString != "" && mImage == null){
-            CommentEntityManager cm = new CommentEntityManager(context);
-            cm.postComment(new CommentFragmentInterface() {
-                @Override
-                public void postedComment(boolean success, Comment comment) {
-                    mListener.onPostComment();
-
-                }
-            }, topic, comment);
-        }
-
-
-    }
 
 
     /**
@@ -152,40 +115,27 @@ public class NewTopicView implements NewTopicViewInterface {
      */
     public void makeNewTopic() {
         // Get the fields!
-        //Spinner status_input = mRootView.findViewById(R.id.topic_status_input);
-        //String topic_status = status_input.getSelectedItem().toString();
         String topic_status = mAdapter.getTopicStatus();
-
-        //EditText title_input = mRootView.findViewById(R.id.topic_title_input);
-        //String title = title_input.getText().toString();
-
         String title = mAdapter.getTitle();
-
-        //Spinner assignedTo_input = mRootView.findViewById(R.id.topic_assigned_to_input);
-        //String assignedTo = assignedTo_input.getSelectedItem().toString();
         String assignedTo = mAdapter.getAssignedTo();
-
-        // EditText description_input = mRootView.findViewById(R.id.topic_description_input);
-        // String description = description_input.getText().toString();
-
         String description = mAdapter.getDesription();
-
-        //Spinner topicType_input = mRootView.findViewById(R.id.topic_type_input);
-        //String topicType = topicType_input.getSelectedItem().toString();
         String topicType = mAdapter.getTopicType();
 
         // Make new topic from fields
         BimApp app = (BimApp) mRootView.getContext().getApplicationContext();
         Topic topic = new Topic(title,topicType,topic_status,assignedTo,description, app.getActiveProject().getProjectId());
 
-        //EditText comment_input = mRootView.findViewById(R.id.topic_comment_input);
-        //mCommentString = comment_input.getText().toString();
         mCommentString = mAdapter.getComment();
 
+        Viewpoint vp = null;
+        Comment comment = new Comment(mCommentString);
+        if(mImage != null){
+            vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, mImage, null);
+            comment.setViewpoint(vp);
+        }
         // Tell fragment that topic has been posted
         Log.d("Posting topic", "Name of topic " + title );
-        mListener.onPostTopic(topic);
-
+        mListener.onPostTopic(topic, comment, vp);
     }
 
     /**
