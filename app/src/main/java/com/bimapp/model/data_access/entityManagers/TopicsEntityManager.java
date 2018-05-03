@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.android.volley.Request;
 import com.bimapp.BimApp;
+import com.bimapp.controller.FragmentTopicList;
 import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
 import com.bimapp.controller.interfaces.TopicFragmentInterface;
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
@@ -20,6 +21,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+
+import static com.bimapp.model.data_access.DataProvider.TOPIC_TABLE;
 
 /**
  * A class that handles acquiring topics from the API for the presenter.
@@ -70,7 +73,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
      * @param controllerCallback This is where the onSuccess/onError methods must be implemented
      */
     public void getTopics(TopicsFragmentInterface controllerCallback) {
-        handler.startQuery(1, controllerCallback, DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
+        handler.startQuery(1, controllerCallback, DataProvider.ParseUri(TOPIC_TABLE),
                 null, mContext.getActiveProject().getProjectId(), null, null);
         NetworkConnManager.networkRequest(mContext, Request.Method.GET,
                 APICall.GETTopics(mContext.getActiveProject()),
@@ -103,6 +106,12 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
                     APICall.PUTTopic(mContext.getActiveProject(), topic), new putTopicsCallback(controllerCallback, topic.getProjectId()), topic);
     }
 
+    public void searchTopics(FragmentTopicList fragmentTopicList, String searchString) {
+        String[] selectionArgs = new String[]{DataProvider.SEARCH, "%" + searchString + "%"};
+        handler.startQuery(1,fragmentTopicList,DataProvider.ParseUri(TOPIC_TABLE),null,
+                mContext.getActiveProject().getProjectId(),selectionArgs,null);
+    }
+
     /**
      * Inner class which handles the Callbacks from Volley on a postTopic request
      */
@@ -119,7 +128,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
         @Override
         public void onError(String response) {
             Log.d("TopicsEntityManager", response);
-            handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE), localUnGuidedVersion.getValues());
+            handler.startInsert(1, null, DataProvider.ParseUri(TOPIC_TABLE), localUnGuidedVersion.getValues());
             makeToast(false, localUnGuidedVersion);
         }
 
@@ -135,7 +144,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
             }
             if (object != null) {
                 Topic topic = new Topic(object, mContext.getActiveProject().getProjectId());
-                handler.startInsert(1,null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE), topic.getValues());
+                handler.startInsert(1,null, DataProvider.ParseUri(TOPIC_TABLE), topic.getValues());
                 makeToast(true, topic);
             }
         }
@@ -172,7 +181,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
                 e.printStackTrace();
             }
             for (Topic t : topics) {
-                handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE), t.getValues());
+                handler.startInsert(1, null, DataProvider.ParseUri(TOPIC_TABLE), t.getValues());
             }
             mControllerCallback.setTopics(topics);
         }
@@ -202,7 +211,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
             try {
                 JSONObject object = new JSONObject(response);
                 Topic Topic = new Topic(object, mProjectId);
-                handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE), Topic.getValues());
+                handler.startInsert(1, null, DataProvider.ParseUri(TOPIC_TABLE), Topic.getValues());
             } catch (JSONException e) {
                 e.printStackTrace();
             }

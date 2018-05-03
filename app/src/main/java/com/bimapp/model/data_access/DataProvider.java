@@ -54,10 +54,9 @@ public class DataProvider extends ContentProvider {
                 if (selectionArgs != null && selectionArgs[0].equals(LOCAL_ROWS))
                     cursor = database.topicDao().getLocalTopics(selection);
                 else if(selectionArgs != null && selectionArgs[0].equals(SEARCH))
-                    cursor = database.topicDao().getTopics(selection, selectionArgs[1]);
-
+                    cursor = database.topicDao().getTopics(selection, selectionArgs[1], "");
                 else
-                    cursor = database.topicDao().getTopics(selection);
+                    cursor = database.topicDao().getTopics(selection, "Closed");
                 break;
 
         }

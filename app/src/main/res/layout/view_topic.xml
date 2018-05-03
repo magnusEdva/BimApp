@@ -83,9 +83,16 @@
                 android:visibility="visible" />
 
 
-
         </RelativeLayout>
     </ScrollView>
+
+    <ImageView
+        android:id="@+id/view_topic_comment_fullscreen_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark"
+        android:visibility="gone" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/view_Topic_floating_button"
         style="@style/BimAppDefaultTheme"
@@ -101,9 +108,4 @@
         app:elevation="5dp" />
 
 
-    <ImageView
-        android:id="@+id/view_topic_comment_fullscreen_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
 </RelativeLayout>
