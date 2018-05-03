@@ -24,7 +24,7 @@ public interface CommentDAO {
     @Query("SELECT * FROM comment WHERE topic_guid = :topicGUID")
     Cursor getTopicsComments(String topicGUID);
 
-    @Query(("SELECT * FROM comment WHERE topic_guid = :topicGUID AND status_column = :status"))
+    @Query(("SELECT * FROM comment WHERE topic_guid = :topicGUID AND status_column = :status ORDER BY date_column ASC"))
     Cursor getTopicsComments(String topicGUID, String status);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

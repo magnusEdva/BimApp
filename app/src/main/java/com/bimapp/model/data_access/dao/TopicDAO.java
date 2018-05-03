@@ -17,6 +17,9 @@ public interface TopicDAO {
     @Query("SELECT * FROM topic WHERE project_id = :projectId")
     Cursor getTopics(String projectId);
 
+    @Query("SELECT * FROM topic WHERE project_id = :projectId AND title LIKE :SearchString")
+    Cursor getTopics(String projectId, String SearchString);
+
     @Query("SELECT * FROM topic WHERE status_column = :updatedOrNew  ORDER BY date_column ASC")
     Cursor getLocalTopics( String updatedOrNew);
 
