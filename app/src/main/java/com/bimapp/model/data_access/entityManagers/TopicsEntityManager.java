@@ -84,7 +84,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
      * @param topic              The topic you want to post
      */
     public void postTopic(NewTopicFragmentInterface controllerCallback, Topic topic) {
-        handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE), topic.getValues());
+
         NetworkConnManager.networkRequest(mContext, Request.Method.POST,
                 APICall.POSTTopics(mContext.getActiveProject()), new TopicPostCallback(controllerCallback, topic), topic);
 
@@ -119,8 +119,8 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
         @Override
         public void onError(String response) {
             Log.d("TopicsEntityManager", response);
-            Topic t = null;
-            makeToast(false, t);
+            handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE), localUnGuidedVersion.getValues());
+            makeToast(false, localUnGuidedVersion);
         }
 
         @Override
@@ -134,8 +134,6 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
                 e.printStackTrace();
             }
             if (object != null) {
-                handler.startDelete(1, null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
-                        localUnGuidedVersion.getMGuid(), null);
                 Topic topic = new Topic(object, mContext.getActiveProject().getProjectId());
                 handler.startInsert(1,null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE), topic.getValues());
                 makeToast(true, topic);
