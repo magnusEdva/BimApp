@@ -12,8 +12,10 @@ import android.view.ViewGroup;
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
 import com.bimapp.model.data_access.entityManagers.TopicsEntityManager;
+import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Topic;
+import com.bimapp.model.entity.Viewpoint;
 import com.bimapp.view.NewTopicView;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
@@ -42,20 +44,15 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
 
 
     @Override
-    public void onPostTopic(Topic topic) {
+    public void onPostTopic(Topic topic, Comment comment, Viewpoint vp) {
         TopicsEntityManager manager = new TopicsEntityManager(mApplication, this);
         Log.d("FragmentNewTopic", "Made an entityManger");
-        manager.postTopic(this, topic);
+        manager.postTopic(this, topic, comment, vp);
     }
 
     @Override
     public void onCameraIntent(View view) {
         mListener.onTakePhoto();
-    }
-
-    @Override
-    public void onPostComment() {
-        mListener.onPostingTopic(true);
     }
 
 
@@ -152,12 +149,12 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
      */
     @Override
     public void postedTopic(boolean success, Topic topic) {
-        if (success && topic != null){
+        /*if (success && topic != null){
             mNewTopicView.postedTopic(topic);
         } else
             mNewTopicView.postedTopic(topic);
         //if (mListener != null)
-        // mListener.onPostingTopic(success);
+        // mListener.onPostingTopic(success);*/
     }
 
     public void setImage(Bitmap image){
