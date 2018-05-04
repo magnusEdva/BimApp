@@ -26,5 +26,8 @@ public interface TopicsViewInterface extends ViewMVP {
     void registerListener(TopicsViewToPresenter topicsViewToPresenter);
     void unregisterListener();
     void setTopics(List<Topic> topics);
+
+    void setSearchString(String searchString);
+
     void clearSearch();
 }

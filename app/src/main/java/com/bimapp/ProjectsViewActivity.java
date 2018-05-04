@@ -126,7 +126,7 @@ public class ProjectsViewActivity extends AppCompatActivity
         if (mApplication.checkLogIn())
             NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
                     APICall.GETUser(), this, null);
-
+        if(mApplication.checkLogIn()) {
         mAccount = CreateSyncAccount(this.getApplicationContext());
 /*
         // Code for testing sync-adapter
@@ -140,12 +140,13 @@ public class ProjectsViewActivity extends AppCompatActivity
         else
             Log.d("Account", "Didn't add account");
 */
-        Bundle b = new Bundle();
-        b.putBoolean(
-                ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        b.putBoolean(
-                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        ContentResolver.setSyncAutomatically(mAccount, DataProvider.AUTHORITY, true);
+            Bundle b = new Bundle();
+            b.putBoolean(
+                    ContentResolver.SYNC_EXTRAS_MANUAL, true);
+            b.putBoolean(
+                    ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+            ContentResolver.setSyncAutomatically(mAccount, DataProvider.AUTHORITY, true);
+        }
         //ContentResolver.requestSync(mAccount,DataProvider.AUTHORITY,b);
 
         // End of code for sync-adapter testing
@@ -274,13 +275,14 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     @Override
     public void onDashboardItemClick(Template template) {
-        if(!template.getAssignedTo()) {
+        if(template.getAssignedTo() == null) {
             mNewTopicFragment = new FragmentNewTopic();
             mNewTopicFragment.setTemplate(template);
             openFragment(NEWTOPIC_FRAGMENT_TAG);
         }else{
+            mTopicListFragment.setTopicsAssignedTo(user.getId());
             openFragment(TOPICLIST_FRAGMENT_TAG);
-            mTopicListFragment.setTopicsAssignedTo(user.getName());
+
         }
 
     }

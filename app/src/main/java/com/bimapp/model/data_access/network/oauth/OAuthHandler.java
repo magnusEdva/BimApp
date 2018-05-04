@@ -313,12 +313,11 @@ public class OAuthHandler {
      */
     public boolean hasTokens() throws InterruptedException {
         available.acquire();
-        AlreadyLooksForToken.release();
         if (getRefreshToken() != null && !isValidAccessToken()) {
             getAccessToken(getRefreshToken(), GRANT_TYPE_REFRESH_TOKEN);
-            available.release();
             return true;
         } else
+            available.release();
             return false;
 
 

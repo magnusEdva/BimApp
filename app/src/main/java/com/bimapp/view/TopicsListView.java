@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 
+import com.bimapp.BimApp;
 import com.bimapp.R;
 import com.bimapp.model.data_access.DataProvider;
 import com.bimapp.model.entity.Topic;
@@ -29,13 +30,17 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 public class TopicsListView implements TopicsViewInterface {
 
     private View mRootView;
+
+    private BimApp mContext;
+
     private TopicsViewToPresenter mListener;
 
     private SearchView searchString;
 
     public TopicsListView(LayoutInflater inflater, ViewGroup container) {
-        mRootView = inflater.inflate(R.layout.view_topics_list, container,false);
+        mRootView = inflater.inflate(R.layout.view_topics_list, container, false);
         searchString = mRootView.findViewById(R.id.topics_list_search_editText);
+        mContext = (BimApp) mRootView.getContext().getApplicationContext();
         setupSearchButton();
     }
 
@@ -76,7 +81,7 @@ public class TopicsListView implements TopicsViewInterface {
         return null;
     }
 
-    private void setupSearchButton(){
+    private void setupSearchButton() {
         searchString.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -87,13 +92,23 @@ public class TopicsListView implements TopicsViewInterface {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                mListener.onSearch(DataProvider.SEARCH,searchString.getQuery().toString());
+                if (mContext.getActiveProject().getIssueBoardExtensions().getUserIdType().contains(newText))
+                    mListener.onSearch(DataProvider.ASSIGNED_TO, newText);
+                else
+                    mListener.onSearch(DataProvider.SEARCH, searchString.getQuery().toString());
                 return true;
             }
         });
     }
+
     @Override
-    public void clearSearch(){
+    public void setSearchString(String searchString) {
+        this.searchString.setQuery(searchString, false);
+        this.searchString.clearFocus();
+    }
+
+    @Override
+    public void clearSearch() {
         searchString.setQuery("", false);
         searchString.clearFocus();
     }

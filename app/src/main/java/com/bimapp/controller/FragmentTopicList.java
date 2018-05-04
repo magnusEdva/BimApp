@@ -44,9 +44,9 @@ public class FragmentTopicList extends Fragment
     // Getting the application
     private BimApp mApplication;
 
-    private String searchQuery;
+    private static String searchQuery;
 
-    private String searchArg;
+    private static String searchArg;
 
     public FragmentTopicList() {
         // Required empty public constructor
@@ -115,8 +115,9 @@ public class FragmentTopicList extends Fragment
      */
     @Override
     public void setTopics(List<Topic> topics) {
-        if(searchQuery != null && searchArg != null){
+        if(searchForAssignedTo()){
             onSearch(searchArg, searchQuery);
+            mTopicsView.setSearchString(searchQuery);
             searchArg = null;
             searchQuery = null;
         } else
@@ -124,6 +125,9 @@ public class FragmentTopicList extends Fragment
 
     }
 
+    private boolean  searchForAssignedTo() {
+        return (searchQuery != null && searchArg != null) ;
+    }
     @Override
     public void onSearch(String argument, String searchString){
         mTopicsEntityManager.searchTopics(this,argument, searchString);
