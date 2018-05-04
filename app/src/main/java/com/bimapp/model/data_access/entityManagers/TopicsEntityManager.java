@@ -5,6 +5,7 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.controller.FragmentTopicList;
+import com.bimapp.controller.interfaces.CommentFragmentInterface;
 import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
 import com.bimapp.controller.interfaces.TopicFragmentInterface;
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
@@ -13,8 +14,10 @@ import com.bimapp.model.data_access.DataProvider;
 import com.bimapp.model.data_access.network.APICall;
 import com.bimapp.model.data_access.network.Callback;
 import com.bimapp.model.data_access.network.NetworkConnManager;
+import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.EntityListConstructor;
 import com.bimapp.model.entity.Topic;
+import com.bimapp.model.entity.Viewpoint;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +67,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
      */
     @Override
     public void postTopic(Topic topic) {
-        postTopic(mListener, topic);
+        postTopic(mListener, topic, null, null);
     }
 
     /**
@@ -82,14 +85,15 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
 
     /**
      * Method to post topics to the server
-     *
-     * @param controllerCallback This is where the onSuccess/onError methods must be implemented
+     *  @param controllerCallback This is where the onSuccess/onError methods must be implemented
      * @param topic              The topic you want to post
+     * @param comment            The potential comment of the topic
+     * @param vp                 The potential Viewpoint of the comment
      */
-    public void postTopic(NewTopicFragmentInterface controllerCallback, Topic topic) {
+    public void postTopic(NewTopicFragmentInterface controllerCallback, Topic topic, Comment comment, Viewpoint vp) {
 
         NetworkConnManager.networkRequest(mContext, Request.Method.POST,
-                APICall.POSTTopics(mContext.getActiveProject()), new TopicPostCallback(controllerCallback, topic), topic);
+                APICall.POSTTopics(mContext.getActiveProject()), new TopicPostCallback(controllerCallback, topic, comment, vp), topic);
 
     }
 
@@ -124,17 +128,31 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
 
         NewTopicFragmentInterface mTopicsFragmentInterface;
         Topic localUnGuidedVersion;
+        Comment mComment;
+        Viewpoint mViewpoint;
 
-        public TopicPostCallback(NewTopicFragmentInterface callback, Topic topic) {
+        public TopicPostCallback(NewTopicFragmentInterface callback, Topic topic, Comment comment, Viewpoint vp) {
             mTopicsFragmentInterface = callback;
             localUnGuidedVersion = topic;
+            mComment = comment;
+            mViewpoint = vp;
+
         }
 
         @Override
         public void onError(String response) {
             Log.d("TopicsEntityManager", response);
-            handler.startInsert(1, null, DataProvider.ParseUri(TOPIC_TABLE), localUnGuidedVersion.getValues());
-            makeToast(false, localUnGuidedVersion);
+            handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
+                    localUnGuidedVersion.getValues());
+            // If topic has comment, insert comment into DB, if Comment has VP, insert into DB
+            mComment.setTopicGUID(localUnGuidedVersion.getMGuid());
+            handler.startInsert(1,null,DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
+                    mComment.getContentValues());
+            mViewpoint.setCommentGUID(mComment.getMCommentsGUID());
+            handler.startInsert(2, null, DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
+                    mViewpoint.getContentValues());
+
+            mTopicsFragmentInterface.postedTopic(false, localUnGuidedVersion);
         }
 
         @Override
@@ -148,9 +166,29 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
                 e.printStackTrace();
             }
             if (object != null) {
-                Topic topic = new Topic(object, mContext.getActiveProject().getProjectId());
-                handler.startInsert(1,null, DataProvider.ParseUri(TOPIC_TABLE), topic.getValues());
+                final Topic topic = new Topic(object, mContext.getActiveProject().getProjectId());
+                handler.startInsert(1,null, DataProvider.ParseUri(DataProvider.TOPIC_TABLE), topic.getValues());
                 makeToast(true, topic);
+                if (mViewpoint != null){
+                    // Post ViewPoint
+                    CommentEntityManager cm = new CommentEntityManager(mContext);
+                    cm.postComment(new CommentFragmentInterface() {
+                        @Override
+                        public void postedComment(boolean success, Comment comment) {
+                            mListener.postedTopic(true, topic);
+
+                        }
+                    }, topic, mComment, mViewpoint.getSnapshot());
+                } else {
+                    CommentEntityManager cm = new CommentEntityManager(mContext);
+                    cm.postComment(new CommentFragmentInterface() {
+                        @Override
+                        public void postedComment(boolean success, Comment comment) {
+                            mListener.postedTopic(true, topic);
+
+                        }
+                    }, topic, mComment);
+                }
             }
         }
 

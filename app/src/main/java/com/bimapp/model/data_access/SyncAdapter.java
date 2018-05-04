@@ -90,7 +90,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         // Puts un-synced updated Comments to the server
         PutComments();
         // This gets projects from the server as well as Topics, Comments and ViewPoints
-        GetProjects();
+        //GetProjects();
 
     }
 
@@ -573,8 +573,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
     private class PostTopicCallback implements Callback<String> {
         Topic mLocalTopic;
 
-        private PostTopicCallback(Topic topic){
-            mLocalTopic = topic;
+        private PostTopicCallback(Topic localTopic){
+            mLocalTopic = localTopic;
         }
 
         @Override
@@ -605,9 +605,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                         DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
                         null,
                         mLocalTopic.getMGuid(), // Gets local Comments from the OLD topicGUID
-                        new String[]{DataProvider.LOCAL_ROWS},
+                        new String[]{DataProvider.LOCAL_ROWS, AppDatabase.statusTypes.New.status},
                         null);
                 if (commentsCursor != null){
+                    Log.d("SyncAdapter", "Found " + commentsCursor.getCount() + " new comments belonging to topic \"" + mLocalTopic.getMTitle() + "\"");
                     if (commentsCursor.getCount() != 0){
                         while (commentsCursor.moveToNext()) {
 
@@ -647,18 +648,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
      */
     private void PostComment(Topic localTopic, Topic serverTopic, Comment comment) {
         Log.d("SyncAdapter", "Tried to post new comment from new topic");
-        // TODO Implement method!
-        // TODO Check if comment has ViewPoint, if so, post that first!
-        if (comment.getMViewpointGuid() != null){
-            // Get the Viewpoint from server
+        if (comment.getMCommentsGUID() != null){
+            // Get the Viewpoint from database
             Cursor vpCursor = mContentResolver.query(
                     DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
                     null,
-                    comment.getMViewpointGuid(),
+                    comment.getMCommentsGUID(),
                     null,
                     null
             );
             if (vpCursor != null){
+                Log.d("SyncAdapter", "Got " + vpCursor.getCount() + " viewpoints");
                 if (vpCursor.getCount() != 0){
                     while (vpCursor.moveToNext()){
                         String guid = vpCursor.getString(vpCursor.getColumnIndex(Viewpoint.GUID));
@@ -687,7 +687,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
             NetworkConnManager.networkRequest(
                     mContext,
                     Request.Method.POST,
-                    APICall.POSTComment(serverTopic.getProjectId(), serverTopic.getMTopicType()),
+                    APICall.POSTComment(serverTopic.getProjectId(), serverTopic.getMGuid()),
                     new PostCommentCallback(comment,localTopic,serverTopic,null),
                     comment
             );
@@ -726,7 +726,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                 Topic topic = new Topic(object, mTopic.getProjectId());
                 // Creates a new entry in DB with updated IDs
                 mContentResolver.insert(DataProvider.ParseUri(DataProvider.TOPIC_TABLE), topic.getValues());
-                Log.d("SyncAdapterPost", "Successfully posted offline topic " + topic.getMTitle() + " to server");
+                Log.d("SyncAdapterPost", "Successfully put offline topic " + topic.getMTitle() + " to server");
             }
         }
     }
@@ -770,6 +770,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                             mViewpoint.getContentValues()
                     );
                 }
+                Log.d("SyncAdapter", "Posted Comment to server " + mServerTopic.getMGuid());
                 mContentResolver.insert(DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
                         comment.getContentValues());
                 mContentResolver.delete(DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
@@ -820,6 +821,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                         mViewpoint.getMGuid(),
                         null
                 );
+                mComment.setTopicGUID(mServerTopic.getMGuid());
                 NetworkConnManager.networkRequest(
                         mContext,
                         Request.Method.POST,
