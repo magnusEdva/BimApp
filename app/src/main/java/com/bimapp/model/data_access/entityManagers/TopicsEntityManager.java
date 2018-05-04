@@ -106,10 +106,15 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
                     APICall.PUTTopic(mContext.getActiveProject(), topic), new putTopicsCallback(controllerCallback, topic.getProjectId()), topic);
     }
 
-    public void searchTopics(FragmentTopicList fragmentTopicList, String searchString) {
-        String[] selectionArgs = new String[]{DataProvider.SEARCH, "%" + searchString + "%"};
-        handler.startQuery(1,fragmentTopicList,DataProvider.ParseUri(TOPIC_TABLE),null,
-                mContext.getActiveProject().getProjectId(),selectionArgs,null);
+    public void searchTopics(FragmentTopicList fragmentTopicList, String argument, String searchString) {
+        String[] selectionArgs;
+        if (argument.equals(DataProvider.SEARCH))
+            selectionArgs = new String[]{argument, "%" + searchString + "%"};
+        else
+            selectionArgs = new String[]{argument, searchString};
+
+        handler.startQuery(1, fragmentTopicList, DataProvider.ParseUri(TOPIC_TABLE), null,
+                mContext.getActiveProject().getProjectId(), selectionArgs, null);
     }
 
     /**
