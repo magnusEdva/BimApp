@@ -117,7 +117,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
         else
             selectionArgs = new String[]{argument, searchString};
 
-        handler.startQuery(1, fragmentTopicList, DataProvider.ParseUri(TOPIC_TABLE), null,
+        handler.startQuery(2, fragmentTopicList, DataProvider.ParseUri(TOPIC_TABLE), null,
                 mContext.getActiveProject().getProjectId(), selectionArgs, null);
     }
 
