@@ -87,7 +87,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         PutTopics();
         // Posts un-synced new Comments to the server
         PostComments();
-        // Puts un-synced updated Comments to the server
+        // Puts un-synced updated Comments to the server. We don't have those
         PutComments();
         // This gets projects from the server as well as Topics, Comments and ViewPoints
         //GetProjects();
@@ -103,71 +103,100 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
     }
 
     private void UpdateComments(String newOrUpdatedRows){
+
+        Log.d("SyncAdapter", "Started updating comments");
         // Find un-synced comments
         Cursor commentCursor = mContentResolver.query(DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
                 null,
-                null,
+                newOrUpdatedRows,
                 new String[]{ (newOrUpdatedRows)},
                 null);
 
         List<Comment> comments = new ArrayList<>();
-        if (commentCursor != null && commentCursor.getCount() !=0 ){
-            // If there are new/updated comments, create new objects
-            while (commentCursor.moveToNext()) {
-                String commentGuid = commentCursor.getString(commentCursor.getColumnIndex(Comment.GUID));
-                String verbalStatus = commentCursor.getString(commentCursor.getColumnIndex(Comment.VERBAL_STATUS));
-                String status = commentCursor.getString(commentCursor.getColumnIndex(Comment.STATUS));
-                String Date = commentCursor.getString(commentCursor.getColumnIndex(Comment.DATE));
-                String author = commentCursor.getString(commentCursor.getColumnIndex(Comment.AUTHOR));
-                String topicGUID = commentCursor.getString(commentCursor.getColumnIndex(Comment.TOPIC_GUID));
-                String modifiedDate = commentCursor.getString(commentCursor.getColumnIndex(Comment.MODIFIED_DATE));
-                String modifiedAuthor = commentCursor.getString(commentCursor.getColumnIndex(Comment.MODIFIED_AUTHOR));
-                String comment_content = commentCursor.getString(commentCursor.getColumnIndex(Comment.COMMENT));
-                String viewpointGuid = commentCursor.getString(commentCursor.getColumnIndex(Comment.VIEWPOINT_GUID));
-                Long dateAcquired = commentCursor.getLong(commentCursor.getColumnIndex(AppDatabase.DATE_COLUMN));
-                AppDatabase.statusTypes localStatus = AppDatabase.convertStringToStatus
-                        (commentCursor.getString(commentCursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
-                Comment comment = (new Comment(commentGuid, verbalStatus, status, Date, author, topicGUID,
-                        modifiedDate, modifiedAuthor, comment_content, viewpointGuid, dateAcquired, localStatus));
+        if (commentCursor != null){
+            if (commentCursor.getCount() !=0 ){
+                // If there are new/updated comments, create new objects
+                while (commentCursor.moveToNext()) {
+                    String commentGuid = commentCursor.getString(commentCursor.getColumnIndex(Comment.GUID));
+                    String verbalStatus = commentCursor.getString(commentCursor.getColumnIndex(Comment.VERBAL_STATUS));
+                    String status = commentCursor.getString(commentCursor.getColumnIndex(Comment.STATUS));
+                    String Date = commentCursor.getString(commentCursor.getColumnIndex(Comment.DATE));
+                    String author = commentCursor.getString(commentCursor.getColumnIndex(Comment.AUTHOR));
+                    String topicGUID = commentCursor.getString(commentCursor.getColumnIndex(Comment.TOPIC_GUID));
+                    String modifiedDate = commentCursor.getString(commentCursor.getColumnIndex(Comment.MODIFIED_DATE));
+                    String modifiedAuthor = commentCursor.getString(commentCursor.getColumnIndex(Comment.MODIFIED_AUTHOR));
+                    String comment_content = commentCursor.getString(commentCursor.getColumnIndex(Comment.COMMENT));
+                    String viewpointGuid = commentCursor.getString(commentCursor.getColumnIndex(Comment.VIEWPOINT_GUID));
+                    Long dateAcquired = commentCursor.getLong(commentCursor.getColumnIndex(AppDatabase.DATE_COLUMN));
+                    AppDatabase.statusTypes localStatus = AppDatabase.convertStringToStatus
+                            (commentCursor.getString(commentCursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
+                    Comment comment = (new Comment(commentGuid, verbalStatus, status, Date, author, topicGUID,
+                            modifiedDate, modifiedAuthor, comment_content, viewpointGuid, dateAcquired, localStatus));
 
-                if (viewpointGuid != null) {
-                    // If the comment has a ViewPoint, it needs to be posted BEFORE the comment is posted
-                    Cursor viewPointCursor = mContentResolver.query(
-                            DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
+                    String projectID = "";
+
+                    // Get the ProjectID for current comment
+                    Cursor topicCursor = mContentResolver.query(
+                            DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
                             null,
-                            commentGuid,
+                            topicGUID,
                             null,
                             null
-                            );
-                    if (viewPointCursor != null && viewPointCursor.getCount() != 0){
-                        // Add Viewpoint to Comment and send ViewPoint to server.
-                        // onSuccess should then post the comment
-                        if (viewPointCursor.moveToFirst()) {
-
-                            String guid = viewPointCursor.getString(viewPointCursor.getColumnIndex(Viewpoint.GUID));
-                            String commentGUID = viewPointCursor.getString(viewPointCursor.getColumnIndex(Viewpoint.COMMENT_GUID));
-                            String type = viewPointCursor.getString(viewPointCursor.getColumnIndex("type"));
-                            String pictureName = viewPointCursor.getString(viewPointCursor.getColumnIndex("picture_name"));
-                            AppDatabase.statusTypes vp_localStatus = AppDatabase.convertStringToStatus
-                                    (viewPointCursor.getString(viewPointCursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
-                            Long vp_dateAcquired = viewPointCursor.getLong(viewPointCursor.getColumnIndex(AppDatabase.DATE_COLUMN));
-                            Viewpoint vp = new Viewpoint(guid, commentGUID, type, pictureName, dateAcquired, localStatus);
-                            comment.setViewpoint(vp);
-                            // Post the ViewPoint, send the Comment to the method
-
+                    );
+                    if (topicCursor != null){
+                        if (topicCursor.getCount() != 0){
+                            projectID = topicCursor.getColumnName(topicCursor.getColumnIndex(Project.PROJECT_ID));
                         }
-                    } else{
-                        // If no ViewPoint was found in DB, should it post the comment directly instead?
-
+                        topicCursor.close();
                     }
-                    if (viewPointCursor != null)
-                        viewPointCursor.close();
+                    if (viewpointGuid != null) {
+                        // If the comment has a ViewPoint, it needs to be posted BEFORE the comment is posted
+                        Cursor viewPointCursor = mContentResolver.query(
+                                DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
+                                null,
+                                commentGuid,
+                                null,
+                                null
+                        );
+                        if (viewPointCursor != null && viewPointCursor.getCount() != 0){
+                            // Add Viewpoint to Comment and send ViewPoint to server.
+                            // onSuccess should then post the comment
+                            if (viewPointCursor.moveToFirst()) {
 
-                } else {
-                    // Found no ViewPoint, add the Comment to the list of those to be pushed to server
-                    comments.add(comment);
+                                String guid = viewPointCursor.getString(viewPointCursor.getColumnIndex(Viewpoint.GUID));
+                                String commentGUID = viewPointCursor.getString(viewPointCursor.getColumnIndex(Viewpoint.COMMENT_GUID));
+                                String type = viewPointCursor.getString(viewPointCursor.getColumnIndex("type"));
+                                String pictureName = viewPointCursor.getString(viewPointCursor.getColumnIndex("picture_name"));
+                                AppDatabase.statusTypes vp_localStatus = AppDatabase.convertStringToStatus
+                                        (viewPointCursor.getString(viewPointCursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
+                                Long vp_dateAcquired = viewPointCursor.getLong(viewPointCursor.getColumnIndex(AppDatabase.DATE_COLUMN));
+                                Viewpoint vp = new Viewpoint(guid, commentGUID, type, pictureName, dateAcquired, localStatus);
+                                comment.setViewpoint(vp);
+                                // Find Topic, and by the topic the ProjectID
+
+                                // Post the ViewPoint, send the Comment to the method
+                                NetworkConnManager.networkRequest(mContext,
+                                        Request.Method.POST,
+                                        APICall.POSTViewpoints(projectID,topicGUID),
+                                        new ViewPointCallback(projectID,comment),
+                                        vp
+                                );
+                            }
+                        } else{
+                            // Posts comment to server if no Viewpoint was found.
+                            // Could lead to problems?
+                            comments.add(comment);
+                        }
+                        if (viewPointCursor != null)
+                            viewPointCursor.close();
+
+                    } else {
+                        // Found no ViewPoint, add the Comment to the list of those to be pushed to server
+                        comments.add(comment);
+                    }
                 }
             }
+            commentCursor.close();
         }
         if (comments.size() != 0){
             // Post to server
@@ -184,11 +213,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                         null
                 );
             }
-
         }
-        if (commentCursor!= null)
-            commentCursor.close();
-
     }
 
     private void PostTopics(){
@@ -489,11 +514,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
      */
     private class ViewPointCallback implements Callback<String> {
         Comment mComment;
-        Project mProject;
+        String mProjectID;
 
         private ViewPointCallback(Project project, Comment comment){
             mComment = comment;
-            mProject = project;
+            mProjectID = project.getProjectId();
+        }
+
+        private ViewPointCallback(String projectID, Comment comment){
+            mComment = comment;
+            mProjectID = projectID;
         }
 
         @Override
@@ -516,7 +546,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                 // If ViewPoint has Snapshot, get it
                 if (vp.hasSnapshot()) {
                     NetworkConnManager.networkRequest(mContext, 11,
-                            APICall.GETSnapshot(mProject, mComment.getMTopicGuid(), vp),
+                            APICall.GETSnapshot(mProjectID, mComment.getMTopicGuid(), vp),
                             new SnapshotCallback(mComment,vp), null);
                 }
                 // Otherwise add Comment and ViewPoint to DB

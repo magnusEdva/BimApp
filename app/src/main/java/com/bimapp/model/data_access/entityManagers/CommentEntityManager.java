@@ -9,7 +9,6 @@ import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.CommentFragmentInterface;
 import com.bimapp.controller.interfaces.TopicFragmentInterface;
-import com.bimapp.controller.interfaces.TopicsFragmentInterface;
 import com.bimapp.model.data_access.DataProvider;
 import com.bimapp.model.data_access.network.APICall;
 import com.bimapp.model.data_access.network.Callback;
@@ -179,8 +178,16 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
         @Override
         public void onError(String response) {
             if (response != null)
-                Log.d("postComment", response);
+                Log.d("postComment", response);/*
             mListener.postedComment(false, null);
+            handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
+                    mToBeDeleted.getContentValues());
+            if (mToBeDeleted.getMViewpoint() != null){
+                handler.startInsert(2, null, DataProvider.ParseUri(
+                        DataProvider.VIEWPOINT_TABLE),
+                        mToBeDeleted.getMViewpoint().getContentValues()
+                );
+            }*/
         }
 
         @Override

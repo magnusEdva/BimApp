@@ -91,7 +91,9 @@ public class FragmentNewComment extends Fragment implements CommentViewInterface
         mImage = null;
     }
 
-    public static void setTopic(Topic topic){mTopic = topic; }
+    public static void setTopic(Topic topic){
+        mTopic = topic;
+    }
 
     @Override
     public void postedComment(boolean success, Comment comment) {
