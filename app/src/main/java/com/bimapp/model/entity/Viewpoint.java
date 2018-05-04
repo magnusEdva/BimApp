@@ -86,6 +86,7 @@ public class Viewpoint implements entity {
         hasSnapshot = true;
         this.dateAcquired = dateAcquired;
         this.localStatus = localStatus;
+        //this.getSnapshot();
     }
 
     public Viewpoint(ContentValues values) {

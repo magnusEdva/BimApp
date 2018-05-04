@@ -83,4 +83,8 @@ public class APICall {
         return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topicGuid + "/viewpoints/" + vp.getMGuid() + "/snapshot";
     }
 
+
+    public static String GETSnapshot(String projectId, String topicGuid, Viewpoint vp){
+        return BuildBcfURL() + "/projects/" + projectId + "/topics/" + topicGuid + "/viewpoints/" + vp.getMGuid() + "/snapshot";
+    }
 }
