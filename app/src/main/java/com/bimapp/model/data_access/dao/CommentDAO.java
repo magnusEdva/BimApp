@@ -5,7 +5,6 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
-import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.bimapp.model.entity.Comment;
@@ -26,6 +25,10 @@ public interface CommentDAO {
 
     @Query(("SELECT * FROM comment WHERE topic_guid = :topicGUID AND status_column = :status ORDER BY date_column ASC"))
     Cursor getTopicsComments(String topicGUID, String status);
+
+    @Query(("SELECT * FROM comment WHERE status_column = :status ORDER BY date_column ASC"))
+    Cursor getNewComments(String status);
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Comment comment);
