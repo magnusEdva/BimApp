@@ -56,6 +56,27 @@ public class TopicsListView implements TopicsViewInterface {
 
     @Override
     public void setTopics(final List<Topic> topics) {
+        if (searchString.getQuery() == null) {
+            searchString.setQuery(searchString.getQuery(), true);
+        }else {
+            ArrayAdapter<Topic> arrayAdapter = new ArrayAdapter<>(this.getRootView().getContext(), android.R.layout.simple_list_item_1, topics);
+            ListView listView = mRootView.findViewById(R.id.topics_list);
+            listView.setAdapter(arrayAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+                    InputMethodManager inputMethodManager = (InputMethodManager) mRootView.getContext().
+                            getSystemService(INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(mRootView.getWindowToken(), 0);
+                    mListener.onSelectedItem(topics.get(position));
+                }
+            });
+        }
+    }
+
+    @Override
+    public void setSearchResult (final List<Topic> topics){
         ArrayAdapter<Topic> arrayAdapter = new ArrayAdapter<>(this.getRootView().getContext(), android.R.layout.simple_list_item_1, topics);
         ListView listView = mRootView.findViewById(R.id.topics_list);
         listView.setAdapter(arrayAdapter);
@@ -70,7 +91,6 @@ public class TopicsListView implements TopicsViewInterface {
             }
         });
     }
-
     @Override
     public View getRootView() {
         return mRootView;
@@ -85,7 +105,10 @@ public class TopicsListView implements TopicsViewInterface {
         searchString.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mListener.onSearch(DataProvider.SEARCH, searchString.getQuery().toString());
+                if (mContext.getActiveProject().getIssueBoardExtensions().getUserIdType().contains(query))
+                    mListener.onSearch(DataProvider.ASSIGNED_TO, query);
+                else
+                    mListener.onSearch(DataProvider.SEARCH, searchString.getQuery().toString());
                 searchString.clearFocus();
                 return true;
             }
@@ -105,6 +128,11 @@ public class TopicsListView implements TopicsViewInterface {
     public void setSearchString(String searchString) {
         this.searchString.setQuery(searchString, false);
         this.searchString.clearFocus();
+    }
+
+    @Override
+    public void search() {
+        searchString.setQuery(searchString.getQuery(), true);
     }
 
     @Override

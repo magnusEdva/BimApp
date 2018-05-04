@@ -109,6 +109,16 @@ public class OAuthHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        final Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("Access Token", "server returned error");
+                if (error != null) {
+                    new CallbackHandler().onErrorResponse(error);
+                    error.printStackTrace();
+                }
+            }
+        };
 
         //TODO auth_url and token_url can be gotten from GET /bcf/{version}/auth
         String url = mContext.getString(R.string.api_token);
@@ -123,17 +133,7 @@ public class OAuthHandler {
                             e.printStackTrace();
                         }
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("Access Token", "server returned error");
-                        if (error != null) {
-                            new CallbackHandler().onErrorResponse(error);
-                            error.printStackTrace();
-                        }
-                    }
-                }
+                }, errorListener
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -165,6 +165,20 @@ public class OAuthHandler {
                 headers.put("Accept", "application/json");
 
                 return headers;
+            }
+
+            @Override
+            protected VolleyError parseNetworkError(VolleyError volleyError) {
+                if (volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
+                    VolleyError error = new VolleyError(new String(volleyError.networkResponse.data));
+                    volleyError = error;
+                }
+                return volleyError;
+            }
+
+            @Override
+            public void deliverError(VolleyError error) {
+                errorListener.onErrorResponse(error);
             }
         };
         oAuthRequest.setRetryPolicy(new DefaultRetryPolicy(0,
@@ -295,7 +309,7 @@ public class OAuthHandler {
      *
      * @return whether the app has a valid token or not.
      */
-    public boolean isLoggedIn()  {
+    public boolean isLoggedIn() {
 
         if (isValidAccessToken()) {
             return true;
@@ -305,7 +319,8 @@ public class OAuthHandler {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }return false;
+        }
+        return false;
     }
 
     /**
@@ -314,11 +329,14 @@ public class OAuthHandler {
     public boolean hasTokens() throws InterruptedException {
         available.acquire();
         if (getRefreshToken() != null && !isValidAccessToken()) {
-            getAccessToken(getRefreshToken(), GRANT_TYPE_REFRESH_TOKEN);
+            if (AlreadyLooksForToken.availablePermits() > 0)
+                getAccessToken(getRefreshToken(), GRANT_TYPE_REFRESH_TOKEN);
+
+            available.release();
             return true;
         } else
             available.release();
-            return false;
+        return false;
 
 
     }
@@ -354,6 +372,7 @@ public class OAuthHandler {
         @Override
         public void onErrorResponse(VolleyError error) {
             available.release();
+            AlreadyLooksForToken.release();
             if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                 error.printStackTrace();
             } else if (error instanceof AuthFailureError) {
