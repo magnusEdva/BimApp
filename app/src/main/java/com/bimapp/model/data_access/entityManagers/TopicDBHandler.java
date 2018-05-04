@@ -22,12 +22,12 @@ public class TopicDBHandler extends AsyncQueryHandler {
     @Override
     protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
         super.onQueryComplete(token, cookie, cursor);
-        if (token == 1 && cookie instanceof TopicsFragmentInterface && cursor != null) {
-            getTopics((TopicsFragmentInterface) cookie, cursor);
+        if (cookie instanceof TopicsFragmentInterface && cursor != null) {
+            getTopics((TopicsFragmentInterface) cookie, cursor, token);
         }
     }
 
-    private void getTopics(TopicsFragmentInterface mListener, Cursor cursor) {
+    private void getTopics(TopicsFragmentInterface mListener, Cursor cursor, int token) {
         List<Topic> topics = new ArrayList<>();
         while (cursor.moveToNext()) {
             String guid = cursor.getString(cursor.getColumnIndex(Topic.GUID));
@@ -83,6 +83,9 @@ public class TopicDBHandler extends AsyncQueryHandler {
             topic.setLocalStatus(AppDatabase.convertStringToStatus(statusColumn));
             topics.add(topic);
         }
-        mListener.setTopics(topics);
+        if (token == 1)
+            mListener.setTopics(topics);
+        else if (token == 2)
+            mListener.setSearchResult(topics);
     }
 }

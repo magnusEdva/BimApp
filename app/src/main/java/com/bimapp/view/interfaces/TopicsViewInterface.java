@@ -27,7 +27,10 @@ public interface TopicsViewInterface extends ViewMVP {
     void unregisterListener();
     void setTopics(List<Topic> topics);
 
+    void setSearchResult (List<Topic> topics);
+
     void setSearchString(String searchString);
+    void search();
 
     void clearSearch();
 }

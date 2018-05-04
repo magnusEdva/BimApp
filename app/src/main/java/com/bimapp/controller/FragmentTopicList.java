@@ -99,6 +99,8 @@ public class FragmentTopicList extends Fragment
     @Override
     public void onResume(){
         super.onResume();
+        if(searchForAssignedTo())
+            mTopicsView.setSearchString(searchQuery);
     }
 
     @Override
@@ -115,14 +117,11 @@ public class FragmentTopicList extends Fragment
      */
     @Override
     public void setTopics(List<Topic> topics) {
-        if(searchForAssignedTo()){
-            onSearch(searchArg, searchQuery);
-            mTopicsView.setSearchString(searchQuery);
-            searchArg = null;
-            searchQuery = null;
-        } else
             mTopicsView.setTopics(topics);
-
+    }
+    @Override
+    public void setSearchResult(List<Topic> topic){
+        mTopicsView.setSearchResult(topic);
     }
 
     private boolean  searchForAssignedTo() {
@@ -130,11 +129,11 @@ public class FragmentTopicList extends Fragment
     }
     @Override
     public void onSearch(String argument, String searchString){
-        mTopicsEntityManager.searchTopics(this,argument, searchString);
+        mTopicsEntityManager.searchTopics(this, argument, searchString);
     }
 
     public void setTopicsAssignedTo(String userId){
-        searchArg= DataProvider.ASSIGNED_TO;
+        searchArg = DataProvider.ASSIGNED_TO;
         searchQuery = userId;
     }
 

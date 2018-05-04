@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface TopicsFragmentInterface {
 
+    void setSearchResult(List<Topic> topic);
+
     interface FragmentTopicsListener {
         void getTopics(TopicsFragmentInterface callback);
     }
