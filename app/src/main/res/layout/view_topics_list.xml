@@ -35,7 +35,9 @@
         android:inputType="textPersonName"
         android:queryHint="@string/search"
         android:iconifiedByDefault="false"
-        android:imeOptions="actionDone"/>
+        android:imeOptions="actionDone"
+        android:queryBackground="@color/colorPrimaryLight"
+        android:submitBackground="@color/colorPrimaryLight" />
 
 
 </RelativeLayout>

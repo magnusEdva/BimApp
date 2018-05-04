@@ -14,16 +14,16 @@ import java.util.List;
 @Dao
 public interface TopicDAO {
 
-    @Query("SELECT * FROM topic WHERE project_id = :projectId AND topic_status != :status")
+    @Query("SELECT * FROM topic WHERE project_id = :projectId AND topic_status != :status ORDER BY creation_date DESC")
     Cursor getTopics(String projectId, String status);
 
-    @Query("SELECT * FROM topic WHERE project_id = :projectId AND topic_status != :status AND title LIKE :SearchString")
+    @Query("SELECT * FROM topic WHERE project_id = :projectId AND topic_status != :status AND title LIKE :SearchString ORDER BY creation_date DESC")
     Cursor getTopics(String projectId, String SearchString, String status);
 
-    @Query("SELECT * FROM topic WHERE project_id = :projectId AND topic_status != :status AND assigned_to = :SearchString")
+    @Query("SELECT * FROM topic WHERE project_id = :projectId AND topic_status != :status AND assigned_to = :SearchString ORDER BY creation_date DESC")
     Cursor getMyTopics(String projectId, String SearchString, String status);
 
-    @Query("SELECT * FROM topic WHERE status_column = :updatedOrNew  ORDER BY date_column ASC")
+    @Query("SELECT * FROM topic WHERE status_column = :updatedOrNew ORDER BY date_column ASC")
     Cursor getLocalTopics( String updatedOrNew);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
