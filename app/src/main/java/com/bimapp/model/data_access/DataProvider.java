@@ -6,9 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import com.bimapp.BimApp;
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Topic;
@@ -41,6 +39,9 @@ public class DataProvider extends ContentProvider {
         switch (uri.getPath()) {
             case ("/" + COMMENT_TABLE):
                 if (selectionArgs != null && selectionArgs[0].equals(LOCAL_ROWS))
+                    if (selectionArgs.length ==1)
+                        cursor = database.commentDao().getNewComments(selection);
+                else
                     cursor = database.commentDao().getTopicsComments(selection, selectionArgs[1]);
                 else
                     cursor = database.commentDao().getTopicsComments(selection);
