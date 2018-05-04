@@ -669,11 +669,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                                 (vpCursor.getString(vpCursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
                         Long dateAcquired = vpCursor.getLong(vpCursor.getColumnIndex(AppDatabase.DATE_COLUMN));
                         Viewpoint vp = new Viewpoint(guid, commentGUID, type, pictureName, dateAcquired, localStatus);
+                        vp.getSnapshot();
                         comment.setViewpoint(vp);
                     }
                 }
                 vpCursor.close();
             }
+
             NetworkConnManager.networkRequest(
                     mContext,
                     Request.Method.POST,
@@ -814,13 +816,15 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                 JSONObject jsonObject = new JSONObject(response);
                 vp = new Viewpoint(jsonObject,mComment.getMCommentsGUID());
                 // Deletes old Viewpoint and inserts new
-                mContentResolver.insert(DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
-                        vp.getContentValues()
-                );
                 mContentResolver.delete(DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
                         mViewpoint.getMGuid(),
                         null
                 );
+                mContentResolver.insert(DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
+                        vp.getContentValues()
+                );
+                mComment.setViewpoint(vp);
+                mComment.setViewpointGuid(vp.getMGuid());
                 mComment.setTopicGUID(mServerTopic.getMGuid());
                 NetworkConnManager.networkRequest(
                         mContext,
