@@ -10,6 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/description"
-        android:inputType="textMultiLine"
+        android:inputType="textCapSentences"
         android:padding="@dimen/text_margin" />
 </android.support.design.widget.TextInputLayout>
