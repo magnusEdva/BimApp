@@ -19,6 +19,7 @@ import com.bimapp.model.data_access.DataProvider;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.view.interfaces.TopicsViewInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
@@ -37,10 +38,26 @@ public class TopicsListView implements TopicsViewInterface {
 
     private SearchView searchString;
 
+    private ArrayAdapter<Topic> adapter;
+
+    private ListView listView;
+
     public TopicsListView(LayoutInflater inflater, ViewGroup container) {
         mRootView = inflater.inflate(R.layout.view_topics_list, container, false);
         searchString = mRootView.findViewById(R.id.topics_list_search_editText);
         mContext = (BimApp) mRootView.getContext().getApplicationContext();
+        listView = mRootView.findViewById(R.id.topics_list);
+        adapter = new ArrayAdapter<>(this.getRootView().getContext(), android.R.layout.simple_list_item_1, new ArrayList<Topic>());
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                InputMethodManager inputMethodManager = (InputMethodManager) mRootView.getContext().
+                        getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(mRootView.getWindowToken(), 0);
+                mListener.onSelectedItem(adapter.getItem(position));
+            }
+        });
         setupSearchButton();
     }
 
@@ -56,40 +73,18 @@ public class TopicsListView implements TopicsViewInterface {
 
     @Override
     public void setTopics(final List<Topic> topics) {
-        if (searchString.getQuery() == null) {
+        if (searchString.getQuery() != null) {
             searchString.setQuery(searchString.getQuery(), true);
         }else {
-            ArrayAdapter<Topic> arrayAdapter = new ArrayAdapter<>(this.getRootView().getContext(), android.R.layout.simple_list_item_1, topics);
-            ListView listView = mRootView.findViewById(R.id.topics_list);
-            listView.setAdapter(arrayAdapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-
-                    InputMethodManager inputMethodManager = (InputMethodManager) mRootView.getContext().
-                            getSystemService(INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(mRootView.getWindowToken(), 0);
-                    mListener.onSelectedItem(topics.get(position));
-                }
-            });
+           adapter.clear();
+           adapter.addAll(topics);
         }
     }
 
     @Override
     public void setSearchResult (final List<Topic> topics){
-        ArrayAdapter<Topic> arrayAdapter = new ArrayAdapter<>(this.getRootView().getContext(), android.R.layout.simple_list_item_1, topics);
-        ListView listView = mRootView.findViewById(R.id.topics_list);
-        listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-
-                InputMethodManager inputMethodManager = (InputMethodManager) mRootView.getContext().
-                        getSystemService(INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(mRootView.getWindowToken(), 0);
-                mListener.onSelectedItem(topics.get(position));
-            }
-        });
+        adapter.clear();
+        adapter.addAll(topics);
     }
     @Override
     public View getRootView() {

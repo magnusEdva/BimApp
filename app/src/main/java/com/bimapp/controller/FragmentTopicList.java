@@ -29,7 +29,7 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
  * create an instance of this fragment.
  */
 public class FragmentTopicList extends Fragment
-        implements TopicsFragmentInterface , TopicsViewInterface.TopicsViewToPresenter{
+        implements TopicsFragmentInterface, TopicsViewInterface.TopicsViewToPresenter {
 
     // Interface for the view, setListener makes this the callback.
     // private TopicViewInterface mTopicViewInterface;
@@ -55,6 +55,7 @@ public class FragmentTopicList extends Fragment
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     *
      * @return A new instance of fragment FragmentTopicList.
      */
     public static FragmentTopicList newInstance() {
@@ -69,10 +70,9 @@ public class FragmentTopicList extends Fragment
         super.onCreate(savedInstanceState);
         mApplication = (BimApp) this.getActivity().getApplication();
         mTopicsEntityManager = new TopicsEntityManager(mApplication);
-        mTopicsEntityManager.getTopics(this);
 
 
-        if(mTopicsView != null)
+        if (mTopicsView != null)
             mTopicsView.clearSearch();
     }
 
@@ -89,22 +89,31 @@ public class FragmentTopicList extends Fragment
     }
 
     @Override
-    public void onAttach(Context context){
+    public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof TopicSelectionInterface)
             mListener = (TopicSelectionInterface) context;
         else
             throw new UnsupportedOperationException();
-    }
-    @Override
-    public void onResume(){
-        super.onResume();
-        if(searchForAssignedTo())
-            mTopicsView.setSearchString(searchQuery);
+
+
     }
 
     @Override
-    public void onDetach(){
+    public void onResume() {
+        super.onResume();
+
+        mTopicsEntityManager.getTopics(this);
+
+        if (searchForAssignedTo())
+            mTopicsView.setSearchString(searchQuery);
+
+
+
+    }
+
+    @Override
+    public void onDetach() {
         super.onDetach();
         mTopicsEntityManager = null; // I think this helps prevent memory leaks
         mListener = null;
@@ -113,26 +122,29 @@ public class FragmentTopicList extends Fragment
     /**
      * From TopicsFragmentsInterface.
      * Calls on a method in the view and gives the topics the view should show.
+     *
      * @param topics the topics to be listed
      */
     @Override
     public void setTopics(List<Topic> topics) {
-            mTopicsView.setTopics(topics);
+        mTopicsView.setTopics(topics);
     }
+
     @Override
-    public void setSearchResult(List<Topic> topic){
+    public void setSearchResult(List<Topic> topic) {
         mTopicsView.setSearchResult(topic);
     }
 
-    private boolean  searchForAssignedTo() {
-        return (searchQuery != null && searchArg != null) ;
+    private boolean searchForAssignedTo() {
+        return (searchQuery != null && searchArg != null);
     }
+
     @Override
-    public void onSearch(String argument, String searchString){
+    public void onSearch(String argument, String searchString) {
         mTopicsEntityManager.searchTopics(this, argument, searchString);
     }
 
-    public void setTopicsAssignedTo(String userId){
+    public void setTopicsAssignedTo(String userId) {
         searchArg = DataProvider.ASSIGNED_TO;
         searchQuery = userId;
     }
@@ -140,16 +152,16 @@ public class FragmentTopicList extends Fragment
     /**
      *
      */
-    public void loadAllTopics(){
+    public void loadAllTopics() {
 
     }
 
     @Override
-    public void onSelectedItem(Topic topic){
+    public void onSelectedItem(Topic topic) {
         mListener.onTopicSelected(topic);
     }
 
-    public interface TopicSelectionInterface{
+    public interface TopicSelectionInterface {
         void onTopicSelected(Topic topic);
     }
 
