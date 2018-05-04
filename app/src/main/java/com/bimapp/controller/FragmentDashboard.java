@@ -71,6 +71,7 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
         List<Template> temps = new ArrayList<>();
         temps.add(new Template(MOCK.templateOne));
         temps.add(new Template(MOCK.templateTwo));
+        temps.add(Template.createTemplateIssues());
 
         mDashboardView.setTemplates(temps);
 

@@ -46,6 +46,15 @@ public class Template implements entity {
 
     private List<TemplateNode> mNodes;
 
+    private Boolean assignedTo;
+
+    protected Template(String title, String description){
+        mName = title;
+        mDescription = description;
+        assignedTo = true;
+        mColor = Color.RED;
+
+    }
     public Template(JSONObject jsonTemplate) {
         mNodes = new ArrayList<>();
         try {
@@ -53,6 +62,11 @@ public class Template implements entity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static Template createTemplateIssues(){
+        Template t = new Template("My issues", "Open issues assigned to me");
+        return t;
     }
 
     private void setProperties(JSONObject jsonTemplate) {
@@ -112,6 +126,10 @@ public class Template implements entity {
 
     public Integer getIcon() {
         return mIcon;
+    }
+
+    public Boolean getAssignedTo(){
+        return assignedTo;
     }
 
     public List<TemplateNode> getNodes() {

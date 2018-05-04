@@ -8,16 +8,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
+import com.bimapp.model.data_access.DataProvider;
 import com.bimapp.model.data_access.entityManagers.TopicsEntityManager;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.view.TopicsListView;
 import com.bimapp.view.interfaces.TopicsViewInterface;
 
 import java.util.List;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +43,10 @@ public class FragmentTopicList extends Fragment
     private TopicSelectionInterface mListener;
     // Getting the application
     private BimApp mApplication;
+
+    private String searchQuery;
+
+    private String searchArg;
 
     public FragmentTopicList() {
         // Required empty public constructor
@@ -63,6 +71,7 @@ public class FragmentTopicList extends Fragment
         mTopicsEntityManager = new TopicsEntityManager(mApplication);
         mTopicsEntityManager.getTopics(this);
 
+
         if(mTopicsView != null)
             mTopicsView.clearSearch();
     }
@@ -75,6 +84,7 @@ public class FragmentTopicList extends Fragment
         // Set this as the callback from the view
         mTopicsView.registerListener(this);
         // Inflate the layout for this fragment
+        mTopicsView.clearSearch();
         return mTopicsView.getRootView();
     }
 
@@ -105,13 +115,23 @@ public class FragmentTopicList extends Fragment
      */
     @Override
     public void setTopics(List<Topic> topics) {
+        if(searchQuery != null && searchArg != null){
+            onSearch(searchArg, searchQuery);
+            searchArg = null;
+            searchQuery = null;
+        } else
             mTopicsView.setTopics(topics);
 
     }
 
     @Override
-    public void onSearch(String searchString){
-        mTopicsEntityManager.searchTopics(this, searchString);
+    public void onSearch(String argument, String searchString){
+        mTopicsEntityManager.searchTopics(this,argument, searchString);
+    }
+
+    public void setTopicsAssignedTo(String userId){
+        searchArg= DataProvider.ASSIGNED_TO;
+        searchQuery = userId;
     }
 
     /**
@@ -122,7 +142,7 @@ public class FragmentTopicList extends Fragment
     }
 
     @Override
-    public void onSelectedItem(Topic topic) {
+    public void onSelectedItem(Topic topic){
         mListener.onTopicSelected(topic);
     }
 

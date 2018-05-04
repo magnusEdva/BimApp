@@ -20,7 +20,7 @@ public interface TopicsViewInterface extends ViewMVP {
 
     interface TopicsViewToPresenter {
         void onSelectedItem(Topic topic);
-        void onSearch(String searchString);
+        void onSearch(String argument, String searchString);
     }
 
     void registerListener(TopicsViewToPresenter topicsViewToPresenter);

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -13,10 +14,13 @@ import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.bimapp.R;
+import com.bimapp.model.data_access.DataProvider;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.view.interfaces.TopicsViewInterface;
 
 import java.util.List;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
  * Created by Hakon on 22.03.2018.
@@ -53,6 +57,10 @@ public class TopicsListView implements TopicsViewInterface {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+                InputMethodManager inputMethodManager = (InputMethodManager) mRootView.getContext().
+                        getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(mRootView.getWindowToken(), 0);
                 mListener.onSelectedItem(topics.get(position));
             }
         });
@@ -72,20 +80,21 @@ public class TopicsListView implements TopicsViewInterface {
         searchString.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mListener.onSearch(searchString.getQuery().toString());
+                mListener.onSearch(DataProvider.SEARCH, searchString.getQuery().toString());
                 searchString.clearFocus();
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                mListener.onSearch(searchString.getQuery().toString());
+                mListener.onSearch(DataProvider.SEARCH,searchString.getQuery().toString());
                 return true;
             }
         });
     }
     @Override
     public void clearSearch(){
-        searchString.setQuery("",true);
+        searchString.setQuery("", false);
+        searchString.clearFocus();
     }
 }
