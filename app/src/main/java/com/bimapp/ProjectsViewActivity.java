@@ -274,9 +274,14 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     @Override
     public void onDashboardItemClick(Template template) {
-        mNewTopicFragment = new FragmentNewTopic();
-        mNewTopicFragment.setTemplate(template);
-        openFragment(NEWTOPIC_FRAGMENT_TAG);
+        if(!template.getAssignedTo()) {
+            mNewTopicFragment = new FragmentNewTopic();
+            mNewTopicFragment.setTemplate(template);
+            openFragment(NEWTOPIC_FRAGMENT_TAG);
+        }else{
+            openFragment(TOPICLIST_FRAGMENT_TAG);
+            mTopicListFragment.setTopicsAssignedTo(user.getName());
+        }
 
     }
 

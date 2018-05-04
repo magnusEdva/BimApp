@@ -25,6 +25,7 @@ public class Project implements entity {
     public static final String NAME = "name";
     public static final String BIMSYNC_PROJECT_ID = "bimsync_project_id";
     public static final String ISSUE_BOARD_EXTENSIONS = "issue_board_extensions";
+
     /**
      * used by the presenter to control which name the view
      * shows. either bimsyncProjectName or name, depending on state.
