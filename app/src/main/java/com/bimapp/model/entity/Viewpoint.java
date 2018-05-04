@@ -67,21 +67,22 @@ public class Viewpoint implements entity {
 
     public Viewpoint(String type, Bitmap data, String guid) {
         mSnapshot = new Snapshot(type, data);
-        if(!checkIfImageIsAlreadyStored()){
-            mSnapshot.storePicture(data,mGuid);
-        }
+
         hasSnapshot = true;
         mCommentGUID = guid;
         dateAcquired = System.currentTimeMillis();
         localStatus = AppDatabase.statusTypes.New;
         mGuid = Math.random() + "";
+        if(!checkIfImageIsAlreadyStored()){
+            mSnapshot.storePicture(data,mGuid);
+        }
     }
 
     public Viewpoint(String guid, String commentGUID, String type, String name,
                      Long dateAcquired, AppDatabase.statusTypes localStatus) {
         mGuid = guid;
         mCommentGUID = commentGUID;
-        mSnapshot = new Snapshot(type, name);
+        mSnapshot = new Snapshot(type, guid);
         hasSnapshot = true;
         this.dateAcquired = dateAcquired;
         this.localStatus = localStatus;
