@@ -178,7 +178,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
         @Override
         public void onError(String response) {
             if (response != null)
-                Log.d("postComment", response);/*
+                Log.d("postComment", response);
             mListener.postedComment(false, null);
             handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
                     mToBeDeleted.getContentValues());
@@ -187,7 +187,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
                         DataProvider.VIEWPOINT_TABLE),
                         mToBeDeleted.getMViewpoint().getContentValues()
                 );
-            }*/
+            }
         }
 
         @Override

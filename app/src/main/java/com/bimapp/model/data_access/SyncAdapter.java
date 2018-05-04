@@ -90,7 +90,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         // Puts un-synced updated Comments to the server. We don't have those
         PutComments();
         // This gets projects from the server as well as Topics, Comments and ViewPoints
-        //GetProjects();
+        GetProjects();
 
     }
 
