@@ -106,6 +106,12 @@ public class TopicView implements TopicViewInterface{
             public void onClick(View v) {
                 floatingButton.setVisibility(View.INVISIBLE);
                 mCommentCard.setVisibility(View.VISIBLE);
+                mNewComment.requestFocus();
+                InputMethodManager inputMethodManager =
+                        (InputMethodManager)mRootView.getContext().getSystemService(mRootView.getContext().INPUT_METHOD_SERVICE);
+                inputMethodManager.toggleSoftInputFromWindow(
+                        mNewComment.getApplicationWindowToken(),
+                        InputMethodManager.SHOW_FORCED, 0);
             }
         });
         mCommentAddImage.setOnClickListener(new View.OnClickListener() {
