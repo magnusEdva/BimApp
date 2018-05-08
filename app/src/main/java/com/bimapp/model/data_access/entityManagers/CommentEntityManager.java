@@ -80,7 +80,7 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
         Viewpoint vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, file, null);
         comment.setViewpoint(vp);
         handler.startInsert(1,null,DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE), vp.getContentValues());
-        new postImage(new postViewpointCallback(listener, topic, comment, vp), topic, vp).execute();
+        new postImage(new PostViewpointCallback(listener, topic, comment, vp), topic, vp).execute();
     }
 
     private void requestViewpoint(TopicFragmentInterface listener, Comment comment) {
@@ -108,11 +108,11 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
     }
 
     private class postImage extends AsyncTask<Void, Integer, Boolean> {
-        postViewpointCallback mCallback;
+        PostViewpointCallback mCallback;
         Topic mTopic;
         Viewpoint mVp;
 
-        postImage(postViewpointCallback callback, Topic topic, Viewpoint vp) {
+        postImage(PostViewpointCallback callback, Topic topic, Viewpoint vp) {
             super();
             mCallback = callback;
             mTopic = topic;
@@ -264,14 +264,14 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
     }
 
 
-    private class postViewpointCallback implements Callback<String> {
+    private class PostViewpointCallback implements Callback<String> {
 
         CommentFragmentInterface mListener;
         Topic mTopic;
         Comment mComment;
         Viewpoint toBeDeleted;
 
-        postViewpointCallback(CommentFragmentInterface listener, Topic topic, Comment comment, Viewpoint toBeDeleted) {
+        PostViewpointCallback(CommentFragmentInterface listener, Topic topic, Comment comment, Viewpoint toBeDeleted) {
             mListener = listener;
             mTopic = topic;
             mComment = comment;
@@ -281,8 +281,14 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
         @Override
         public void onError(String response) {
             mListener.postedComment(false, null);
-            if (response != null)
-                Log.d("postViewpoint", response);
+            handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
+                    mComment.getContentValues());
+            if (mComment.getMViewpoint() != null){
+                handler.startInsert(2, null, DataProvider.ParseUri(
+                        DataProvider.VIEWPOINT_TABLE),
+                        mComment.getMViewpoint().getContentValues()
+                );
+            }
         }
 
         @Override
