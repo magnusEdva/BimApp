@@ -2,19 +2,18 @@ package com.bimapp.controller;
 
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
-import android.os.AsyncTask;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bimapp.BimApp;
+import com.bimapp.controller.interfaces.CommentFragmentInterface;
 import com.bimapp.controller.interfaces.TopicFragmentInterface;
-import com.bimapp.model.data_access.AppDatabase;
 import com.bimapp.model.data_access.entityManagers.CommentEntityManager;
 import com.bimapp.model.data_access.entityManagers.TopicsEntityManager;
 import com.bimapp.model.entity.Comment;
@@ -30,7 +29,7 @@ import java.util.List;
  * Use the {@link FragmentTopic#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentTopic extends Fragment implements TopicFragmentInterface, TopicViewInterface.TopicListener{
+public class FragmentTopic extends Fragment implements CommentFragmentInterface, TopicFragmentInterface, TopicViewInterface.TopicListener{
 
     private static Topic mTopic;
     private TopicViewInterface mTopicView;
@@ -39,6 +38,7 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface, T
     private BimApp mContext;
     private TopicFragmentListener mListener;
     private List<Comment> mComments;
+    private Bitmap mImage;
 
     public FragmentTopic() {
 
@@ -114,18 +114,38 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface, T
         mTopicView.setComments(mComments);
             }
 
-    @Override
-    public void newComment() {
-        mListener.openCommentFragment(mTopic);
-    }
 
     @Override
     public void changedTopic() {
         mTopicManager.putTopic(this, mTopic);
     }
 
+    @Override
+    public void takePicture() {
+        mListener.onTakePhoto();
+    }
+
+    public void setImage(Bitmap image) {
+        this.mImage = image;
+        mTopicView.gotPicture();
+    }
+
+    @Override
+    public void postedComment(boolean success, Comment comment) {
+        Log.d("comment","comment");
+    }
 
     public interface TopicFragmentListener{
-        void openCommentFragment(Topic topic);
+        void onTakePhoto();
     }
+
+    @Override
+    public void postComment(String commentContent) {
+        Comment comment = new Comment(commentContent);
+        if(mImage == null)
+            commentManager.postComment(this, mTopic, comment);
+        else
+            commentManager.postComment(this, mTopic, comment, mImage);
+    }
+
 }

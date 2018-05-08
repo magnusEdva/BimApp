@@ -2,6 +2,7 @@ package com.bimapp.view;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -14,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -62,6 +64,10 @@ public class TopicView implements TopicViewInterface{
 
     private List<String> mTypeFields;
 
+    private CardView mCommentCard;
+    private ImageButton mCommentAddImage;
+    private EditText mNewComment;
+
     private List<String> mUserId;
     public TopicView(LayoutInflater inflater, ViewGroup container){
         mRootView = inflater.inflate(R.layout.view_topic, container, false);
@@ -76,9 +82,14 @@ public class TopicView implements TopicViewInterface{
         mFullScreenImage = mRootView.findViewById(R.id.view_topic_comment_fullscreen_image);
         mDueDateText = mRootView.findViewById(R.id.view_topic_due_date);
         mDueDateImage = mRootView.findViewById(R.id.view_topic_due_date_image);
+        mCommentCard = mRootView.findViewById(R.id.topic_comment_card);
         mDescText = mRootView.findViewById(R.id.DescriptionText);
+        mCommentAddImage = mRootView.findViewById(R.id.view_topic_comment_add_image);
         mDescText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mDescText.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        mNewComment = mRootView.findViewById(R.id.view_topic_comment_new);
+        mNewComment.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mNewComment.setRawInputType(InputType.TYPE_CLASS_TEXT);
         RecyclerView commentsList = mRootView.findViewById(R.id.view_topic_comment_list);
         linearLayoutManager = new LinearLayoutManager(mRootView.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -89,10 +100,18 @@ public class TopicView implements TopicViewInterface{
 
 
         setFullScreenImageOnClick();
+
         floatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.newComment();
+                floatingButton.setVisibility(View.INVISIBLE);
+                mCommentCard.setVisibility(View.VISIBLE);
+            }
+        });
+        mCommentAddImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            mListener.takePicture();
             }
         });
     }
@@ -211,6 +230,22 @@ public class TopicView implements TopicViewInterface{
                 return false;
             }
         });
+
+        mNewComment.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    mListener.postComment(mNewComment.getText().toString());
+                    mNewComment.getText().clear();
+                    mDescText.clearFocus();
+                    clearKeyboard();
+                    mCommentAddImage.setImageDrawable(mRootView.getContext().getDrawable(R.drawable.ic_topics_got_image));
+                    mCommentCard.setVisibility(View.GONE);
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
 
@@ -231,6 +266,11 @@ public class TopicView implements TopicViewInterface{
                 mFullScreenImage.setVisibility(View.GONE);
             }
         });
+    }
+
+    @Override
+    public void gotPicture(){
+        mCommentAddImage.setImageDrawable(mRootView.getContext().getDrawable(R.drawable.ic_topics_got_image));
     }
 
 }

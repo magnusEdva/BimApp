@@ -29,9 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.bimapp.controller.FragmentManualSync;
 import com.bimapp.controller.FragmentDashboard;
-import com.bimapp.controller.FragmentNewComment;
 import com.bimapp.controller.FragmentNewTopic;
 import com.bimapp.controller.FragmentProject;
 import com.bimapp.controller.FragmentTopic;
@@ -89,8 +87,7 @@ public class ProjectsViewActivity extends AppCompatActivity
     private FragmentNewTopic mNewTopicFragment;
     private FragmentTopicList mTopicListFragment;
     private Fragment mProjectsFragment;
-    private Fragment mTopicFragment;
-    private FragmentNewComment mNewCommentFragment;
+    private FragmentTopic mTopicFragment;
     private Fragment mSyncFragment;
     private TextView toolbarProjectNameText;
     private NavigationView navigationView;
@@ -123,7 +120,6 @@ public class ProjectsViewActivity extends AppCompatActivity
         mNewTopicFragment = new FragmentNewTopic();
         mProjectsFragment = new FragmentProject();
         mTopicFragment = new FragmentTopic();
-        mNewCommentFragment = new FragmentNewComment();
         //mSyncFragment = new FragmentManualSync();
 
         toolbarProjectNameText = findViewById(R.id.toolbar_project_text);
@@ -319,13 +315,6 @@ public class ProjectsViewActivity extends AppCompatActivity
         openFragment(TOPIC_FRAGMENT_TAG);
     }
 
-    @Override
-    public void openCommentFragment(Topic topic) {
-        FragmentNewComment.setTopic(topic);
-        navigationView.setCheckedItem(0);
-        openFragment(COMMENT_FRAGMENT_TAG);
-    }
-
 
     /**
      * responsible for opening all the fragments this activity possess
@@ -482,8 +471,8 @@ public class ProjectsViewActivity extends AppCompatActivity
             case (NEWTOPIC_FRAGMENT_TAG):
                 mNewTopicFragment.setImage(bitmap);
                 break;
-            case (COMMENT_FRAGMENT_TAG):
-                mNewCommentFragment.setImage(bitmap);
+            case (TOPIC_FRAGMENT_TAG):
+                mTopicFragment.setImage(bitmap);
                 break;
         }
 
@@ -530,9 +519,6 @@ public class ProjectsViewActivity extends AppCompatActivity
                 break;
             case (NEWTOPIC_FRAGMENT_TAG):
                 openFragment(mNewTopicFragment, tag);
-                break;
-            case (COMMENT_FRAGMENT_TAG):
-                openFragment(mNewCommentFragment, tag);
                 break;
             case (TOPICLIST_FRAGMENT_TAG):
                 openFragment(mTopicListFragment, tag);

@@ -7,8 +7,9 @@ import java.util.List;
 
 public interface TopicViewInterface extends ViewMVP {
     interface TopicListener {
-        void newComment();
         void changedTopic();
+        void takePicture();
+        void postComment(String commentString);
     }
 
     void registerListener(TopicListener listener);
@@ -19,7 +20,7 @@ public interface TopicViewInterface extends ViewMVP {
 
     void setComments(List<Comment> comments);
 
-
+    void gotPicture();
 
 
 }
