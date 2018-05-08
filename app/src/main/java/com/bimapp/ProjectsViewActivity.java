@@ -94,6 +94,7 @@ public class ProjectsViewActivity extends AppCompatActivity
     private Fragment mSyncFragment;
     private TextView toolbarProjectNameText;
     private NavigationView navigationView;
+    private ActionBar mActionBar;
 
     // Variables for accounts
     // The authority for the sync adapter's content provider
@@ -170,18 +171,14 @@ public class ProjectsViewActivity extends AppCompatActivity
         super.onResume();
 
 
-        if (mApplication.getActiveProject() == null)
-            setInitialActiveProject();
-        else
-            toolbarProjectNameText.setText(mApplication.getActiveProject().getName());
+
 
         //Setting toolbar as the actionbar.
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
-
+        mActionBar = getSupportActionBar();
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
         // Defines the drawer
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -222,7 +219,12 @@ public class ProjectsViewActivity extends AppCompatActivity
                 }
         );
 
-
+        if (mApplication.getActiveProject() == null)
+            setInitialActiveProject();
+        else {
+            mActionBar.setTitle(mApplication.getActiveProject().getBimsyncProjectName());
+            toolbarProjectNameText.setText(mApplication.getActiveProject().getName());
+        }
         if (fragmentManager.getBackStackEntryCount() == 0)
             openFragment(DASHBOARD_FRAGMENT_TAG);
 
@@ -285,6 +287,7 @@ public class ProjectsViewActivity extends AppCompatActivity
         navigationView.setCheckedItem(R.id.nav_dashboard);
         openFragment(DASHBOARD_FRAGMENT_TAG);
         toolbarProjectNameText.setText(project.getName());
+        mActionBar.setTitle(project.getBimsyncProjectName());
 
     }
 
@@ -502,6 +505,7 @@ public class ProjectsViewActivity extends AppCompatActivity
                             projects.get(0).setIssueBoardExtensions(issueBoardExtensions);
                             mApplication.setActiveProject(projects.get(0));
                             toolbarProjectNameText.setText(projects.get(0).getName());
+                            mActionBar.setTitle(projects.get(0).getBimsyncProjectName());
                         }
                     });
 
