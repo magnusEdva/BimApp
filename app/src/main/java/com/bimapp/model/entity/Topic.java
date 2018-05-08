@@ -119,7 +119,8 @@ public class Topic implements entity {
     private AppDatabase.statusTypes localStatus;
 
     @Ignore
-    public Topic(){}
+    public Topic() {
+    }
 
     public Topic(JSONObject obj, String projectId) {
         this.projectId = projectId;
@@ -280,8 +281,8 @@ public class Topic implements entity {
      * Sets the status Column in the database to be updated and the date aqcuired to now.
      * only changes something if the status was LIVE.
      */
-    public void updatedLocally(){
-        if(localStatus == AppDatabase.statusTypes.live) {
+    public void updatedLocally() {
+        if (localStatus == AppDatabase.statusTypes.live) {
             localStatus = AppDatabase.statusTypes.updated;
             dateAcquired = System.currentTimeMillis();
         }
@@ -375,7 +376,7 @@ public class Topic implements entity {
         return mTitle;
     }
 
-    public void setTitle(String title){
+    public void setTitle(String title) {
         mTitle = title;
     }
 
@@ -419,9 +420,10 @@ public class Topic implements entity {
         mModifiedAuthor = modifiedAuthor;
     }
 
-    public void setAssignedTo(String assignedTo){
+    public void setAssignedTo(String assignedTo) {
         mAssignedTo = assignedTo;
     }
+
     public String getMAssignedTo() {
         return mAssignedTo;
     }
@@ -434,15 +436,20 @@ public class Topic implements entity {
         mStage = stage;
     }
 
-    public void setDescription(String description){
+    public void setDescription(String description) {
         mDescription = description;
     }
+
     public String getMDescription() {
         return mDescription;
     }
 
     public String getMDueDate() {
-        return DateMapper.map(DateMapper.toDate(mDueDate));
+        if (mDueDate != null){
+            return mDueDate.substring(0,11);
+        }
+        else
+            return null;
     }
 
     public void setDueDate(String dueDate) {
@@ -473,26 +480,27 @@ public class Topic implements entity {
         this.projectId = projectId;
     }
 
-    public Long getDateAcquired(){
+    public Long getDateAcquired() {
         return dateAcquired;
     }
 
-    public void setDateAcquired(Long newDate){
+    public void setDateAcquired(Long newDate) {
         dateAcquired = newDate;
     }
 
-    public void setLocalStatus(AppDatabase.statusTypes status){
+    public void setLocalStatus(AppDatabase.statusTypes status) {
         localStatus = status;
     }
-    public AppDatabase.statusTypes getLocalStatus(){
+
+    public AppDatabase.statusTypes getLocalStatus() {
         return localStatus;
     }
 
     public static class BimSnippet {
-       public final static String SNIPPET_TYPE = "snippet_type";
-       public final static String IS_EXTERNAL = "is_external";
-       public final static String REFERENCE = "reference";
-       public final static String REFERENCE_SCHEMA = "reference_schema";
+        public final static String SNIPPET_TYPE = "snippet_type";
+        public final static String IS_EXTERNAL = "is_external";
+        public final static String REFERENCE = "reference";
+        public final static String REFERENCE_SCHEMA = "reference_schema";
 
 
         @ColumnInfo(name = SNIPPET_TYPE)
