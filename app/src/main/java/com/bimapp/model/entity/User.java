@@ -38,6 +38,12 @@ public class User implements entity {
     }
 
     public User(){}
+
+    public User(String id, String name){
+        this.id = id;
+        this.name = name;
+    }
+
     /**
      * not used
      * @return only throws exception.

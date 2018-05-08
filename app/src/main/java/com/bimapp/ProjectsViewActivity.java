@@ -126,9 +126,6 @@ public class ProjectsViewActivity extends AppCompatActivity
 
         toolbarProjectNameText = findViewById(R.id.toolbar_project_text);
 
-        if (mApplication.checkLogIn())
-            NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
-                    APICall.GETUser(), this, null);
         if(mApplication.checkLogIn()) {
         mAccount = CreateSyncAccount(this.getApplicationContext());
 /*
@@ -154,6 +151,11 @@ public class ProjectsViewActivity extends AppCompatActivity
 
         // End of code for sync-adapter testing
 
+
+
+        if (mApplication.checkLogIn())
+            NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
+                    APICall.GETUser(), this, null);
 
     }
 
@@ -225,6 +227,8 @@ public class ProjectsViewActivity extends AppCompatActivity
         if (fragmentManager.getBackStackEntryCount() == 0)
             openFragment(DASHBOARD_FRAGMENT_TAG);
 
+
+
     }
 
     @Override
@@ -241,6 +245,11 @@ public class ProjectsViewActivity extends AppCompatActivity
     public void onError(String response) {
         if (response != null)
             Log.d("ProjectsViewActivity", response);
+        if(mApplication.getCurrentUser() != null) {
+            TextView textView = findViewById(R.id.nav_header_title);
+            textView.setText(mApplication.getCurrentUser().getName());
+        }
+
     }
 
     /**

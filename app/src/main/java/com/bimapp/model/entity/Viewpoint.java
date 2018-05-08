@@ -73,9 +73,6 @@ public class Viewpoint implements entity {
         dateAcquired = System.currentTimeMillis();
         localStatus = AppDatabase.statusTypes.New;
         mGuid = Math.random() + "";
-        if(!checkIfImageIsAlreadyStored()){
-            mSnapshot.storePicture(data,mGuid);
-        }
     }
 
     public Viewpoint(String guid, String commentGUID, String type, String name,

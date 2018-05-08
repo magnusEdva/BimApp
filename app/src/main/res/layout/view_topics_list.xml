@@ -5,32 +5,12 @@
     tools:context="com.bimapp.view.TopicsListView">
 
 
-    <ListView
-        android:id="@+id/topics_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="false"
-        android:layout_above="@id/topics_list_search_editText"
-        />
-
-
-    <Spinner
-        android:id="@+id/topics_list_search_spinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:spinnerMode="dialog"
-        android:layout_alignParentBottom="true"/>
-
     <SearchView
         android:id="@+id/topics_list_search_editText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/topics_list_search_spinner"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
         android:ems="10"
         android:inputType="textPersonName"
         android:queryHint="@string/search"
@@ -38,6 +18,20 @@
         android:imeOptions="actionDone"
         android:queryBackground="@color/colorPrimaryLight"
         android:submitBackground="@color/colorPrimaryLight" />
+
+    <ListView
+        android:id="@+id/topics_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="false"
+        android:layout_below="@id/topics_list_search_editText"
+        />
+
+
+
+
 
 
 </RelativeLayout>
