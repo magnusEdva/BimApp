@@ -104,7 +104,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
 
     private void UpdateComments(String newOrUpdatedRows){
 
-        Log.d("SyncAdapter", "Started updating comments");
+
         // Find un-synced comments
         Cursor commentCursor = mContentResolver.query(DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
                 null,
@@ -114,6 +114,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
 
         List<Comment> comments = new ArrayList<>();
         if (commentCursor != null){
+            Log.d("SyncAdapter", "Found " + commentCursor.getCount() + " comments to push to server.");
             if (commentCursor.getCount() !=0 ){
                 // If there are new/updated comments, create new objects
                 while (commentCursor.moveToNext()) {
@@ -130,12 +131,23 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                     Long dateAcquired = commentCursor.getLong(commentCursor.getColumnIndex(AppDatabase.DATE_COLUMN));
                     AppDatabase.statusTypes localStatus = AppDatabase.convertStringToStatus
                             (commentCursor.getString(commentCursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
-                    Comment comment = (new Comment(commentGuid, verbalStatus, status, Date, author, topicGUID,
-                            modifiedDate, modifiedAuthor, comment_content, viewpointGuid, dateAcquired, localStatus));
+                    Comment comment = (new Comment(
+                            commentGuid,
+                            verbalStatus,
+                            status,
+                            Date,
+                            author,
+                            topicGUID,
+                            modifiedDate,
+                            modifiedAuthor,
+                            comment_content,
+                            viewpointGuid,
+                            dateAcquired,
+                            localStatus));
 
                     String projectID = "";
 
-                    // Get the ProjectID for current comment
+                    // Get the Topic so you can get the ProjectID for current comment
                     Cursor topicCursor = mContentResolver.query(
                             DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
                             null,
@@ -391,7 +403,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
             cursor.close();
     }
 
-    // Private classes implements Volley Callbacks for specific API-calls
+    // Private classes implements Volley Callbacks for specific API-callbacks
 
     /**
      * Class which handles the callback from network with Projects (IssueBoards)

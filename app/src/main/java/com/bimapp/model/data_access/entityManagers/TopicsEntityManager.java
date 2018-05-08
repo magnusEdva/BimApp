@@ -67,7 +67,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
      */
     @Override
     public void postTopic(Topic topic) {
-        postTopic(mListener, topic, null, null);
+        //postTopic(mListener, topic, null, null);
     }
 
     /**
@@ -92,8 +92,13 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
      */
     public void postTopic(NewTopicFragmentInterface controllerCallback, Topic topic, Comment comment, Viewpoint vp) {
 
-        NetworkConnManager.networkRequest(mContext, Request.Method.POST,
-                APICall.POSTTopics(mContext.getActiveProject()), new TopicPostCallback(controllerCallback, topic, comment, vp), topic);
+        NetworkConnManager.networkRequest(
+                mContext,
+                Request.Method.POST,
+                APICall.POSTTopics(mContext.getActiveProject()),
+                new TopicPostCallback(controllerCallback, topic, comment, vp),
+                topic
+        );
 
     }
 
