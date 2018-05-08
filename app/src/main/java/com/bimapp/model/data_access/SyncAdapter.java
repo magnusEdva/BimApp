@@ -79,6 +79,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                               ContentProviderClient provider,
                               SyncResult syncResult) {
 
+        // For debugging the service. Attach debugger to this process (bimapp:sync)
+        android.os.Debug.waitForDebugger();
         Log.d("SyncAdapter", "Started syncing");
 
         // This posts un-synced new Topics to the server
@@ -109,7 +111,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         Cursor commentCursor = mContentResolver.query(DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
                 null,
                 newOrUpdatedRows,
-                new String[]{ (newOrUpdatedRows)},
+                new String[]{ (DataProvider.LOCAL_ROWS)},
                 null);
 
         List<Comment> comments = new ArrayList<>();
@@ -147,17 +149,22 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
 
                     String projectID = "";
 
+                 //   Log.d("Topic ID" , topicGUID);
                     // Get the Topic so you can get the ProjectID for current comment
                     Cursor topicCursor = mContentResolver.query(
                             DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
                             null,
                             topicGUID,
-                            null,
+                            new String[]{DataProvider.GUID},
                             null
                     );
                     if (topicCursor != null){
-                        if (topicCursor.getCount() != 0){
-                            projectID = topicCursor.getColumnName(topicCursor.getColumnIndex(Project.PROJECT_ID));
+                        while (topicCursor.moveToNext()) {
+                            if (topicCursor.getCount() != 0) {
+                                //Log.d("Cursor", DatabaseUtils.dumpCursorToString(topicCursor));
+                                projectID = topicCursor.getString(topicCursor.getColumnIndex(Project.PROJECT_ID));
+                                //Log.d("SyncAdapter", "Project ID = " + projectID);
+                            }
                         }
                         topicCursor.close();
                     }
@@ -186,6 +193,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                                 comment.setViewpoint(vp);
                                 // Find Topic, and by the topic the ProjectID
 
+                                vp.getSnapshot();
                                 // Post the ViewPoint, send the Comment to the method
                                 NetworkConnManager.networkRequest(mContext,
                                         Request.Method.POST,
@@ -213,16 +221,32 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         if (comments.size() != 0){
             // Post to server
             for (Comment comment: comments){
+                // Get the Topic so you can get the ProjectID for current comment
+                Cursor topicCursor = mContentResolver.query(
+                        DataProvider.ParseUri(DataProvider.TOPIC_TABLE),
+                        null,
+                        comment.getMTopicGUID(),
+                        new String[]{DataProvider.GUID},
+                        null
+                );
+                String projectID = "";
+                if (topicCursor != null){
+                    if (topicCursor.getCount() != 0){
+                        while(topicCursor.moveToNext()){
+                            projectID = topicCursor.getString(topicCursor.getColumnIndex(Project.PROJECT_ID));
+                        }
+                    }
+                    topicCursor.close();
+                }
+                //Log.d("SyncAdapter", "Project ID = " + projectID);
                 NetworkConnManager.networkRequest(
                         mContext,
                         Request.Method.POST,
-                        APICall.POSTComment(null, ""),
+                        APICall.POSTComment(projectID, comment.getMTopicGUID()),
                         new PostCommentCallback(comment,
-                                null,
-                                null,
-                                null
+                                comment.getMTopicGUID()
                         ),
-                        null
+                        comment
                 );
             }
         }
@@ -396,7 +420,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                 mContentResolver.insert(DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
                         comment.getContentValues());
                 Log.d("SyncAdapter", "Added ViewPoint from database!");
-                Log.d("SyncAdapter", "Added Comment " + comment.getMComment());
+               // Log.d("SyncAdapter", "Added Comment " + comment.getMComment());
             }
         }
         if (cursor != null)
@@ -790,6 +814,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
             mLocalTopic = localTopic;
             mViewpoint = viewpoint;
             mServerTopic = serverTopic;
+        }
+
+        public PostCommentCallback(Comment comment, String topicGUID) {
+            mComment = comment;
+            mServerTopic = new Topic();
+            mServerTopic.setGuid(topicGUID);
+            mViewpoint = null;
         }
 
 

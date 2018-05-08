@@ -78,7 +78,9 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
     @Override
     public void postComment(CommentFragmentInterface listener, Topic topic, Comment comment, Bitmap file) {
         Viewpoint vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, file, null);
+        comment.setTopicGUID(topic.getMGuid());
         comment.setViewpoint(vp);
+
         handler.startInsert(1,null,DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE), vp.getContentValues());
         new postImage(new PostViewpointCallback(listener, topic, comment, vp), topic, vp).execute();
     }
@@ -281,14 +283,18 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
         @Override
         public void onError(String response) {
             mListener.postedComment(false, null);
-            handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
-                    mComment.getContentValues());
+            mComment.setViewpoint(toBeDeleted);
+            mComment.setTopicGUID(mTopic.getMGuid());
+            toBeDeleted.setCommentGUID(mComment.getMCommentsGUID());
             if (mComment.getMViewpoint() != null){
-                handler.startInsert(2, null, DataProvider.ParseUri(
+
+                handler.startInsert(1, null, DataProvider.ParseUri(
                         DataProvider.VIEWPOINT_TABLE),
                         mComment.getMViewpoint().getContentValues()
                 );
             }
+            handler.startInsert(1, null, DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
+                    mComment.getContentValues());
         }
 
         @Override

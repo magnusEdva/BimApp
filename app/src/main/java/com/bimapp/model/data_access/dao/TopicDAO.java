@@ -1,7 +1,6 @@
 package com.bimapp.model.data_access.dao;
 
 import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
@@ -25,6 +24,9 @@ public interface TopicDAO {
 
     @Query("SELECT * FROM topic WHERE status_column = :updatedOrNew ORDER BY date_column ASC")
     Cursor getLocalTopics( String updatedOrNew);
+
+    @Query("SELECT * FROM topic WHERE guid = :topicGUID")
+    Cursor getTopicFromId(String topicGUID);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Topic> topic);

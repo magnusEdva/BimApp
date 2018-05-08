@@ -20,9 +20,10 @@ public class DataProvider extends ContentProvider {
     public static final String LOCAL_ROWS = "local_rows";
     public static final String SEARCH = "search";
     public static final String ASSIGNED_TO = "assigned_to";
-
+    public static final String GUID = "guid";
 
     public static final String AUTHORITY = "com.bimapp.model.data_access.DataProvider";
+
 
     public AppDatabase database;
 
@@ -59,6 +60,8 @@ public class DataProvider extends ContentProvider {
                     cursor = database.topicDao().getTopics(selection, selectionArgs[1], "");
                 else if(selectionArgs != null && selectionArgs[0].equals(ASSIGNED_TO))
                     cursor = database.topicDao().getMyTopics(selection, selectionArgs[1], "Closed");
+                else if (selectionArgs != null && selectionArgs[0].equals(GUID))
+                    cursor = database.topicDao().getTopicFromId(selection);
                 else
                     cursor = database.topicDao().getTopics(selection, "Closed");
                 break;
