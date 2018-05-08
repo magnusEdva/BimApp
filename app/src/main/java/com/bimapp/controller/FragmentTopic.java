@@ -80,6 +80,12 @@ public class FragmentTopic extends Fragment implements TopicFragmentInterface, T
         commentManager.getComments(this, mTopic);
         return mTopicView.getRootView();
     }
+    @Override
+    public void onResume(){
+        super.onResume();
+        mTopicView.setTopic(mTopic);
+        commentManager.getComments(this, mTopic);
+    }
 
     public static void setTopic(Topic topic){mTopic = topic;}
 
