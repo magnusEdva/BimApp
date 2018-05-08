@@ -34,6 +34,9 @@ public class TopicView implements TopicViewInterface{
     private View mRootView;
     private TopicListener mListener;
 
+    private TextView mDueDateText;
+    private ImageView mDueDateImage;
+
     private EditText mTitleText;
     private EditText mDescText;
 
@@ -71,6 +74,8 @@ public class TopicView implements TopicViewInterface{
         mStatusInput = mRootView.findViewById(R.id.view_topic_status_input);
         floatingButton = mRootView.findViewById(R.id.view_Topic_floating_button);
         mFullScreenImage = mRootView.findViewById(R.id.view_topic_comment_fullscreen_image);
+        mDueDateText = mRootView.findViewById(R.id.view_topic_due_date);
+        mDueDateImage = mRootView.findViewById(R.id.view_topic_due_date_image);
         mDescText = mRootView.findViewById(R.id.DescriptionText);
         mDescText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mDescText.setRawInputType(InputType.TYPE_CLASS_TEXT);
@@ -119,6 +124,13 @@ public class TopicView implements TopicViewInterface{
         mTypeInput.setAdapter(mTypeAdapter);
         mStatusInput.setAdapter(mStatusAdapter);
 
+        if(topic.getMDueDate() != null){
+            mDueDateText.setText(topic.getMDueDate());
+            mDueDateImage.setVisibility(View.VISIBLE);
+        } else {
+            mDueDateText.setText("");
+            mDueDateImage.setVisibility(View.GONE);
+        }
         mTypeFields = mContext.getActiveProject().getProjectTypesOrdered(topic);
         mTypeAdapter =  new ArrayAdapter<String>(mRootView.getContext()
                 , R.layout.support_simple_spinner_dropdown_item
