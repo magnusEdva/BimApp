@@ -106,6 +106,12 @@ public class TopicView implements TopicViewInterface{
             public void onClick(View v) {
                 floatingButton.setVisibility(View.INVISIBLE);
                 mCommentCard.setVisibility(View.VISIBLE);
+                mNewComment.requestFocus();
+                InputMethodManager inputMethodManager =
+                        (InputMethodManager)mRootView.getContext().getSystemService(mRootView.getContext().INPUT_METHOD_SERVICE);
+                inputMethodManager.toggleSoftInputFromWindow(
+                        mNewComment.getApplicationWindowToken(),
+                        InputMethodManager.SHOW_FORCED, 0);
             }
         });
         mCommentAddImage.setOnClickListener(new View.OnClickListener() {
@@ -236,11 +242,13 @@ public class TopicView implements TopicViewInterface{
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     mListener.postComment(mNewComment.getText().toString());
+                    mCommentsAdapter.addComment(new Comment(mNewComment.getText().toString()));
                     mNewComment.getText().clear();
                     mDescText.clearFocus();
                     clearKeyboard();
                     mCommentAddImage.setImageDrawable(mRootView.getContext().getDrawable(R.drawable.ic_topics_got_image));
                     mCommentCard.setVisibility(View.GONE);
+                    floatingButton.setVisibility(View.VISIBLE);
                     return true;
                 }
                 return false;
