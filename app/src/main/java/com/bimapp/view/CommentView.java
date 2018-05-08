@@ -74,7 +74,7 @@ public class CommentView implements CommentViewInterface {
         mSubmitButton.setEnabled(true);
         mGetPictureButton.setEnabled(true);
         mImageView.setImageBitmap(null);
-        mInputText.setText("");
+        mInputText.getText().clear();
     }
 
     @Override
