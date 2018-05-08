@@ -4,22 +4,16 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.TypeConverter;
 import android.arch.persistence.room.TypeConverters;
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
 import com.bimapp.model.data_access.AppDatabase;
-import com.bimapp.model.data_access.DataProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Comment belonging to a Topic. This Class belongs to said topic,
@@ -331,6 +325,7 @@ public class Comment implements entity {
 
     public void setViewpoint(Viewpoint vp){
         vp.setCommentGUID(mCommentsGUID);
+        this.setViewpointGuid(vp.getMGuid());
         mViewpoint = vp;
     }
 
