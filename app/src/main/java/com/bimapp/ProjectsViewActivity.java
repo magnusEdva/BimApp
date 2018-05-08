@@ -246,7 +246,9 @@ public class ProjectsViewActivity extends AppCompatActivity
             Log.d("ProjectsViewActivity", response);
         if(mApplication.getCurrentUser() != null) {
             TextView textView = findViewById(R.id.nav_header_title);
-            textView.setText(mApplication.getCurrentUser().getName());
+            String headerString = mApplication.getCurrentUser().getName()
+                    + "(" + mApplication.getCurrentUser().getId() + ")";
+            textView.setText(headerString);
         }
 
     }
@@ -267,8 +269,10 @@ public class ProjectsViewActivity extends AppCompatActivity
         user = new User(obj);
         Log.d("Created user", user.getName());
         TextView textView = findViewById(R.id.nav_header_title);
-        textView.setText(user.getName());
         mApplication.setCurrentUser(user);
+        String headerString = mApplication.getCurrentUser().getName()
+                + "(" + mApplication.getCurrentUser().getId() + ")";
+        textView.setText(headerString);
     }
 
     /**
