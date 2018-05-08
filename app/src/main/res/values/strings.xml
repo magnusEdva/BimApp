@@ -10,7 +10,7 @@
     <string name="errorNetworkTimeout">Are thou connected to the internet?</string>
 
     <!-- Navigation drawer-->
-    <string name="projects">Projects</string>
+    <string name="projects">Issue Boards</string>
     <string name="logout">Log Out</string>
     <string name="user">User</string>
     <string name="issues">Issues</string>

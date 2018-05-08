@@ -93,6 +93,7 @@ public class ProjectsViewActivity extends AppCompatActivity
     private FragmentNewComment mNewCommentFragment;
     private Fragment mSyncFragment;
     private TextView toolbarProjectNameText;
+    private NavigationView navigationView;
 
     // Variables for accounts
     // The authority for the sync adapter's content provider
@@ -126,9 +127,6 @@ public class ProjectsViewActivity extends AppCompatActivity
 
         toolbarProjectNameText = findViewById(R.id.toolbar_project_text);
 
-        if (mApplication.checkLogIn())
-            NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
-                    APICall.GETUser(), this, null);
         if(mApplication.checkLogIn()) {
         mAccount = CreateSyncAccount(this.getApplicationContext());
 /*
@@ -154,6 +152,11 @@ public class ProjectsViewActivity extends AppCompatActivity
 
         // End of code for sync-adapter testing
 
+
+
+        if (mApplication.checkLogIn())
+            NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
+                    APICall.GETUser(), this, null);
 
     }
 
@@ -182,7 +185,7 @@ public class ProjectsViewActivity extends AppCompatActivity
 
         // Defines the drawer
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -204,9 +207,6 @@ public class ProjectsViewActivity extends AppCompatActivity
                             case R.id.nav_dashboard:
                                 openFragment(DASHBOARD_FRAGMENT_TAG);
                                 break;
-                            case R.id.nav_new_topic:
-                                openFragment(NEWTOPIC_FRAGMENT_TAG);
-                                break;
                             case R.id.nav_log_out:
                                 mApplication.logOut();
                                 Intent intent = new Intent(ProjectsViewActivity.this, WelcomeActivity.class);
@@ -222,8 +222,11 @@ public class ProjectsViewActivity extends AppCompatActivity
                 }
         );
 
+
         if (fragmentManager.getBackStackEntryCount() == 0)
             openFragment(DASHBOARD_FRAGMENT_TAG);
+
+
 
     }
 
@@ -241,6 +244,13 @@ public class ProjectsViewActivity extends AppCompatActivity
     public void onError(String response) {
         if (response != null)
             Log.d("ProjectsViewActivity", response);
+        if(mApplication.getCurrentUser() != null) {
+            TextView textView = findViewById(R.id.nav_header_title);
+            String headerString = mApplication.getCurrentUser().getName()
+                    + "(" + mApplication.getCurrentUser().getId() + ")";
+            textView.setText(headerString);
+        }
+
     }
 
     /**
@@ -259,8 +269,10 @@ public class ProjectsViewActivity extends AppCompatActivity
         user = new User(obj);
         Log.d("Created user", user.getName());
         TextView textView = findViewById(R.id.nav_header_title);
-        textView.setText(user.getName());
         mApplication.setCurrentUser(user);
+        String headerString = mApplication.getCurrentUser().getName()
+                + "(" + mApplication.getCurrentUser().getId() + ")";
+        textView.setText(headerString);
     }
 
     /**
@@ -270,6 +282,7 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     @Override
     public void onFragmentProjectInteraction(Project project) {
+        navigationView.setCheckedItem(R.id.nav_dashboard);
         openFragment(DASHBOARD_FRAGMENT_TAG);
         toolbarProjectNameText.setText(project.getName());
 
@@ -285,9 +298,11 @@ public class ProjectsViewActivity extends AppCompatActivity
         if(template.getAssignedTo() == null) {
             mNewTopicFragment = new FragmentNewTopic();
             mNewTopicFragment.setTemplate(template);
+            navigationView.setCheckedItem(0);
             openFragment(NEWTOPIC_FRAGMENT_TAG);
         }else{
             mTopicListFragment.setTopicsAssignedTo(user.getId());
+            navigationView.setCheckedItem(R.id.nav_issues);
             openFragment(TOPICLIST_FRAGMENT_TAG);
 
         }
@@ -297,12 +312,14 @@ public class ProjectsViewActivity extends AppCompatActivity
     @Override
     public void onTopicSelected(Topic topic) {
         FragmentTopic.setTopic(topic);
+        navigationView.setCheckedItem(0);
         openFragment(TOPIC_FRAGMENT_TAG);
     }
 
     @Override
     public void openCommentFragment(Topic topic) {
         FragmentNewComment.setTopic(topic);
+        navigationView.setCheckedItem(0);
         openFragment(COMMENT_FRAGMENT_TAG);
     }
 

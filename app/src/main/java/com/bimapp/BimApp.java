@@ -204,9 +204,23 @@ public class BimApp extends Application {
 
     public void setCurrentUser(User user) {
         mCurrentUser = user;
+        SharedPreferences preferences = getSharedPreferences("settings", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("user" + User.ID, user.getId());
+        editor.putString("user" + User.NAME, user.getName());
+        editor.apply();
+
+
     }
 
     public User getCurrentUser() {
+        if(mCurrentUser == null){
+            SharedPreferences preferences = getSharedPreferences("settings", MODE_PRIVATE);
+            String id = preferences.getString("user" + User.ID,null);
+            String name = preferences.getString("user" + User.NAME,null);
+            if(id != null && name != null)
+                mCurrentUser = new User(id,name);
+        }
         return mCurrentUser;
     }
 }
