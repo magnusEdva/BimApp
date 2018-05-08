@@ -5,6 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:overScrollMode="ifContentScrolls"
     android:scrollbarStyle="insideOverlay"
@@ -16,75 +18,127 @@
         android:layout_height="fill_parent">
 
         <RelativeLayout
-            android:id="@+id/form_layout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/TitleText"
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true" />
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:elevation="5dp"
+                card_view:cardElevation="10dp">
 
-            <TextView
-                android:id="@+id/view_topic_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@id/TitleText"
-                android:text="@string/issue_status" />
+                <RelativeLayout
+                    android:id="@+id/form_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-            <Spinner
-                android:id="@+id/view_topic_status_input"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/TitleText"
-                android:layout_toEndOf="@+id/view_topic_status"
-                android:layout_toRightOf="@+id/view_topic_type" />
+                    <TextView
+                        android:id="@+id/TitleTextHeader"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_margin="5dp"
+                        android:text="@string/topic_title" />
 
-            <TextView
-                android:id="@+id/view_topic_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/TitleText"
-                android:layout_toEndOf="@id/view_topic_status_input"
-                android:text="@string/topic_type" />
+                    <EditText
+                        android:id="@+id/TitleText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/TitleTextHeader"
+                        android:layout_margin="5dp"
+                        android:hint="@string/addTopicTitle"
+                        android:inputType="textMultiLine" />
 
-            <Spinner
-                android:id="@+id/view_topic_type_input"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/TitleText"
-                android:layout_toEndOf="@+id/view_topic_type" />
+                    <TextView
+                        android:id="@+id/DescriptionTextHeader"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/TitleText"
+                        android:layout_margin="5dp"
+                        android:text="@string/description" />
+
+                    <EditText
+                        android:id="@+id/DescriptionText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/DescriptionTextHeader"
+                        android:layout_margin="5dp"
+                        android:hint="@string/addDesc"
+                        android:inputType="textMultiLine" />
+
+                    <TextView
+                        android:id="@+id/view_topic_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/DescriptionText"
+                        android:text="@string/issue_status" />
+
+                    <Spinner
+                        android:id="@+id/view_topic_status_input"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/view_topic_status"
+                        android:layout_margin="5dp"
+                        android:layout_alignParentStart="true" />
+
+                    <TextView
+                        android:id="@+id/view_topic_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@id/view_topic_type_input"
+                        android:layout_toEndOf="@id/view_topic_status_input"
+                        android:text="@string/topic_type" />
+
+                    <Spinner
+                        android:id="@+id/view_topic_type_input"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/view_topic_status"
+                        android:layout_alignParentEnd="true"
+                        android:layout_margin="5dp"
+                        />
 
 
-            <TextView
-                android:id="@+id/view_topic_assigned_to_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/view_topic_status_input"
-                android:text="@string/assigned_to" />
+                    <TextView
+                        android:id="@+id/view_topic_assigned_to_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/view_topic_status_input"
+                        android:text="@string/assigned_to" />
 
-            <TextView
-                android:id="@+id/view_topic_assigned_to"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@+id/view_topic_status_input" />
+                    <Spinner
+                        android:id="@+id/view_topic_assigned_to"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/view_topic_assigned_to_text"
+                        android:layout_margin="5dp" />
+
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/view_topic_comment_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/view_topic_assigned_to"
                 android:clipChildren="true"
                 android:clipToPadding="true"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:layout_below="@id/card_view"/>
 
 
         </RelativeLayout>
     </ScrollView>
+
 
     <ImageView
         android:id="@+id/view_topic_comment_fullscreen_image"

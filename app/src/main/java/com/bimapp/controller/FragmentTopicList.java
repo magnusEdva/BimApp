@@ -105,9 +105,12 @@ public class FragmentTopicList extends Fragment
 
         mTopicsEntityManager.getTopics(this);
 
-        if (searchForAssignedTo())
-            mTopicsView.setSearchString(searchQuery);
+        mTopicsView.clearSearch();
 
+        if (searchForAssignedTo()) {
+            onSearch(searchArg, searchQuery, false);
+        }
+        else mTopicsView.search();
 
 
     }
@@ -115,7 +118,7 @@ public class FragmentTopicList extends Fragment
     @Override
     public void onDetach() {
         super.onDetach();
-        mTopicsEntityManager = null; // I think this helps prevent memory leaks
+        mTopicsEntityManager = null;
         mListener = null;
     }
 
@@ -140,9 +143,15 @@ public class FragmentTopicList extends Fragment
     }
 
     @Override
-    public void onSearch(String argument, String searchString) {
+    public void onSearch(String argument, String searchString, boolean deleteArgs) {
         mTopicsEntityManager.searchTopics(this, argument, searchString);
+
+        if (deleteArgs) {
+            searchQuery = null;
+            searchArg = null;
+        }
     }
+
 
     public void setTopicsAssignedTo(String userId) {
         searchArg = DataProvider.ASSIGNED_TO;

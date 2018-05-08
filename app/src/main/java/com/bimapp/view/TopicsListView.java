@@ -96,14 +96,15 @@ public class TopicsListView implements TopicsViewInterface {
         return null;
     }
 
+
     private void setupSearchButton() {
         searchString.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (mContext.getActiveProject().getIssueBoardExtensions().getUserIdType().contains(query))
-                    mListener.onSearch(DataProvider.ASSIGNED_TO, query);
+                    mListener.onSearch(DataProvider.ASSIGNED_TO, query, false);
                 else
-                    mListener.onSearch(DataProvider.SEARCH, searchString.getQuery().toString());
+                    mListener.onSearch(DataProvider.SEARCH, searchString.getQuery().toString(), true);
                 searchString.clearFocus();
                 return true;
             }
@@ -111,9 +112,9 @@ public class TopicsListView implements TopicsViewInterface {
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (mContext.getActiveProject().getIssueBoardExtensions().getUserIdType().contains(newText))
-                    mListener.onSearch(DataProvider.ASSIGNED_TO, newText);
+                    mListener.onSearch(DataProvider.ASSIGNED_TO, newText,false);
                 else
-                    mListener.onSearch(DataProvider.SEARCH, searchString.getQuery().toString());
+                    mListener.onSearch(DataProvider.SEARCH, searchString.getQuery().toString(), false);
                 return true;
             }
         });
@@ -121,18 +122,19 @@ public class TopicsListView implements TopicsViewInterface {
 
     @Override
     public void setSearchString(String searchString) {
-        this.searchString.setQuery(searchString, false);
+        this.searchString.setQuery(searchString, true);
         this.searchString.clearFocus();
     }
 
     @Override
     public void search() {
         searchString.setQuery(searchString.getQuery(), true);
+        searchString.clearFocus();
     }
 
     @Override
     public void clearSearch() {
-        searchString.setQuery("", false);
+        searchString.setQuery("", true);
         searchString.clearFocus();
     }
 }

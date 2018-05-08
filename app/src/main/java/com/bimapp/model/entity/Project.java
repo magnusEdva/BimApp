@@ -151,6 +151,12 @@ public class Project implements entity {
         return reOrderList(projectStatus, Status);
     }
 
+    public List<String> getProjectUsersOrdered(Topic topic) {
+        String User = topic.getMAssignedTo();
+        List<String> projectStatus = mIssueBoardExtensions.getUserIdType();
+        return reOrderList(projectStatus, User);
+    }
+
     private List<String> reOrderList(List<String> list, String newFirstElement) {
         String tempStringStorage = list.get(0);
         list.remove(0);

@@ -201,7 +201,7 @@ public class ProjectsViewActivity extends AppCompatActivity
                                 openFragment(PROJECTS_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_issues:
-                                mTopicListFragment.setTopicsAssignedTo("");
+                                mTopicListFragment.setTopicsAssignedTo(null);
                                 openFragment(TOPICLIST_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_dashboard:
