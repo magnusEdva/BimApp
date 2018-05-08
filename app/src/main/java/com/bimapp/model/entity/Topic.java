@@ -442,7 +442,7 @@ public class Topic implements entity {
     }
 
     public String getMDueDate() {
-        return mDueDate;
+        return DateMapper.map(DateMapper.toDate(mDueDate));
     }
 
     public void setDueDate(String dueDate) {
