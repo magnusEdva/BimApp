@@ -230,7 +230,7 @@ public class TopicView implements TopicViewInterface{
                 return false;
             }
         });
-
+        mNewComment.getText().clear();
         mNewComment.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
