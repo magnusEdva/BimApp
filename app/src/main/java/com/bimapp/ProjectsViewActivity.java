@@ -245,7 +245,7 @@ public class ProjectsViewActivity extends AppCompatActivity
         if(mApplication.getCurrentUser() != null) {
             TextView textView = findViewById(R.id.nav_header_title);
             String headerString = mApplication.getCurrentUser().getName()
-                    + "(" + mApplication.getCurrentUser().getId() + ")";
+                    + "\n(" + mApplication.getCurrentUser().getId() + ")";
             textView.setText(headerString);
         }
 
@@ -269,7 +269,7 @@ public class ProjectsViewActivity extends AppCompatActivity
         TextView textView = findViewById(R.id.nav_header_title);
         mApplication.setCurrentUser(user);
         String headerString = mApplication.getCurrentUser().getName()
-                + "(" + mApplication.getCurrentUser().getId() + ")";
+                + "\n(" + mApplication.getCurrentUser().getId() + ")";
         textView.setText(headerString);
     }
 

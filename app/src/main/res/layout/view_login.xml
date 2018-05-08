@@ -33,11 +33,11 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="319dp"
-        android:layout_height="234dp"
+        android:layout_height="273dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="80dp"
-        android:text="BimApp is used as a complement to bimsync. \n\nTo use the application you will need to login and allow this application to access your data.\n\nAll account information is handled by Catenda, and no login-information will be saved.\n\nThis application only has access to project information and issues.\n\nIf you want to revoke access, you can do that through your Account settings in bimsync."
+        android:text="BimApp is used as a complement to bimsync. \n\nTo use the application you will need to login and allow this application to access your data.\n\nThis application only has access to project information and issues.\n\nAll account information is handled by Catenda, and no login-information is handled by this application.\n\nIf you want to revoke access, you can do that through your Account settings in bimsync.\n\nAll data is deleted when you log out of the application"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryText"
         android:textSize="14sp"
