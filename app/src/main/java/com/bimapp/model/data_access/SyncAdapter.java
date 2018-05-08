@@ -80,7 +80,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                               SyncResult syncResult) {
 
         // For debugging the service. Attach debugger to this process (bimapp:sync)
-        android.os.Debug.waitForDebugger();
+        //android.os.Debug.waitForDebugger();
         Log.d("SyncAdapter", "Started syncing");
 
         // This posts un-synced new Topics to the server
