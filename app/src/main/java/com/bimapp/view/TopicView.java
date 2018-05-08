@@ -4,11 +4,16 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -22,21 +27,25 @@ import com.bimapp.view.interfaces.TopicViewInterface;
 
 import java.util.List;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
 public class TopicView implements TopicViewInterface{
 
     private View mRootView;
     private TopicListener mListener;
 
-    private TextView mTitleText;
-    private TextView mAssignedTo;
+    private EditText mTitleText;
+    private EditText mDescText;
 
+    private Spinner mAssignedTo;
     private Spinner mTypeInput;
     private Spinner mStatusInput;
+
     private ImageView mFullScreenImage;
 
     private ArrayAdapter<String> mTypeAdapter;
-
     private ArrayAdapter<String> mStatusAdapter;
+    private ArrayAdapter<String> mUserAdapter;
 
     private FloatingActionButton floatingButton;
 
@@ -50,17 +59,21 @@ public class TopicView implements TopicViewInterface{
 
     private List<String> mTypeFields;
 
+    private List<String> mUserId;
     public TopicView(LayoutInflater inflater, ViewGroup container){
         mRootView = inflater.inflate(R.layout.view_topic, container, false);
         mContext = (BimApp) mRootView.getContext().getApplicationContext();
         mTitleText = mRootView.findViewById(R.id.TitleText);
+        mTitleText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mTitleText.setRawInputType(InputType.TYPE_CLASS_TEXT);
         mAssignedTo = mRootView.findViewById(R.id.view_topic_assigned_to);
         mTypeInput = mRootView.findViewById(R.id.view_topic_type_input);
         mStatusInput = mRootView.findViewById(R.id.view_topic_status_input);
         floatingButton = mRootView.findViewById(R.id.view_Topic_floating_button);
         mFullScreenImage = mRootView.findViewById(R.id.view_topic_comment_fullscreen_image);
-
-
+        mDescText = mRootView.findViewById(R.id.DescriptionText);
+        mDescText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mDescText.setRawInputType(InputType.TYPE_CLASS_TEXT);
         RecyclerView commentsList = mRootView.findViewById(R.id.view_topic_comment_list);
         linearLayoutManager = new LinearLayoutManager(mRootView.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -101,8 +114,8 @@ public class TopicView implements TopicViewInterface{
 
     @Override
     public void setTopic(final Topic topic) {
-        mTitleText.setText(topic.getMTitle() + "\r\n" + topic.getMDescription());
-        mAssignedTo.setText(topic.getMAssignedTo());
+        mTitleText.setText(topic.getMTitle());
+        mDescText.setText(topic.getMDescription());
         mTypeInput.setAdapter(mTypeAdapter);
         mStatusInput.setAdapter(mStatusAdapter);
 
@@ -115,9 +128,14 @@ public class TopicView implements TopicViewInterface{
         mStatusAdapter =  new ArrayAdapter<String>(mRootView.getContext()
                 , R.layout.support_simple_spinner_dropdown_item
                 , mStatusFields);
-
+        mUserId = mContext.getActiveProject().getProjectUsersOrdered(topic);
+        mUserAdapter = new ArrayAdapter<String>(mRootView.getContext()
+                , R.layout.support_simple_spinner_dropdown_item
+                , mUserId);
+        mAssignedTo.setAdapter(mUserAdapter);
         mTypeInput.setAdapter(mTypeAdapter);
         mStatusInput.setAdapter(mStatusAdapter);
+
 
         mTypeInput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -142,9 +160,53 @@ public class TopicView implements TopicViewInterface{
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }
         });
+
+        mAssignedTo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(!topic.getMAssignedTo().equals(mUserId.get(position))) {
+                    topic.setAssignedTo(mUserId.get(position));
+                    mListener.changedTopic();
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
+
+        mTitleText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    topic.setTitle(mTitleText.getText().toString());
+                    mListener.changedTopic();
+                    mRootView.clearFocus();
+                    clearKeyboard();
+                    return true;
+                }
+                return false;
+            }
+        });
+        mDescText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    topic.setDescription(mDescText.getText().toString());
+                    mDescText.clearFocus();
+                    clearKeyboard();
+                    mListener.changedTopic();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
 
+    private void clearKeyboard(){
+        InputMethodManager inputMethodManager = (InputMethodManager) mRootView.getContext().
+                getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(mRootView.getWindowToken(), 0);
+    }
     @Override
     public void setComments(List<Comment> comments){
         mCommentsAdapter.setComments(comments);

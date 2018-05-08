@@ -47,4 +47,6 @@
     <string name="data_provider_authority">com.bimapp.model.data_access.DataProvider</string>
     <string name="comment">Comment</string>
     <string name="search">Search</string>
+    <string name="addTopicTitle">Add a title</string>
+    <string name="addDesc">Add a description</string>
 </resources>
