@@ -92,6 +92,7 @@ public class ProjectsViewActivity extends AppCompatActivity
     private Fragment mTopicFragment;
     private FragmentNewComment mNewCommentFragment;
     private Fragment mSyncFragment;
+    private TextView toolbarProjectNameText;
 
     // Variables for accounts
     // The authority for the sync adapter's content provider
@@ -122,6 +123,8 @@ public class ProjectsViewActivity extends AppCompatActivity
         mTopicFragment = new FragmentTopic();
         mNewCommentFragment = new FragmentNewComment();
         //mSyncFragment = new FragmentManualSync();
+
+        toolbarProjectNameText = findViewById(R.id.toolbar_project_text);
 
         if (mApplication.checkLogIn())
             NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
@@ -166,6 +169,8 @@ public class ProjectsViewActivity extends AppCompatActivity
 
         if (mApplication.getActiveProject() == null)
             setInitialActiveProject();
+        else
+            toolbarProjectNameText.setText(mApplication.getActiveProject().getName());
 
         //Setting toolbar as the actionbar.
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -193,6 +198,7 @@ public class ProjectsViewActivity extends AppCompatActivity
                                 openFragment(PROJECTS_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_issues:
+                                mTopicListFragment.setTopicsAssignedTo("");
                                 openFragment(TOPICLIST_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_dashboard:
@@ -265,6 +271,7 @@ public class ProjectsViewActivity extends AppCompatActivity
     @Override
     public void onFragmentProjectInteraction(Project project) {
         openFragment(DASHBOARD_FRAGMENT_TAG);
+        toolbarProjectNameText.setText(project.getName());
 
     }
 
@@ -477,6 +484,7 @@ public class ProjectsViewActivity extends AppCompatActivity
                         public void setExtensions(IssueBoardExtensions issueBoardExtensions) {
                             projects.get(0).setIssueBoardExtensions(issueBoardExtensions);
                             mApplication.setActiveProject(projects.get(0));
+                            toolbarProjectNameText.setText(projects.get(0).getName());
                         }
                     });
 
