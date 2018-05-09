@@ -201,7 +201,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:src="@drawable/ic_new__topic_dashboard" />
+                android:src="@drawable/ic_camera_icon" />
 
             <EditText
                 android:id="@+id/view_topic_comment_new"
