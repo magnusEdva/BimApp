@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.bimapp.BimApp;
 import com.bimapp.R;
@@ -39,15 +40,6 @@ public class NewTopicView implements NewTopicViewInterface {
     private Button mSubmit;
     private Bitmap mImage;
 
-
-    // Fields for posting topics
-    private String mTitle;
-    private String mDesription;
-    private String mLabels;
-    private String mDueDate;
-    private String mComment;
-
-    private String mCommentString;
 
     public NewTopicView(LayoutInflater inflater, ViewGroup container, final Template template){
 
@@ -120,22 +112,42 @@ public class NewTopicView implements NewTopicViewInterface {
         String assignedTo = mAdapter.getAssignedTo();
         String description = mAdapter.getDesription();
         String topicType = mAdapter.getTopicType();
+        String commentString = mAdapter.getComment();
 
-        // Make new topic from fields
-        BimApp app = (BimApp) mRootView.getContext().getApplicationContext();
-        Topic topic = new Topic(title,topicType,topic_status,assignedTo,description, app.getActiveProject().getProjectId());
+        // Decides if all required fields are filled in
+        boolean canPost = true;
 
-        mCommentString = mAdapter.getComment();
+        // Title is always required
+        if (title == null || title.length() == 0)
+            canPost = false;
+        // IF description is required, make sure it is set
+        if (mAdapter.isDescription_required() && (description == null || description.length() == 0))
+            canPost = false;
+        // IF comment is required, make sure it is set
+        if (mAdapter.isComment_required() && (commentString == null || commentString.length() == 0))
+            canPost = false;
 
-        Viewpoint vp = null;
-        Comment comment = new Comment(mCommentString);
-        if(mImage != null){
-            vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, mImage, comment.getMCommentsGUID());
-            comment.setViewpoint(vp);
+        if (canPost)
+        {
+
+                // Make new topic from fields
+                BimApp app = (BimApp) mRootView.getContext().getApplicationContext();
+                Topic topic = new Topic(title, topicType, topic_status, assignedTo, description, app.getActiveProject().getProjectId());
+
+
+                Viewpoint vp = null;
+                Comment comment = new Comment(commentString);
+                if (mImage != null) {
+                    vp = new Viewpoint(Viewpoint.SNAPSHOT_TYPE_JPG, mImage, comment.getMCommentsGUID());
+                    comment.setViewpoint(vp);
+                }
+                // Tell fragment that topic has been posted
+                Log.d("Posting topic", "Name of topic " + title);
+                mListener.onPostTopic(topic, comment, vp);
+
         }
-        // Tell fragment that topic has been posted
-        Log.d("Posting topic", "Name of topic " + title );
-        mListener.onPostTopic(topic, comment, vp);
+        else
+            Toast.makeText(mRootView.getContext(),"Please fill in required fields",Toast.LENGTH_LONG).show();
     }
 
     /**

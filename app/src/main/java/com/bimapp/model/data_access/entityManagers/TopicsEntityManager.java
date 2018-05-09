@@ -184,7 +184,7 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
 
                         }
                     }, topic, mComment, mViewpoint.getSnapshot());
-                } else {
+                } else if (mComment != null){
                     CommentEntityManager cm = new CommentEntityManager(mContext);
                     cm.postComment(new CommentFragmentInterface() {
                         @Override

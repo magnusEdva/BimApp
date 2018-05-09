@@ -34,19 +34,23 @@ import com.bimapp.controller.FragmentNewTopic;
 import com.bimapp.controller.FragmentProject;
 import com.bimapp.controller.FragmentTopic;
 import com.bimapp.controller.FragmentTopicList;
+import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
 import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
 import com.bimapp.model.ImageFile;
 import com.bimapp.model.data_access.DataProvider;
 import com.bimapp.model.data_access.entityManagers.IssueBoardExtensionsEntityManager;
 import com.bimapp.model.data_access.entityManagers.ProjectEntityManager;
+import com.bimapp.model.data_access.entityManagers.TopicsEntityManager;
 import com.bimapp.model.data_access.network.APICall;
 import com.bimapp.model.data_access.network.Callback;
 import com.bimapp.model.data_access.network.NetworkConnManager;
+import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.IssueBoardExtensions;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.User;
+import com.bimapp.model.entity.Viewpoint;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,7 +69,7 @@ public class ProjectsViewActivity extends AppCompatActivity
         FragmentDashboard.DashboardListener,
         FragmentTopicList.TopicSelectionInterface,
         FragmentNewTopic.OnFragmentInteractionListener,
-        FragmentTopic.TopicFragmentListener {
+        FragmentTopic.TopicFragmentListener, NewTopicFragmentInterface {
     public final static String DASHBOARD_FRAGMENT_TAG = "fragment_dashboard";
     public final static String NEWTOPIC_FRAGMENT_TAG = "fragment_new_topic";
     public final static String TOPICLIST_FRAGMENT_TAG = "fragment_topics";
@@ -381,14 +385,9 @@ public class ProjectsViewActivity extends AppCompatActivity
 
 
     @Override
-    public void onPostingTopic(boolean success) {
-
-        if (success) {
-            Toast.makeText(mApplication, "Successfully posted topic", Toast.LENGTH_SHORT).show();
-
-        } else {
-            Toast.makeText(mApplication, "Didn't post topic", Toast.LENGTH_SHORT).show();
-        }
+    public void onPostingTopic(Topic topic, Comment comment, Viewpoint vp) {
+        TopicsEntityManager manager = new TopicsEntityManager(mApplication, this);
+        manager.postTopic(this, topic, comment, vp);
         openFragment(DASHBOARD_FRAGMENT_TAG);
     }
 
@@ -600,6 +599,12 @@ public class ProjectsViewActivity extends AppCompatActivity
             newAccount = accountManager.getAccountsByType(ACCOUNT_TYPE)[0];
             return newAccount;
         }
+    }
+
+    @Override
+    public void postedTopic(boolean success, Topic topic) {
+        Toast.makeText(getApplicationContext(),"Posted topic to server", Toast.LENGTH_LONG).show();
+
     }
 }
 

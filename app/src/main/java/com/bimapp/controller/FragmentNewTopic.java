@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,9 +44,8 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
 
     @Override
     public void onPostTopic(Topic topic, Comment comment, Viewpoint vp) {
-        TopicsEntityManager manager = new TopicsEntityManager(mApplication, this);
-        Log.d("FragmentNewTopic", "Made an entityManger");
-        manager.postTopic(this, topic, comment, vp);
+
+        mListener.onPostingTopic(topic,comment,vp);
     }
 
     @Override
@@ -136,7 +134,7 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onPostingTopic(boolean success);
+        void onPostingTopic(Topic topic, Comment comment, Viewpoint vp);
 
         void onTakePhoto();
 

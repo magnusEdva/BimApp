@@ -26,7 +26,6 @@
     <string name="url_encode">application/x-www-form-urlencoded</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="dashboard">Dashboard</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
@@ -51,4 +50,6 @@
     <string name="addDesc">Add a description</string>
     <string name ="addComment">Add a comment</string>
     <string name ="icon">icon</string>
+    <string name="title_required_field">Title is a required field</string>
+    <string name="desc_required_field">Description is a required field</string>
 </resources>
