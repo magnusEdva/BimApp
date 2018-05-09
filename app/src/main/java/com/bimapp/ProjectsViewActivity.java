@@ -427,10 +427,15 @@ public class ProjectsViewActivity extends AppCompatActivity
     }
 
     /**
-     * Handles the response on requesting permissions
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
+     * Callback for the result from requesting permissions. This method is invoked for every call
+     * on requestPermissions(android.app.Activity, String[], int).
+
+     Note: It is possible that the permissions request interaction with the user is interrupted. In this case you will receive empty permissions and results arrays which should be treated as a cancellation.
+     * @param requestCode int: The request code passed in
+     *                    requestPermissions(android.app.Activity, String[], int)
+     * @param permissions String: The requested permissions. Never null.
+     * @param grantResults int: The grant results for the corresponding permissions which is either
+     *                     PERMISSION_GRANTED or PERMISSION_DENIED. Never null.
      */
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -442,14 +447,12 @@ public class ProjectsViewActivity extends AppCompatActivity
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     onTakePhoto();
                 } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    // permission denied, boo!
+                    // TODO Tell the user we need camera to take photos and ask again
                 }
-                return;
+                break;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
+            // For future implementations of asking permissions
         }
     }
 
