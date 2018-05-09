@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/text_margin"
-        android:inputType="text"
+        android:inputType="textCapSentences"
         android:hint="@string/comment"
         style="@style/BimAppDefaultTheme"
         />

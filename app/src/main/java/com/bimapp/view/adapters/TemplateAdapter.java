@@ -1,6 +1,7 @@
 package com.bimapp.view.adapters;
 
 import android.content.Context;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -41,9 +41,13 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     private int mDefaultType;
     private int mDefaultAsssignedTo;
 
+    // required fields
+    private boolean description_required;
+    private boolean comment_required;
+
     //private final NewTopicViewInterface mListener;
     private String mTitle;
-    private String mDesription;
+    private String mDescription;
     private String mComment;
     private String mAssignedTo;
     private String mIssueType;
@@ -54,7 +58,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     }
 
     public String getDesription() {
-        return mDesription;
+        return mDescription;
     }
 
     public String getComment() {
@@ -71,6 +75,13 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
 
     public String getTopicStatus() {
         return mIssueStatus;
+    }
+
+    public boolean isDescription_required() {
+        return description_required;
+    }
+    public boolean isComment_required(){
+        return comment_required;
     }
 
     /**
@@ -106,7 +117,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         public final LinearLayout mLayout;
         public View mView;
         public TextView mItem_description;
-        public EditText mItem_input;
+        public TextInputEditText mItem_input;
         public Spinner mSpinner_input;
         public ArrayAdapter<CharSequence> mAdapter;
         public Button mItem_button;
@@ -122,12 +133,12 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
             switch (viewType) {
                 case 1: // TITLE
                     //this.mItem_description = itemView.findViewById(R.id.topic_title);
-                    this.mItem_input = itemView.findViewById(R.id.topic_title_input);
+                    this.mItem_input = (TextInputEditText) itemView.findViewById(R.id.topic_title_input);
                     this.mSpinner_input = null;
                     break;
                 case 2: // DESCRIPTION
                     //this.mItem_description = itemView.findViewById(R.id.topic_description);
-                    this.mItem_input = itemView.findViewById(R.id.topic_description_input);
+                    this.mItem_input = (TextInputEditText) itemView.findViewById(R.id.topic_description_input);
                     this.mSpinner_input = null;
                     break;
                 case 3: // TOPIC_STATUS
@@ -177,9 +188,9 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                     mItem_input = itemView.findViewById(R.id.topic_comment_input);
                     break;
                 default: // Defaults to no view
-                    this.mItem_description = itemView.findViewById(R.id.topic_default);
+                    /*this.mItem_description = itemView.findViewById(R.id.topic_default);
                     this.mItem_input = itemView.findViewById(R.id.topic_default_input);
-                    this.mSpinner_input = null;
+                    this.mSpinner_input = null;*/
                     break;
             }
             mLayout = itemView.findViewById(R.id.newtopic_list);
@@ -317,8 +328,13 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         switch (this.getItemViewType(position)) {
             case 1: // IssueTitle
-                //holder.mItem_description.setText(R.string.issue_name);
-                holder.mItem_input.setText(mList.get(position).getContent().toString());
+
+                // Title must always be mandatory
+                String content = mList.get(position).getContent().toString();
+                if (content.length() == 0)
+                    holder.mItem_input.setError(mContext.getString(R.string.title_required_field));
+                holder.mItem_input.setText(content);
+                mTitle = content;
                 holder.mItem_input.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -330,23 +346,37 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                     }
                     @Override
                     public void afterTextChanged(Editable s) {
+                        if (s.toString().equals("")){
+                            holder.mItem_input.setError(mContext.getString(R.string.title_required_field));
+                        }
                     }
                 });
                 break;
             case 2: // IssueDescription
-                //holder.mItem_description.setText(R.string.issue_description);
-                holder.mItem_input.setText(mList.get(position).getContent().toString());
+                content = mList.get(position).getContent().toString();
+                mDescription = content;
+                holder.mItem_input.setText(content);
+                if (mList.get(position).isMandatory()){
+                    description_required = true;
+                    if (holder.mItem_input.getText().length() == 0)
+                        holder.mItem_input.setError(mContext.getString(R.string.desc_required_field));
+                } else
+                    description_required = false;
+
                 holder.mItem_input.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                     }
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        mDesription = s.toString();
+                        mDescription = s.toString();
                         mList.get(position).setContent(s.toString());
                     }
                     @Override
                     public void afterTextChanged(Editable s) {
+                        if (mList.get(position).isMandatory() && s.toString().equals("")){
+                            holder.mItem_input.setError(mContext.getString(R.string.desc_required_field));
+                        }
                     }
                 });
                 break;
@@ -420,7 +450,17 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 break;
             case 9: // COMMENT
                 //holder.mItem_description.setText("Comment");
-                holder.mItem_input.setText(mList.get(position).getContent().toString());
+                content = mList.get(position).getContent().toString();
+                holder.mItem_input.setText(content);
+                mComment = content;
+                if (mList.get(position).isMandatory()) {
+                    comment_required = true;
+                    if (holder.mItem_input.getText().length() == 0)
+                        holder.mItem_input.setError(mContext.getString(R.string.desc_required_field));
+                } else
+                    comment_required = false;
+
+
                 holder.mItem_input.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -432,13 +472,16 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 }
                 @Override
                 public void afterTextChanged(Editable s) {
+                    if (comment_required && s.toString().length() == 0){
+                        holder.mItem_input.setError("Comment is a required field");
+                    }
                 }
             });
                 break;
             default: // DEFAULT
-                holder.mItem_description.setText(mTemplate.getNodes().get(position).getTitle());
+                /*holder.mItem_description.setText(mTemplate.getNodes().get(position).getTitle());
                 holder.mItem_input.setHint(mTemplate.getNodes().get(position).getTitle());
-                holder.mItem_input.setText("");
+                holder.mItem_input.setText("");*/
                 break;
 
         }

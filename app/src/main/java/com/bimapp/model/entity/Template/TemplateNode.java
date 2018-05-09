@@ -56,4 +56,7 @@ public abstract class TemplateNode {
 
     public abstract void setContent(String s);
 
+    public boolean isMandatory() {
+        return mMandatory;
+    }
 }
