@@ -187,7 +187,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center"
-        android:layout_margin="10dp"
+        android:layout_margin="20dp"
         android:elevation="5dp"
         card_view:cardElevation="10dp"
         android:visibility="gone">

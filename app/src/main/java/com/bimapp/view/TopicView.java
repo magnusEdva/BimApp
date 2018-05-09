@@ -1,5 +1,6 @@
 package com.bimapp.view;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.CardView;
@@ -24,6 +25,7 @@ import com.bimapp.BimApp;
 import com.bimapp.R;
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Topic;
+import com.bimapp.model.entity.Viewpoint;
 import com.bimapp.view.adapters.CommentAdapter;
 import com.bimapp.view.interfaces.TopicViewInterface;
 
@@ -71,6 +73,8 @@ public class TopicView implements TopicViewInterface{
 
     private String CommentContent;
 
+    private Bitmap mImage;
+
     private List<String> mUserId;
     public TopicView(LayoutInflater inflater, ViewGroup container){
         mRootView = inflater.inflate(R.layout.view_topic, container, false);
@@ -97,7 +101,6 @@ public class TopicView implements TopicViewInterface{
         linearLayoutManager = new LinearLayoutManager(mRootView.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         commentsList.setLayoutManager(linearLayoutManager);
-
         mCommentsAdapter = new CommentAdapter(mFullScreenImage);
         commentsList.setAdapter(mCommentsAdapter);
 
@@ -153,7 +156,6 @@ public class TopicView implements TopicViewInterface{
         mDescText.setText(topic.getMDescription());
         mTypeInput.setAdapter(mTypeAdapter);
         mStatusInput.setAdapter(mStatusAdapter);
-
         if(topic.getMDueDate() != null){
             mDueDateText.setText(topic.getMDueDate());
             mDueDateImage.setVisibility(View.VISIBLE);
@@ -248,7 +250,15 @@ public class TopicView implements TopicViewInterface{
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     mListener.postComment(mNewComment.getText().toString());
-                    mCommentsAdapter.addComment(new Comment(mNewComment.getText().toString()));
+                    Comment c = new Comment(mNewComment.getText().toString());
+                    if(mImage != null) {
+                        Viewpoint.Snapshot snapshot = new Viewpoint.Snapshot(Viewpoint.SNAPSHOT_TYPE_PNG, mImage);
+                        Viewpoint vp = new Viewpoint();
+                        vp.setSnapshot(snapshot);
+                        c.setViewpoint(vp);
+                        mImage = null;
+                    }
+                    mCommentsAdapter.addComment(c);
                     mNewComment.getText().clear();
                     mDescText.clearFocus();
                     clearKeyboard();
@@ -280,6 +290,10 @@ public class TopicView implements TopicViewInterface{
     public void setComments(List<Comment> comments){
         mCommentsAdapter.setComments(comments);
     }
+    @Override
+    public void addComment(Comment comment){
+        mCommentsAdapter.addComment(comment);
+    }
 
     private void setFullScreenImageOnClick(){
         mFullScreenImage.setOnClickListener(new View.OnClickListener() {
@@ -291,8 +305,14 @@ public class TopicView implements TopicViewInterface{
     }
 
     @Override
-    public void gotPicture(){
+    public void gotPicture(Bitmap image){
+        mImage = image;
         mCommentAddImage.setImageDrawable(mRootView.getContext().getDrawable(R.drawable.ic_topics_got_image));
+    }
+
+    @Override
+    public void deletePicture(){
+        mImage = null;
     }
 
 }
