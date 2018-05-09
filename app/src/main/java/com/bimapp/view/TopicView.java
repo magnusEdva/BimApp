@@ -33,6 +33,7 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class TopicView implements TopicViewInterface{
 
+    private Topic mTopic;
     private View mRootView;
     private TopicListener mListener;
 
@@ -67,6 +68,8 @@ public class TopicView implements TopicViewInterface{
     private CardView mCommentCard;
     private ImageButton mCommentAddImage;
     private EditText mNewComment;
+
+    private String CommentContent;
 
     private List<String> mUserId;
     public TopicView(LayoutInflater inflater, ViewGroup container){
@@ -118,6 +121,7 @@ public class TopicView implements TopicViewInterface{
             @Override
             public void onClick(View v) {
             mListener.takePicture();
+            mListener.storeCommentDraft(mNewComment.getText().toString());
             }
         });
     }
@@ -144,6 +148,7 @@ public class TopicView implements TopicViewInterface{
 
     @Override
     public void setTopic(final Topic topic) {
+        mTopic = topic;
         mTitleText.setText(topic.getMTitle());
         mDescText.setText(topic.getMDescription());
         mTypeInput.setAdapter(mTypeAdapter);
@@ -231,12 +236,13 @@ public class TopicView implements TopicViewInterface{
                     mDescText.clearFocus();
                     clearKeyboard();
                     mListener.changedTopic();
+                    mCommentAddImage.setImageDrawable(mRootView.getContext().getDrawable(R.drawable.ic_camera_icon));
                     return true;
                 }
                 return false;
             }
         });
-        mNewComment.getText().clear();
+
         mNewComment.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -255,7 +261,15 @@ public class TopicView implements TopicViewInterface{
             }
         });
     }
+    @Override
+    public Topic getTopic(){
+        return mTopic;
+    }
 
+    @Override
+    public void setNewComment(String commentString){
+        mNewComment.setText(commentString);
+    }
 
     private void clearKeyboard(){
         InputMethodManager inputMethodManager = (InputMethodManager) mRootView.getContext().

@@ -310,7 +310,7 @@ public class ProjectsViewActivity extends AppCompatActivity
 
     @Override
     public void onTopicSelected(Topic topic) {
-        FragmentTopic.setTopic(topic);
+        mTopicFragment.setTopic(topic);
         navigationView.setCheckedItem(0);
         openFragment(TOPIC_FRAGMENT_TAG);
     }

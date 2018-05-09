@@ -10,6 +10,7 @@ public interface TopicViewInterface extends ViewMVP {
         void changedTopic();
         void takePicture();
         void postComment(String commentString);
+        void storeCommentDraft(String commentString);
     }
 
     void registerListener(TopicListener listener);
@@ -17,6 +18,10 @@ public interface TopicViewInterface extends ViewMVP {
     void unregisterListener();
 
     void setTopic(Topic topic);
+
+    Topic getTopic();
+
+    void setNewComment(String CommentString);
 
     void setComments(List<Comment> comments);
 
