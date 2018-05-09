@@ -3,6 +3,7 @@ package com.bimapp.controller;
 
 import android.arch.lifecycle.LiveData;
 import android.content.Context;
+import android.database.MatrixCursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -96,20 +97,22 @@ public class FragmentTopic extends Fragment implements CommentFragmentInterface,
 
     @Override
     public void addComment(Comment comment) {
-        mTopicView.addComment(comment);
+        if(mComments.contains(comment)) {
+            int i = mComments.indexOf(comment);
+            mComments.set(i, comment);
+        }else
+            mComments.add(comment);
+        mTopicView.setComments(mComments);
     }
 
     @Override
     public void editComment(Comment comment) {
-        boolean found = false;
-        for (int i = 0; i < mComments.size() && !found; i++) {
-            if (mComments.get(i).equals(comment)) {
-                mComments.remove(i);
-                mComments.add(i, comment);
-                found = true;
-            }
+        if(mComments.contains(comment)) {
+            int i = mComments.indexOf(comment);
+            mComments.set(i, comment);
+            mTopicView.setComments(mComments);
         }
-        mTopicView.setComments(mComments);
+
     }
 
 

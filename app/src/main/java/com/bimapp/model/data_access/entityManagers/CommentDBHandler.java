@@ -83,22 +83,6 @@ public class CommentDBHandler extends AsyncQueryHandler {
 
 
         }
-    }
-
-    @Override
-    protected void onInsertComplete(int token, Object cookie, Uri uri) {
-        super.onInsertComplete(token, cookie, uri);
-        Object[] array = null;
-        Comment comment = null;
-        TopicFragmentInterface listener;
-        if (cookie instanceof Object[]) {
-            array = (Object[]) cookie;
-            if (array[0] instanceof TopicFragmentInterface && array[1] instanceof Comment) {
-                listener = (TopicFragmentInterface) array[0];
-                comment = (Comment) array[1];
-                listener.addComment(comment);
-            }
-        }
 
     }
 }
