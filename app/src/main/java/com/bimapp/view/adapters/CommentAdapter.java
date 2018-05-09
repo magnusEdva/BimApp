@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bimapp.R;
@@ -44,7 +45,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     }
 
     public void addComment(Comment comment) {
-        mComments.add(comment);
+        if(!mComments.contains(comment)) {
+            mComments.add(comment);
+            notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -59,9 +63,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.ContentView.setText(mComments.get(position).getMComment());
         holder.NameView.setText(mComments.get(position).getMAuthor());
         holder.DateView.setText(mComments.get(position).getDate());
+        if(mComments.get(position).getMViewpointGuid() != null)
+            holder.progressBar.setVisibility(View.VISIBLE);
 
         if (mComments.get(position).getMViewpoint() != null && mComments.get(position).getMViewpoint().getSnapshot() != null) {
             holder.bitmap = mComments.get(position).getMViewpoint().getSnapshot();
+            holder.progressBar.setVisibility(View.GONE);
             holder.imageView.setImageBitmap(scaleDown(holder.bitmap, 500, false));
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -86,6 +93,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         public final TextView DateView;
         public final ImageView imageView;
         public final View ItemView;
+        public final ProgressBar progressBar;
         public Bitmap bitmap;
 
         public ViewHolder(View itemView) {
@@ -95,6 +103,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             this.DateView = itemView.findViewById(R.id.TopicCOmmentDate);
             this.imageView = itemView.findViewById(R.id.TopicCommentImage);
             this.ContentView = itemView.findViewById(R.id.TopicCommentContent);
+            this.progressBar = itemView.findViewById(R.id.TopicImageprogressBar);
         }
     }
 

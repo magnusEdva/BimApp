@@ -3,11 +3,14 @@ package com.bimapp.model.data_access.entityManagers;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.net.Uri;
 
 import com.bimapp.controller.interfaces.TopicFragmentInterface;
+import com.bimapp.controller.interfaces.TopicsFragmentInterface;
 import com.bimapp.model.data_access.AppDatabase;
 import com.bimapp.model.data_access.DataProvider;
 import com.bimapp.model.entity.Comment;
+import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.Viewpoint;
 
 import java.util.ArrayList;
@@ -64,21 +67,38 @@ public class CommentDBHandler extends AsyncQueryHandler {
                 if (array[1] instanceof Comment)
                     comment = (Comment) array[1];
             } else throw new UnsupportedOperationException();
-            if(listener != null && comment != null)
-            if (cursor.moveToFirst()) {
-                String guid = cursor.getString(cursor.getColumnIndex(Viewpoint.GUID));
-                String commentGUID = cursor.getString(cursor.getColumnIndex(Viewpoint.COMMENT_GUID));
-                String type = cursor.getString(cursor.getColumnIndex("type"));
-                String pictureName = cursor.getString(cursor.getColumnIndex("picture_name"));
-                AppDatabase.statusTypes localStatus = AppDatabase.convertStringToStatus
-                        (cursor.getString(cursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
-                Long dateAcquired = cursor.getLong(cursor.getColumnIndex(AppDatabase.DATE_COLUMN));
-                Viewpoint vp = new Viewpoint(guid, commentGUID, type, pictureName, dateAcquired, localStatus);
-                comment.setViewpoint(vp);
-                listener.editComment(comment);
-            }
-            
+            if (listener != null && comment != null)
+                if (cursor.moveToFirst()) {
+                    String guid = cursor.getString(cursor.getColumnIndex(Viewpoint.GUID));
+                    String commentGUID = cursor.getString(cursor.getColumnIndex(Viewpoint.COMMENT_GUID));
+                    String type = cursor.getString(cursor.getColumnIndex("type"));
+                    String pictureName = cursor.getString(cursor.getColumnIndex("picture_name"));
+                    AppDatabase.statusTypes localStatus = AppDatabase.convertStringToStatus
+                            (cursor.getString(cursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
+                    Long dateAcquired = cursor.getLong(cursor.getColumnIndex(AppDatabase.DATE_COLUMN));
+                    Viewpoint vp = new Viewpoint(guid, commentGUID, type, pictureName, dateAcquired, localStatus);
+                    comment.setViewpoint(vp);
+                    listener.editComment(comment);
+                }
+
 
         }
+    }
+
+    @Override
+    protected void onInsertComplete(int token, Object cookie, Uri uri) {
+        super.onInsertComplete(token, cookie, uri);
+        Object[] array = null;
+        Comment comment = null;
+        TopicFragmentInterface listener;
+        if (cookie instanceof Object[]) {
+            array = (Object[]) cookie;
+            if (array[0] instanceof TopicFragmentInterface && array[1] instanceof Comment) {
+                listener = (TopicFragmentInterface) array[0];
+                comment = (Comment) array[1];
+                listener.addComment(comment);
+            }
+        }
+
     }
 }

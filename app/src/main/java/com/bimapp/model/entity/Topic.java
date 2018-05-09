@@ -446,7 +446,7 @@ public class Topic implements entity {
 
     public String getMDueDate() {
         if (mDueDate != null){
-            return mDueDate.substring(0,11);
+            return mDueDate.substring(0,10);
         }
         else
             return null;

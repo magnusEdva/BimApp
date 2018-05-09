@@ -1,5 +1,7 @@
 package com.bimapp.view.interfaces;
 
+import android.graphics.Bitmap;
+
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Topic;
 
@@ -25,7 +27,11 @@ public interface TopicViewInterface extends ViewMVP {
 
     void setComments(List<Comment> comments);
 
-    void gotPicture();
+    void addComment(Comment comment);
+
+    void gotPicture(Bitmap image);
+
+    void deletePicture();
 
 
 }
