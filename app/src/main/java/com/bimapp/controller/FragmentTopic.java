@@ -26,12 +26,10 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FragmentTopic#newInstance} factory method to
- * create an instance of this fragment.
  */
-public class FragmentTopic extends Fragment implements CommentFragmentInterface, TopicFragmentInterface, TopicViewInterface.TopicListener{
+public class FragmentTopic extends Fragment implements CommentFragmentInterface, TopicFragmentInterface, TopicViewInterface.TopicListener {
 
-    private static Topic mTopic;
+    private Topic mTopic;
     private TopicViewInterface mTopicView;
     private CommentEntityManager commentManager;
     private TopicsEntityManager mTopicManager;
@@ -39,17 +37,10 @@ public class FragmentTopic extends Fragment implements CommentFragmentInterface,
     private TopicFragmentListener mListener;
     private List<Comment> mComments;
     private Bitmap mImage;
+    private String commentString;
 
     public FragmentTopic() {
 
-    }
-
-    public static FragmentTopic newInstance(Topic topic) {
-        FragmentTopic fragment = new FragmentTopic();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        FragmentTopic.mTopic = topic;
-        return fragment;
     }
 
     @Override
@@ -59,6 +50,7 @@ public class FragmentTopic extends Fragment implements CommentFragmentInterface,
         commentManager = new CommentEntityManager(mContext);
         mTopicManager = new TopicsEntityManager(mContext);
         mComments = new ArrayList<>();
+        commentString = "";
 
     }
 
@@ -76,18 +68,22 @@ public class FragmentTopic extends Fragment implements CommentFragmentInterface,
                              Bundle savedInstanceState) {
         mTopicView = new TopicView(inflater, container);
         mTopicView.registerListener(this);
-        mTopicView.setTopic(mTopic);
         commentManager.getComments(this, mTopic);
         return mTopicView.getRootView();
     }
+
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        mTopicView.setTopic(mTopic);
         commentManager.getComments(this, mTopic);
+            mTopicView.setTopic(mTopic);
+            mTopicView.setNewComment(commentString);
     }
 
-    public static void setTopic(Topic topic){mTopic = topic;}
+    public void setTopic(Topic topic) {
+        mTopic = topic;
+        commentString = "";
+    }
 
     @Override
     public void setComments(List<Comment> comments) {
@@ -98,21 +94,21 @@ public class FragmentTopic extends Fragment implements CommentFragmentInterface,
 
     @Override
     public void setLiveComments(LiveData<List<Comment>> comments) {
-     //   mComments = comments;
+        //   mComments = comments;
     }
 
     @Override
     public void editComment(Comment comment) {
         boolean found = false;
-        for(int i = 0; i < mComments.size() && !found; i++){
-            if(mComments.get(i).equals(comment)){
+        for (int i = 0; i < mComments.size() && !found; i++) {
+            if (mComments.get(i).equals(comment)) {
                 mComments.remove(i);
-                mComments.add(i,comment);
+                mComments.add(i, comment);
                 found = true;
             }
         }
         mTopicView.setComments(mComments);
-            }
+    }
 
 
     @Override
@@ -132,20 +128,26 @@ public class FragmentTopic extends Fragment implements CommentFragmentInterface,
 
     @Override
     public void postedComment(boolean success, Comment comment) {
-        Log.d("comment","comment");
+        Log.d("comment", "comment");
     }
 
-    public interface TopicFragmentListener{
+    public interface TopicFragmentListener {
         void onTakePhoto();
     }
 
     @Override
     public void postComment(String commentContent) {
         Comment comment = new Comment(commentContent);
-        if(mImage == null)
+        if (mImage == null)
             commentManager.postComment(this, mTopic, comment);
         else
             commentManager.postComment(this, mTopic, comment, mImage);
+
+        mImage = null;
     }
 
+    @Override
+    public void storeCommentDraft(String commentString){
+        this.commentString = commentString;
+    }
 }
