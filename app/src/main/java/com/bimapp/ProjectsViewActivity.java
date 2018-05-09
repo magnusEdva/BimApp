@@ -400,9 +400,9 @@ public class ProjectsViewActivity extends AppCompatActivity
 
         if (ContextCompat.checkSelfPermission(mApplication, Manifest.permission.CAMERA) !=
                 PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.CAMERA}, 123);
-        } else {
-
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, TAKE_PHOTO_INTENT);
+        }
+        else {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             // Ensure that there's a camera activity to handle the intent
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -423,6 +423,33 @@ public class ProjectsViewActivity extends AppCompatActivity
                     startActivityForResult(takePictureIntent, TAKE_PHOTO_INTENT);
                 }
             }
+        }
+    }
+
+    /**
+     * Handles the response on requesting permissions
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case TAKE_PHOTO_INTENT: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    onTakePhoto();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
         }
     }
 
