@@ -131,6 +131,7 @@ public class Viewpoint implements entity {
     public void setSnapshot(Snapshot snapshot) {
         mSnapshot = snapshot;
         mSnapshot.name = mGuid;
+        hasSnapshot = true;
     }
 
     public void setCommentGUID(String commentGuid) {
@@ -207,7 +208,7 @@ public class Viewpoint implements entity {
         @ColumnInfo(name = "picture_name")
         public String name;
 
-        Snapshot(String type, Bitmap data) {
+        public Snapshot(String type, Bitmap data) {
             this.type = type;
             image = data;
         }

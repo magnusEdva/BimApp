@@ -13,6 +13,6 @@ public interface TopicFragmentInterface {
     }
 
     void setComments(List<Comment> comments);
-    void setLiveComments(LiveData<List<Comment>> comments);
     void editComment(Comment comment);
+    void addComment(Comment comment);
 }

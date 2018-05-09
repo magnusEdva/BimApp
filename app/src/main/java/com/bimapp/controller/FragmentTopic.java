@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class FragmentTopic extends Fragment implements CommentFragmentInterface, TopicFragmentInterface, TopicViewInterface.TopicListener {
 
-    private Topic mTopic;
+    private static Topic mTopic;
     private TopicViewInterface mTopicView;
     private CommentEntityManager commentManager;
     private TopicsEntityManager mTopicManager;
@@ -83,6 +83,8 @@ public class FragmentTopic extends Fragment implements CommentFragmentInterface,
     public void setTopic(Topic topic) {
         mTopic = topic;
         commentString = "";
+        if(mTopicView != null)
+            mTopicView.deletePicture();
     }
 
     @Override
@@ -93,8 +95,8 @@ public class FragmentTopic extends Fragment implements CommentFragmentInterface,
     }
 
     @Override
-    public void setLiveComments(LiveData<List<Comment>> comments) {
-        //   mComments = comments;
+    public void addComment(Comment comment) {
+        mTopicView.addComment(comment);
     }
 
     @Override
@@ -123,7 +125,7 @@ public class FragmentTopic extends Fragment implements CommentFragmentInterface,
 
     public void setImage(Bitmap image) {
         this.mImage = image;
-        mTopicView.gotPicture();
+        mTopicView.gotPicture(image);
     }
 
     @Override
