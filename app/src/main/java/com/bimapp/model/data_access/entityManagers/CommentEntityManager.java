@@ -155,8 +155,8 @@ public class CommentEntityManager implements TopicFragmentInterface.topicFragmen
                 e.printStackTrace();
             }
             for(Comment c : comments){
-                Object[] arr = new Object[]{mControllerCallback,c};
-                handler.startInsert(-1, arr, DataProvider.ParseUri(DataProvider.COMMENT_TABLE), c.getContentValues());
+                handler.startInsert(-1, null, DataProvider.ParseUri(DataProvider.COMMENT_TABLE), c.getContentValues());
+                mControllerCallback.addComment(c);
             }
         }
 
