@@ -153,10 +153,12 @@ public class TopicsEntityManager implements TopicsFragmentInterface.FragmentTopi
             mComment.setTopicGUID(localUnGuidedVersion.getMGuid());
             handler.startInsert(1,null,DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
                     mComment.getContentValues());
-            mViewpoint.setCommentGUID(mComment.getMCommentsGUID());
-            handler.startInsert(2, null, DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
-                    mViewpoint.getContentValues());
-
+            if (mViewpoint != null) {
+                mViewpoint.setCommentGUID(mComment.getMCommentsGUID());
+                mViewpoint.constructSnapshot(mViewpoint.getSnapshot()); // Saves the snapshot to disk to later be retrieved by the syncadapter
+                handler.startInsert(2, null, DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
+                        mViewpoint.getContentValues());
+            }
             mTopicsFragmentInterface.postedTopic(false, localUnGuidedVersion);
         }
 
