@@ -153,20 +153,18 @@ public class Project implements entity {
 
     public List<String> getProjectUsersOrdered(Topic topic) {
         String User = topic.getMAssignedTo();
+        if( User == null)
+            User = "";
         List<String> projectStatus = mIssueBoardExtensions.getUserIdType();
         return reOrderList(projectStatus, User);
     }
 
     private List<String> reOrderList(List<String> list, String newFirstElement) {
-        String tempStringStorage = list.get(0);
-        list.remove(0);
-        list.add(0, newFirstElement);
-        for (int i = 1; i < list.size(); i++) {
-            if (list.get(i).equals(newFirstElement)) {
-                list.remove(i);
-                list.add(i, tempStringStorage);
-
-            }
+        if(list.contains(newFirstElement)) {
+            list.remove(list.indexOf(newFirstElement));
+            list.add(0, newFirstElement);
+        }else{
+            list.add(0, newFirstElement);
         }
         return list;
     }
