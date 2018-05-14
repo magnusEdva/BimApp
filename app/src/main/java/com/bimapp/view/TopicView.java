@@ -207,12 +207,13 @@ public class TopicView implements TopicViewInterface{
 
         mAssignedTo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(!topic.getMAssignedTo().equals(mUserId.get(position))) {
-                    topic.setAssignedTo(mUserId.get(position));
-                    mListener.changedTopic();
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
+                    if (topic.getMAssignedTo() == null || !topic.getMAssignedTo().equals(mUserId.get(position))) {
+                        topic.setAssignedTo(mUserId.get(position));
+                        mListener.changedTopic();
+                    }
                 }
-            }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }
         });
