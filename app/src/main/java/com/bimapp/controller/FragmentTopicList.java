@@ -109,8 +109,7 @@ public class FragmentTopicList extends Fragment
 
         if (searchForAssignedTo()) {
             onSearch(searchArg, searchQuery, false);
-        }
-        else mTopicsView.search();
+        } else mTopicsView.search();
 
 
     }
@@ -130,7 +129,8 @@ public class FragmentTopicList extends Fragment
      */
     @Override
     public void setTopics(List<Topic> topics) {
-        mTopicsView.setTopics(topics);
+        if (topics != null && !topics.isEmpty())
+            mTopicsView.setTopics(topics);
     }
 
     @Override
