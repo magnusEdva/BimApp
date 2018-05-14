@@ -73,7 +73,7 @@ public class TopicsListView implements TopicsViewInterface {
 
     @Override
     public void setTopics(final List<Topic> topics) {
-        if (searchString.getQuery() != null) {
+        if (!searchString.getQuery().toString().equals("")) {
             searchString.setQuery(searchString.getQuery(), true);
         }else {
            adapter.clear();
@@ -128,7 +128,7 @@ public class TopicsListView implements TopicsViewInterface {
 
     @Override
     public void search() {
-        searchString.setQuery(searchString.getQuery(), true);
+        searchString.setQuery(searchString.getQuery(), false);
         searchString.clearFocus();
     }
 
