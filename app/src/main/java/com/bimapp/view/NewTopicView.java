@@ -21,6 +21,8 @@ import com.bimapp.model.entity.Viewpoint;
 import com.bimapp.view.adapters.TemplateAdapter;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
+import java.util.Date;
+
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
@@ -113,6 +115,7 @@ public class NewTopicView implements NewTopicViewInterface {
         String description = mAdapter.getDesription();
         String topicType = mAdapter.getTopicType();
         String commentString = mAdapter.getComment();
+        Date d;
 
         // Decides if all required fields are filled in
         boolean canPost = true;
@@ -134,6 +137,7 @@ public class NewTopicView implements NewTopicViewInterface {
                 BimApp app = (BimApp) mRootView.getContext().getApplicationContext();
                 Topic topic = new Topic(title, topicType, topic_status, assignedTo, description, app.getActiveProject().getProjectId());
 
+                topic.setDueDate("");
 
                 Viewpoint vp = null;
                 Comment comment = new Comment(commentString);

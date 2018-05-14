@@ -34,7 +34,9 @@ import java.util.List;
  * Handle the transfer of data between a server and an
  * app, using the Android sync adapter framework.
  */
-public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global variables
+public class SyncAdapter extends AbstractThreadedSyncAdapter {
+    // Sets wheter to download Viewpoints when syncing or not
+    private static final boolean SYNC_VIEWPOINTS = false;    // Global variables
     // Define a variable to contain a content resolver instance
     private final ContentResolver mContentResolver;
 
@@ -392,40 +394,46 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
      * @param comment The Comment the ViewPoint should be linked to
      */
     private void GetViewPoint(Project project, Comment comment) {
-        // Should check if this ViewPoint is already in the Database
-        Cursor cursor = mContentResolver.query(
-                DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
-                null,
-                comment.getMCommentsGUID(),
-                null,
-                null);
-        if (cursor == null || cursor.getCount() == 0){
-            // If ViewPoint is not found on the Database, get it from server
-            NetworkConnManager.networkRequest(mContext, Request.Method.GET,
-                    APICall.GETViewpoint(project, comment.getMTopicGuid(), comment),
-                    new ViewPointCallback(project, comment), null);
-        }
-        else {
-            // if ViewPoint IS found on the server, set ViewPoint to the Comment
-            if (cursor.moveToFirst()) {       String guid = cursor.getString(cursor.getColumnIndex(Viewpoint.GUID));
-                String commentGUID = cursor.getString(cursor.getColumnIndex(Viewpoint.COMMENT_GUID));
-                String type = cursor.getString(cursor.getColumnIndex("type"));
-                String pictureName = cursor.getString(cursor.getColumnIndex("picture_name"));
-                AppDatabase.statusTypes localStatus = AppDatabase.convertStringToStatus
-                        (cursor.getString(cursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
-                Long dateAcquired = cursor.getLong(cursor.getColumnIndex(AppDatabase.STATUS_COLUMN));
-                Viewpoint vp = new Viewpoint(guid, commentGUID, type, pictureName, dateAcquired, localStatus);
-                comment.setViewpoint(vp);
-                mContentResolver.insert(DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
-                        vp.getContentValues());
-                mContentResolver.insert(DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
-                        comment.getContentValues());
-                Log.d("SyncAdapter", "Added ViewPoint from database!");
-               // Log.d("SyncAdapter", "Added Comment " + comment.getMComment());
+        if (SYNC_VIEWPOINTS) {
+            // Should check if this ViewPoint is already in the Database
+            Cursor cursor = mContentResolver.query(
+                    DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
+                    null,
+                    comment.getMCommentsGUID(),
+                    null,
+                    null);
+            if (cursor == null || cursor.getCount() == 0) {
+                // If ViewPoint is not found on the Database, get it from server
+                NetworkConnManager.networkRequest(mContext, Request.Method.GET,
+                        APICall.GETViewpoint(project, comment.getMTopicGuid(), comment),
+                        new ViewPointCallback(project, comment), null);
+            } else {
+                // if ViewPoint IS found on the server, set ViewPoint to the Comment
+                if (cursor.moveToFirst()) {
+                    String guid = cursor.getString(cursor.getColumnIndex(Viewpoint.GUID));
+                    String commentGUID = cursor.getString(cursor.getColumnIndex(Viewpoint.COMMENT_GUID));
+                    String type = cursor.getString(cursor.getColumnIndex("type"));
+                    String pictureName = cursor.getString(cursor.getColumnIndex("picture_name"));
+                    AppDatabase.statusTypes localStatus = AppDatabase.convertStringToStatus
+                            (cursor.getString(cursor.getColumnIndex(AppDatabase.STATUS_COLUMN)));
+                    Long dateAcquired = cursor.getLong(cursor.getColumnIndex(AppDatabase.STATUS_COLUMN));
+                    Viewpoint vp = new Viewpoint(guid, commentGUID, type, pictureName, dateAcquired, localStatus);
+                    comment.setViewpoint(vp);
+                    mContentResolver.insert(DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
+                            vp.getContentValues());
+                    mContentResolver.insert(DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
+                            comment.getContentValues());
+                    Log.d("SyncAdapter", "Added ViewPoint from database!");
+                    // Log.d("SyncAdapter", "Added Comment " + comment.getMComment());
+                }
             }
+            if (cursor != null)
+                cursor.close();
+        }else {
+            // Still needs to insert the comment into the database even if the Viewpoint is not
+            mContentResolver.insert(DataProvider.ParseUri(DataProvider.COMMENT_TABLE),
+                    comment.getContentValues());
         }
-        if (cursor != null)
-            cursor.close();
     }
 
     // Private classes implements Volley Callbacks for specific API-callbacks
@@ -811,6 +819,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
         private String mServerTopic;
         private Viewpoint mViewpoint;
 
+        /**
+         * Constructor for posting Comments with or without Viewpoints from a Topic created offline.
+         *
+         * @param comment The comment to be posted
+         * @param localTopic the local topic, should be deleted from DB after
+         * @param serverTopic the TopicGUID from the server
+         * @param viewpoint the Viewpoint that is to be posted, can be null
+         */
         private PostCommentCallback(Comment comment, Topic localTopic, Topic serverTopic, Viewpoint viewpoint) {
             mComment = comment;
             mLocalTopic = localTopic;
@@ -818,12 +834,23 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
             mServerTopic = serverTopic.getMGuid();
         }
 
+        /**
+         * Constructor for posting Comments whose topic was already on the server
+         * @param comment the comment to be posted
+         * @param topicGUID the TopicGUID of the server topic
+         */
         private PostCommentCallback(Comment comment, String topicGUID) {
             mComment = comment;
             mServerTopic = topicGUID;
             mViewpoint = null;
         }
 
+        /**
+         * Constructor used to post comments after a Viewpoint has been posted.
+         * Must delete the Viewpoint and the Comment from the DB
+         * @param comment the comment to be posted
+         * @param vp the viewpoint that should be deleted
+         */
         private PostCommentCallback(Comment comment, Viewpoint vp) {
             mComment = comment;
             mViewpoint = vp;
@@ -916,7 +943,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {    // Global vari
                         DataProvider.ParseUri(DataProvider.VIEWPOINT_TABLE),
                         vp.getContentValues()
                 );
-                if (mLocalTopic != null){
+                if (mLocalTopic != null && mServerTopic != null){
                     mComment.setViewpoint(vp);
                     mComment.setViewpointGuid(vp.getMGuid());
                     mComment.setTopicGUID(mServerTopic.getMGuid());

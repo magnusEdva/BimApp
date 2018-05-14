@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,6 +25,8 @@ import com.bimapp.model.entity.Template.TemplateNode;
 import com.bimapp.model.entity.Template.defaultNode;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,6 +55,8 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     private String mAssignedTo;
     private String mIssueType;
     private String mIssueStatus;
+    private Date mDueDate;
+    private SimpleDateFormat mDateFormat;
 
     public String getTitle() {
         return mTitle;
@@ -77,6 +82,13 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         return mIssueStatus;
     }
 
+    public String getDueDat(){
+        return mDateFormat.format(mDueDate);
+    }
+
+    private final LinearLayout.LayoutParams NO_SIZE = new LinearLayout.LayoutParams(0,0);
+    private final LinearLayout.LayoutParams WRAP_CONTENT = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
     public boolean isDescription_required() {
         return description_required;
     }
@@ -93,8 +105,8 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         TOPIC_STATUS(3),
         TOPIC_TYPE(4),
         ASSIGNED_TO(5),
-        LABELS(6),
-        DUE_DATE(7),
+        LABELS(-1), // Set this to 6 when support is implemented
+        DUE_DATE(-1),// Set this to 6 when support is implemented
         IMAGE(8),
         COMMENT(9)
         ;
@@ -121,6 +133,10 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         public Spinner mSpinner_input;
         public ArrayAdapter<CharSequence> mAdapter;
         public Button mItem_button;
+
+
+
+        private DatePicker mDatePicker;
 
         /**
          * Constructor which makes a ViewHolder depending on what subtype the {@link TemplateNode} has
@@ -173,9 +189,9 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                     mSpinner_input =null;
                     break;
                 case 7: // DUE_DATE
-                    mItem_description = itemView.findViewById(R.id.topic_due_date);
+                    /*mItem_description = itemView.findViewById(R.id.topic_due_date);
                     mItem_input = itemView.findViewById(R.id.topic_due_date_input);
-                    mSpinner_input = null;
+                    mItem_button = itemView.findViewById(R.id.topic_date_pick_button);*/
                     break;
                 case 8: // IMAGE
                     mItem_description =null;
@@ -441,8 +457,26 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 7: // DUE DATE
-                holder.mItem_description.setText(R.string.due_date);
-                holder.mItem_input.setText(mList.get(position).getContent().toString());
+                //holder.mItem_description.setText(R.string.due_date);
+                //holder.mItem_input.setText(mList.get(position).getContent().toString());
+                /*holder.mItem_button.setOnClickListener(new View.OnClickListener() {
+                                                           @Override
+                                                           public void onClick(View v) {
+                                                               holder.mDatePicker.setVisibility(View.VISIBLE);
+                                                               holder.mDatePicker.setLayoutParams(WRAP_CONTENT);
+                                                               holder.mItem_button.setLayoutParams(NO_SIZE);
+                                                               v.invalidate();
+                                                           }
+                                                       }
+
+                );*/
+                // Requires Android 26
+                /*holder.mDatePicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
+                    @Override
+                    public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                    }
+                });*/
                 break;
             case 8: //IMAGE
                 holder.mItem_button.setText(R.string.add_image);
