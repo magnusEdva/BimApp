@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bimapp.model.data_access.DataProvider;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.view.DashBoardView;
 import com.bimapp.view.interfaces.DashboardViewInterface;
@@ -71,8 +72,8 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
         List<Template> temps = new ArrayList<>();
         temps.add(new Template(MOCK.templateOne));
         temps.add(new Template(MOCK.templateTwo));
-        temps.add(Template.createTemplateIssues());
-
+        temps.add(Template.createTemplateIssues("My issues","Open issues assigned to me", DataProvider.ASSIGNED_TO));
+        temps.add(Template.createTemplateIssues("My issues","Open issues", DataProvider.OPEN));
         mDashboardView.setTemplates(temps);
 
         return mDashboardView.getRootView();

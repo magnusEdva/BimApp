@@ -198,7 +198,7 @@ public class ProjectsViewActivity extends AppCompatActivity
                                 openFragment(PROJECTS_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_issues:
-                                mTopicListFragment.setTopicsAssignedTo(null);
+                                mTopicListFragment.setFilterArgs(null,null);
                                 openFragment(TOPICLIST_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_dashboard:
@@ -298,13 +298,16 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     @Override
     public void onDashboardItemClick(Template template) {
-        if(template.getAssignedTo() == null) {
+        if(template.getFilter() == null) {
             mNewTopicFragment = new FragmentNewTopic();
             mNewTopicFragment.setTemplate(template);
             navigationView.setCheckedItem(0);
             openFragment(NEWTOPIC_FRAGMENT_TAG);
         }else{
-            mTopicListFragment.setTopicsAssignedTo(user.getId());
+            if(template.getFilterArgs().equals(DataProvider.ASSIGNED_TO)) {
+                mTopicListFragment.setFilterArgs(user.getId(), template.getFilterArgs());
+            }else if(template.getFilterArgs().equals(DataProvider.OPEN))
+                mTopicListFragment.setFilterArgs("", template.getFilterArgs());
             navigationView.setCheckedItem(R.id.nav_issues);
             openFragment(TOPICLIST_FRAGMENT_TAG);
 

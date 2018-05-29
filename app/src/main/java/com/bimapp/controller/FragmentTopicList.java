@@ -129,8 +129,13 @@ public class FragmentTopicList extends Fragment
      */
     @Override
     public void setTopics(List<Topic> topics) {
-        if (topics != null && !topics.isEmpty())
-            mTopicsView.setTopics(topics);
+        if (topics != null && !topics.isEmpty()) {
+            if (searchArg != null && searchQuery != null)
+                onSearch(searchArg, searchQuery, false);
+            else
+                mTopicsView.setTopics(topics);
+        }
+
     }
 
     @Override
@@ -153,10 +158,15 @@ public class FragmentTopicList extends Fragment
     }
 
 
-    public void setTopicsAssignedTo(String userId) {
-        searchArg = DataProvider.ASSIGNED_TO;
-        searchQuery = userId;
+    /**
+     * @param selection specified element to look for
+     * @param arg       column for the selection
+     */
+    public void setFilterArgs(String selection, String arg) {
+        searchArg = arg;
+        searchQuery = selection;
     }
+
 
     /**
      *

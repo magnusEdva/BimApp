@@ -1,7 +1,6 @@
 package com.bimapp.model.entity.Template;
 
 import android.graphics.Color;
-import android.support.annotation.NonNull;
 
 import com.bimapp.model.entity.entity;
 
@@ -11,7 +10,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This represents a template for a particular Topic type.
@@ -46,12 +44,15 @@ public class Template implements entity {
 
     private List<TemplateNode> mNodes;
 
-    private Boolean assignedTo;
+    private Boolean filter;
 
-    protected Template(String title, String description){
+    private String filterArgs;
+
+    protected Template(String title, String description, String filterArgs){
         mName = title;
         mDescription = description;
-        assignedTo = true;
+        filter = true;
+        this.filterArgs = filterArgs;
         mColor = Color.RED;
 
     }
@@ -64,8 +65,9 @@ public class Template implements entity {
         }
     }
 
-    public static Template createTemplateIssues(){
-        Template t = new Template("My issues", "Open issues assigned to me");
+    public static Template createTemplateIssues(String title, String desc, String args){
+    //    Template t = new Template("My issues", "Open issues assigned to me");
+        Template t = new Template(title, desc, args);
         return t;
     }
 
@@ -128,14 +130,15 @@ public class Template implements entity {
         return mIcon;
     }
 
-    public Boolean getAssignedTo(){
-        return assignedTo;
+    public Boolean getFilter(){
+        return filter;
     }
 
     public List<TemplateNode> getNodes() {
         return mNodes;
     }
 
+    public String getFilterArgs(){return filterArgs;}
 
     @Override
     public JSONObject getJsonParams() {
