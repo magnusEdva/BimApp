@@ -13,7 +13,7 @@
     <string name="projects">Issue Boards</string>
     <string name="logout">Log Out</string>
     <string name="user">User</string>
-    <string name="issues">Issues</string>
+    <string name="issues">All Issues</string>
 
     <!-- API- strinaddToRequestQueue add api-urls here-->
     <string name="api_token">https://api.bimsync.com/oauth2/token</string>

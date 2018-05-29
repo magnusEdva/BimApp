@@ -53,7 +53,7 @@ public class Template implements entity {
         mDescription = description;
         filter = true;
         this.filterArgs = filterArgs;
-        mColor = Color.RED;
+        mColor = Color.GRAY;
 
     }
     public Template(JSONObject jsonTemplate) {

@@ -1,11 +1,8 @@
 package com.bimapp.controller;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Movie;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +70,7 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
         temps.add(new Template(MOCK.templateOne));
         temps.add(new Template(MOCK.templateTwo));
         temps.add(Template.createTemplateIssues("My issues","Open issues assigned to me", DataProvider.ASSIGNED_TO));
-        temps.add(Template.createTemplateIssues("My issues","Open issues", DataProvider.OPEN));
+        temps.add(Template.createTemplateIssues("Open issues","Open issues", DataProvider.OPEN));
         mDashboardView.setTemplates(temps);
 
         return mDashboardView.getRootView();
@@ -114,8 +111,8 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
         public MOCKTEMPLATES() {
             try {
                 templateTwo = new JSONObject("{\n" +
-                        "    \"templateName\": \"Uønsket hendelse\",\n" +
-                        "    \"templateDescription\": \"\",\n" +
+                        "    \"templateName\": \"New Topic\",\n" +
+                        "    \"templateDescription\": \"A new blank topic\",\n" +
                         "    \"templateColor\": \"#f45f41\",\n" +
                         "    \"title\": {\n" +
                         "        \"mandatory\": true,\n" +
@@ -123,9 +120,9 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
                         "        \"defaultValue\": null\n" +
                         "    },\n" +
                         "    \"description\": {\n" +
-                        "        \"mandatory\": true,\n" +
+                        "        \"mandatory\": false,\n" +
                         "        \"visible\": true,\n" +
-                        "        \"defaultValue\": \"Rapport ved uønsket hendelse\"\n" +
+                        "        \"defaultValue\": null\n" +
                         "    },\n" +
                         "    \"topic_status\": {\n" +
                         "        \"mandatory\": true,\n" +
@@ -135,7 +132,7 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
                         "    \"topic_type\": {\n" +
                         "        \"mandatory\": true,\n" +
                         "        \"visible\": true,\n" +
-                        "        \"defaultValue\": \"Incident\"\n" +
+                        "        \"defaultValue\": \"Info\"\n" +
                         "    },\n" +
                         "    \"labels\": {\n" +
                         "        \"mandatory\": false,\n" +
@@ -146,7 +143,7 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
                         "    \"assigned_to\": {\n" +
                         "        \"mandatory\": true,\n" +
                         "        \"visible\": false,\n" +
-                        "        \"defaultValue\": \"chief@company.com\"\n" +
+                        "        \"defaultValue\": null\n" +
                         "    },\n" +
                         "    \"stage\": {\n" +
                         "        \"mandatory\": false,\n" +
@@ -163,7 +160,7 @@ public class FragmentDashboard extends Fragment implements DashboardViewInterfac
                         "        \"visible\": true\n" +
                         "    },\n" +
                         "    \"comment\": {\n" +
-                        "        \"mandatory\": true,\n" +
+                        "        \"mandatory\": false,\n" +
                         "        \"visible\": true,\n" +
                         "        \"defaultValue\": null\n" +
                         "    }\n" +
