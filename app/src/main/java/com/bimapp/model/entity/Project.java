@@ -1,30 +1,48 @@
 package com.bimapp.model.entity;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Model implementation of a the project type.
  */
-
-public class Project implements Entity {
+@Entity(tableName = "project")
+public class Project implements entity {
     public static final String PROJECT_ID = "project_id";
     public static final String BIMSYNC_PROJECT_NAME = "bimsync_project_name";
     public static final String NAME = "name";
     public static final String BIMSYNC_PROJECT_ID = "bimsync_project_id";
+    public static final String ISSUE_BOARD_EXTENSIONS = "issue_board_extensions";
 
+    /**
+     * used by the presenter to control which name the view
+     * shows. either bimsyncProjectName or name, depending on state.
+     */
+    @Ignore
     private boolean state;
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = PROJECT_ID)
     private String projectId;
+    @ColumnInfo(name = BIMSYNC_PROJECT_NAME)
     private String bimsyncProjectName;
+    @ColumnInfo(name = NAME)
     private String name;
+    @ColumnInfo(name = BIMSYNC_PROJECT_ID)
     private String bimsyncProjectId;
-
+    @Embedded
     private IssueBoardExtensions mIssueBoardExtensions;
 
     /**
@@ -45,13 +63,42 @@ public class Project implements Entity {
      * @param bimsyncProjectId   String with the BimsyncProjectId corresponding to the project Id
      * @param name               String with the project name corresponding to the project Id.
      */
-    public Project(String projectId, String bimsyncProjectName, String bimsyncProjectId, String name, IssueBoardExtensions issueBoardExtensions) {
+    public Project(@NonNull String projectId, String bimsyncProjectName, String bimsyncProjectId, String name, IssueBoardExtensions issueBoardExtensions) {
         this.projectId = projectId;
         this.bimsyncProjectName = bimsyncProjectName;
         this.bimsyncProjectId = bimsyncProjectId;
         this.name = name;
         this.mIssueBoardExtensions = issueBoardExtensions;
     }
+
+    /**
+     * recreates this instance in the DataProvider before being inserted into the database.
+     *
+     * @param values
+     */
+    public Project(ContentValues values) {
+        projectId = values.getAsString(PROJECT_ID);
+        name = values.getAsString(NAME);
+        bimsyncProjectName = values.getAsString(BIMSYNC_PROJECT_NAME);
+        bimsyncProjectId = values.getAsString(BIMSYNC_PROJECT_ID);
+        JSONObject obj = new JSONObject();
+        mIssueBoardExtensions = new IssueBoardExtensions();
+        try {
+            if(values.getAsString(IssueBoardExtensions.USER_ID_TYPE) != null)
+                obj.put(IssueBoardExtensions.USER_ID_TYPE, new JSONArray(values.getAsString(IssueBoardExtensions.USER_ID_TYPE)));
+            if(values.getAsString(IssueBoardExtensions.TOPIC_LABELS) != null)
+                obj.put(IssueBoardExtensions.TOPIC_LABELS, new JSONArray(values.getAsString(IssueBoardExtensions.TOPIC_LABELS)));
+            if(values.getAsString(IssueBoardExtensions.TOPIC_STATUS) != null)
+                obj.put(IssueBoardExtensions.TOPIC_STATUS, new JSONArray(values.getAsString(IssueBoardExtensions.TOPIC_STATUS)));
+            if(values.getAsString(IssueBoardExtensions.TOPIC_TYPE) != null)
+                obj.put(IssueBoardExtensions.TOPIC_TYPE, new JSONArray(values.getAsString(IssueBoardExtensions.TOPIC_TYPE)));
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public String getProjectId() {
         return projectId;
@@ -86,7 +133,7 @@ public class Project implements Entity {
      */
 
     public List<String> getProjectTypesOrdered(Topic topic) {
-        String topicType = topic.getTopicType();
+        String topicType = topic.getMTopicType();
         List<String> projectTypes = mIssueBoardExtensions.getTopicType();
         return reOrderList(projectTypes, topicType);
     }
@@ -99,32 +146,27 @@ public class Project implements Entity {
      * @return project Statuses
      */
     public List<String> getProjectStatusOrdered(Topic topic) {
-        String Status = topic.getTopicStatus();
+        String Status = topic.getMTopicStatus();
         List<String> projectStatus = mIssueBoardExtensions.getTopicStatus();
         return reOrderList(projectStatus, Status);
     }
 
-    private List<String> reOrderList(List<String> list, String newFirstElement) {
-        String tempStringStorage = list.get(0);
-        list.remove(0);
-        list.add(0, newFirstElement);
-        for (int i = 1; i < list.size(); i++) {
-            if (list.get(i).equals(newFirstElement)) {
-                list.remove(i);
-                list.add(i, tempStringStorage);
-
-            }
-        }
-        return list;
+    public List<String> getProjectUsersOrdered(Topic topic) {
+        String User = topic.getMAssignedTo();
+        if( User == null)
+            User = "";
+        List<String> projectStatus = mIssueBoardExtensions.getUserIdType();
+        return reOrderList(projectStatus, User);
     }
 
-    /**
-     * @param map @NonNull
-     * @return always throws exception
-     */
-    @Override
-    public Map<String, String> getStringParams(@NonNull Map<String, String> map) {
-        throw new UnsupportedOperationException();
+    private List<String> reOrderList(List<String> list, String newFirstElement) {
+        if(list.contains(newFirstElement)) {
+            list.remove(list.indexOf(newFirstElement));
+            list.add(0, newFirstElement);
+        }else{
+            list.add(0, newFirstElement);
+        }
+        return list;
     }
 
     /**
@@ -149,6 +191,22 @@ public class Project implements Entity {
         }
     }
 
+    public ContentValues getContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(PROJECT_ID, projectId);
+        values.put(NAME, name);
+        values.put(BIMSYNC_PROJECT_ID, bimsyncProjectId);
+        values.put(BIMSYNC_PROJECT_NAME, bimsyncProjectName);
+
+        if (mIssueBoardExtensions != null) {
+            values.put(IssueBoardExtensions.TOPIC_TYPE, Topic.getStringFromList(mIssueBoardExtensions.getTopicType()));
+            values.put(IssueBoardExtensions.TOPIC_LABELS, Topic.getStringFromList(mIssueBoardExtensions.getTopicLabel()));
+            values.put(IssueBoardExtensions.TOPIC_STATUS, Topic.getStringFromList(mIssueBoardExtensions.getTopicStatus()));
+            values.put(IssueBoardExtensions.USER_ID_TYPE, Topic.getStringFromList(mIssueBoardExtensions.getUserIdType()));
+        }
+        return values;
+    }
+
     public void setState(boolean state) {
         this.state = state;
     }
@@ -158,6 +216,4 @@ public class Project implements Entity {
         if (state) return bimsyncProjectName;
         return name;
     }
-
-
 }

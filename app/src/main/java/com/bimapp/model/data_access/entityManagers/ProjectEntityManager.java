@@ -1,15 +1,16 @@
-package com.bimapp.model.entityManagers;
+package com.bimapp.model.data_access.entityManagers;
 
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
+import com.bimapp.model.data_access.DataProvider;
+import com.bimapp.model.data_access.network.APICall;
+import com.bimapp.model.data_access.network.Callback;
+import com.bimapp.model.data_access.network.NetworkConnManager;
 import com.bimapp.model.entity.EntityListConstructor;
 import com.bimapp.model.entity.Project;
-import com.bimapp.model.network.APICall;
-import com.bimapp.model.network.Callback;
-import com.bimapp.model.network.NetworkConnManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,8 +25,11 @@ public class ProjectEntityManager implements ProjectsFragmentInterface.FragmentP
 
     private BimApp mContext;
 
+    private ProjectDBHandler handler;
+
     public ProjectEntityManager(BimApp context) {
         mContext = context;
+        handler = new ProjectDBHandler(context.getContentResolver());
     }
 
     @Override
@@ -69,6 +73,8 @@ public class ProjectEntityManager implements ProjectsFragmentInterface.FragmentP
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            for(Project p : projects)
+                handler.startInsert(1,mControllerCallback, DataProvider.ParseUri(DataProvider.PROJECT_TABLE),p.getContentValues() );
             mControllerCallback.setProjects(projects);
 
         }
@@ -80,6 +86,8 @@ public class ProjectEntityManager implements ProjectsFragmentInterface.FragmentP
      * @param controllerCallback is an interface that defines the methods for handling the responses from the {@Link NetworkConnManager}
      */
     public void getProjects(ProjectsFragmentInterface controllerCallback) {
+        handler.startQuery(1,controllerCallback, DataProvider.ParseUri(DataProvider.PROJECT_TABLE),
+                null,null,null,null);
         NetworkConnManager.networkRequest(mContext, Request.Method.GET, APICall.GETProjects(),
                 new ProjectCallback(controllerCallback), null);
     }

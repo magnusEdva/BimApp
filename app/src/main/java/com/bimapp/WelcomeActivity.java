@@ -6,8 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import com.bimapp.model.network.Callback;
-import com.bimapp.model.network.oauth.OAuthHandler;
+import com.bimapp.model.data_access.network.Callback;
+import com.bimapp.model.data_access.network.oauth.OAuthHandler;
 
 /**
  * Activity that manages the startup and login of the application.
@@ -51,6 +51,9 @@ public class WelcomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Network callback for when a user logs in with a browser.
+     */
     private class networkCallback implements Callback<String>{
 
         @Override

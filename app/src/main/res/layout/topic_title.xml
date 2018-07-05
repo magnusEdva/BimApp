@@ -11,8 +11,8 @@
         android:id="@+id/topic_title_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="textCapSentences"
         android:hint="@string/topic_title"
-        android:inputType="text"
         android:padding="@dimen/text_margin"
         android:singleLine="true" />
 </android.support.design.widget.TextInputLayout>

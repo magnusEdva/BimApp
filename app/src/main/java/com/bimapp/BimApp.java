@@ -9,14 +9,17 @@ import android.util.ArraySet;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.bimapp.model.data_access.AppDatabase;
+import com.bimapp.model.data_access.entityManagers.LogOutHelper;
+import com.bimapp.model.data_access.network.Callback;
+import com.bimapp.model.data_access.network.oauth.OAuthHandler;
 import com.bimapp.model.entity.IssueBoardExtensions;
 import com.bimapp.model.entity.Project;
-import com.bimapp.model.network.Callback;
-import com.bimapp.model.network.oauth.OAuthHandler;
+import com.bimapp.model.entity.User;
+import com.bimapp.model.entity.Viewpoint;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Application class. Acquired with getApplicationContext. Casted to
@@ -30,6 +33,12 @@ public class BimApp extends Application {
      * acquiring the expected results.
      */
     private Project mActiveProject;
+
+    /**
+     * This is the currently active user. Is set when you log in,
+     * and is set to null when you log out.
+     */
+    private User mCurrentUser;
     /**
      * This object is responsible for all Token handling.
      * Across the entire application.
@@ -40,9 +49,12 @@ public class BimApp extends Application {
      */
     private RequestQueue requestQueue;
 
+
+
     @Override
     public void onCreate() {
         super.onCreate();
+        Viewpoint.Snapshot.dir = this.getFilesDir().getPath();
         requestQueue = Volley.newRequestQueue(this);
         mOAuth = new OAuthHandler(this);
         checkTokensAndRefresh();
@@ -54,11 +66,13 @@ public class BimApp extends Application {
 
     /**
      * deletes all tokens and cache from storage. After calling this, the presenter should change to the login
-     * view.
+     * view. Also empties the offline storage.
      */
     public void logOut() {
         requestQueue.getCache().clear();
         mOAuth.deleteTokens();
+        mCurrentUser = null;
+        new LogOutHelper(AppDatabase.getInstance(this)).execute();
     }
 
     /**
@@ -99,6 +113,7 @@ public class BimApp extends Application {
      * @return true if valid access token or false otherwise.
      */
     public boolean checkLogIn() {
+
         return mOAuth.isLoggedIn();
     }
 
@@ -107,7 +122,12 @@ public class BimApp extends Application {
      * @return true if logged in or false otherwise.
      */
     public boolean checkTokensAndRefresh(){
-        return mOAuth.hasTokens();
+        try {
+            return mOAuth.hasTokens();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public RequestQueue getRequestQueue() {
@@ -180,5 +200,27 @@ public class BimApp extends Application {
         }
 
         return mActiveProject;
+    }
+
+    public void setCurrentUser(User user) {
+        mCurrentUser = user;
+        SharedPreferences preferences = getSharedPreferences("settings", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("user" + User.ID, user.getId());
+        editor.putString("user" + User.NAME, user.getName());
+        editor.apply();
+
+
+    }
+
+    public User getCurrentUser() {
+        if(mCurrentUser == null){
+            SharedPreferences preferences = getSharedPreferences("settings", MODE_PRIVATE);
+            String id = preferences.getString("user" + User.ID,null);
+            String name = preferences.getString("user" + User.NAME,null);
+            if(id != null && name != null)
+                mCurrentUser = new User(id,name);
+        }
+        return mCurrentUser;
     }
 }

@@ -10,10 +10,10 @@
     <string name="errorNetworkTimeout">Are thou connected to the internet?</string>
 
     <!-- Navigation drawer-->
-    <string name="projects">Projects</string>
+    <string name="projects">Issue Boards</string>
     <string name="logout">Log Out</string>
     <string name="user">User</string>
-    <string name="issues">Issues</string>
+    <string name="issues">All Issues</string>
 
     <!-- API- strinaddToRequestQueue add api-urls here-->
     <string name="api_token">https://api.bimsync.com/oauth2/token</string>
@@ -26,7 +26,6 @@
     <string name="url_encode">application/x-www-form-urlencoded</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="dashboard">Dashboard</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
@@ -43,4 +42,14 @@
     <string name="topic_title">Title</string>
     <string name="description">Description</string>
     <string name="submit">Submit Issue</string>
+    <string name="sync_account_type">com.bimapp.sync</string>
+    <string name="data_provider_authority">com.bimapp.model.data_access.DataProvider</string>
+    <string name="comment">Comment</string>
+    <string name="search">Search</string>
+    <string name="addTopicTitle">Add a title</string>
+    <string name="addDesc">Add a description</string>
+    <string name ="addComment">Add a comment</string>
+    <string name ="icon">icon</string>
+    <string name="title_required_field">Title is a required field</string>
+    <string name="desc_required_field">Description is a required field</string>
 </resources>

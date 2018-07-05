@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
+import com.bimapp.model.data_access.entityManagers.IssueBoardExtensionsEntityManager;
+import com.bimapp.model.data_access.entityManagers.ProjectEntityManager;
 import com.bimapp.model.entity.IssueBoardExtensions;
 import com.bimapp.model.entity.Project;
-import com.bimapp.model.entityManagers.IssueBoardExtensionsEntityManager;
-import com.bimapp.model.entityManagers.ProjectEntityManager;
 import com.bimapp.view.ProjectsView;
 import com.bimapp.view.interfaces.ProjectsViewInterface;
 
@@ -69,6 +69,7 @@ public class FragmentProject extends Fragment
     @Override
     public void onResume() {
         super.onResume();
+        BCF = false;
         mProjectsManager.getProjects(this);
     }
 
@@ -82,6 +83,7 @@ public class FragmentProject extends Fragment
     @Override
     public void onDetach() {
         super.onDetach();
+        BCF = false;
         mProjectsManager = null;
 
     }
@@ -99,7 +101,6 @@ public class FragmentProject extends Fragment
             mProject = project;
             mExtensionManager = new IssueBoardExtensionsEntityManager(mContext);
             mExtensionManager.getIssueBoardExtensions(project, this);
-            Log.d("ID : ", project.getProjectId());
             BCF = false;
         } else {
             BCF = true;
@@ -121,9 +122,15 @@ public class FragmentProject extends Fragment
 
     @Override
     public void setExtensions(IssueBoardExtensions issueBoardExtensions) {
-        mProject.setIssueBoardExtensions(issueBoardExtensions);
-        mContext.setActiveProject(mProject);
-        mCallback.onFragmentProjectInteraction(mProject);
+        if(issueBoardExtensions == null) {
+            mContext.setActiveProject(mProject);
+            mCallback.onFragmentProjectInteraction(mProject);
+        }
+        else {
+            mProject.setIssueBoardExtensions(issueBoardExtensions);
+            mContext.setActiveProject(mProject);
+            mCallback.onFragmentProjectInteraction(mProject);
+        }
 
     }
 

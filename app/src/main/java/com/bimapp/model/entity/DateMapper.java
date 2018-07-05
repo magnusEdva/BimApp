@@ -1,5 +1,7 @@
 package com.bimapp.model.entity;
 
+import android.arch.persistence.room.TypeConverter;
+
 import java.text.DateFormat;
 
 import java.text.ParseException;
@@ -13,7 +15,8 @@ public class DateMapper {
     private static DateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
     private static int LENGTH_WITHOUT_MILLIS = 24;
 
-    public static String map(Date date) {
+    @TypeConverter
+    public static String map(Date date)  {
         if (date == null) {
             return null;
         }
@@ -24,13 +27,28 @@ public class DateMapper {
     /**
      * Transform ISO 8601 string to Date.
      */
-    public static Date toDate(final String iso8601string) throws ParseException {
-        String formatted = formatTimeZone(iso8601string);
-        if (formatted.length() == LENGTH_WITHOUT_MILLIS) {
-            return FORMATTER.parse(formatted);
-        } else {
-            return MILLIS_FORMATTER.parse(formatted);
+    @TypeConverter
+    public static Date toDate(final String iso8601string) {
+        if(iso8601string == null)
+            return null;
+        if(iso8601string.length() == 10){
+            try {
+                return formatter.parse(iso8601string);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
+        String formatted = formatTimeZone(iso8601string);
+        try {
+            if (formatted.length() == LENGTH_WITHOUT_MILLIS) {
+                return FORMATTER.parse(formatted);
+            } else {
+                return MILLIS_FORMATTER.parse(formatted);
+            }
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static String formatTimeZone(String iso8601string) {

@@ -1,15 +1,22 @@
-package com.bimapp.model.network;
+package com.bimapp.model.data_access.network;
 
 
+import android.content.ContentProviderClient;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.android.volley.Request;
 import com.bimapp.BimApp;
 import com.bimapp.WelcomeActivity;
-import com.bimapp.model.entity.Entity;
+import com.bimapp.model.data_access.DataProvider;
+import com.bimapp.model.entity.entity;
 
 /**
  * Provider of all access to all API calls and methods.
@@ -18,31 +25,34 @@ import com.bimapp.model.entity.Entity;
 public class NetworkConnManager {
 
 
-    private NetworkConnManager() {}
+    private NetworkConnManager() {
+    }
 
     /**
      * Sends a request using the @aram call URL. Data is provided to the callbacks onSuccess.
      *
-     * @param context      Required to acquire tokens.
-     * @param method       type of request. From Volley.Request + 11 for acquiring an Image
-     * @param url          the url to be executed. Found in APICall
-     * @param callback     implementation of the network.Callback interface.
+     * @param context  Required to acquire tokens.
+     * @param method   type of request. From Volley.Request + 11 for acquiring an Image
+     * @param url      the url to be executed. Found in APICall
+     * @param callback implementation of the network.Callback interface.
      */
     static public void networkRequest(@NonNull BimApp context, @NonNull int method,
-                                      @NonNull String url, @NonNull Callback callback, @Nullable Entity params) {
-
-        if(context.checkLogIn()){
+                                      @NonNull String url, @NonNull Callback callback, @Nullable entity params) {
+        if (context.checkLogIn()) {
             sendRequest(context, method, url, callback, params);
-        } else{
+
+        } else {
             Intent intent = new Intent(context, WelcomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
         }
     }
 
-    public static class networkCallback implements Callback<String>{
+
+    public static class networkCallback implements Callback<String> {
         Callback<String> otherCall;
-         networkCallback(Callback<String> otherCallback){
+
+        networkCallback(Callback<String> otherCallback) {
             otherCall = otherCallback;
         }
 
@@ -58,9 +68,10 @@ public class NetworkConnManager {
 
     }
 
-    public static class imageCallback implements Callback<Bitmap>{
+    public static class imageCallback implements Callback<Bitmap> {
         Callback<Bitmap> otherCall;
-         imageCallback(Callback<Bitmap> otherCallback){
+
+        imageCallback(Callback<Bitmap> otherCallback) {
             otherCall = otherCallback;
         }
 
@@ -71,26 +82,31 @@ public class NetworkConnManager {
 
         @Override
         public void onSuccess(Bitmap response) {
+
             otherCall.onSuccess(response);
         }
     }
 
 
-    private static void sendRequest(BimApp context, int method, String url, Callback callback, Entity params){
-        switch (method){
-            case(Request.Method.GET):
+    private static void sendRequest(BimApp context, int method, String url, Callback callback, entity params) {
+        switch (method) {
+            case (Request.Method.GET):
                 BimAppRequest.GET(context, method, url, new networkCallback(callback), params);
                 break;
-            case(Request.Method.POST):
+            case (Request.Method.POST):
                 BimAppRequest.POST(context, method, url, new networkCallback(callback), params);
                 break;
-            case(Request.Method.PUT):
+            case (Request.Method.PUT):
                 BimAppRequest.POST(context, method, url, new networkCallback(callback), params);
                 break;
-            case(11):
+            case (11):
                 BimAppRequest.GETImage(context, method, url, new imageCallback(callback));
                 break;
 
         }
     }
+
+
+
+
 }

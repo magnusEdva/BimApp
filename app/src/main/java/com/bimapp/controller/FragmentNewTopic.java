@@ -4,16 +4,17 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bimapp.BimApp;
 import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
+import com.bimapp.model.data_access.entityManagers.TopicsEntityManager;
+import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Topic;
-import com.bimapp.model.entityManagers.TopicsEntityManager;
+import com.bimapp.model.entity.Viewpoint;
 import com.bimapp.view.NewTopicView;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
@@ -42,20 +43,14 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
 
 
     @Override
-    public void onPostTopic(Topic topic) {
-        TopicsEntityManager manager = new TopicsEntityManager(mApplication, this);
-        Log.d("FragmentNewTopic", "Made an entityManger");
-        manager.postTopic(this, topic);
+    public void onPostTopic(Topic topic, Comment comment, Viewpoint vp) {
+
+        mListener.onPostingTopic(topic,comment,vp);
     }
 
     @Override
     public void onCameraIntent(View view) {
         mListener.onTakePhoto();
-    }
-
-    @Override
-    public void onPostComment() {
-        mListener.onPostingTopic(true);
     }
 
 
@@ -139,7 +134,7 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onPostingTopic(boolean success);
+        void onPostingTopic(Topic topic, Comment comment, Viewpoint vp);
 
         void onTakePhoto();
 
@@ -152,11 +147,6 @@ public class FragmentNewTopic extends Fragment implements NewTopicViewInterface.
      */
     @Override
     public void postedTopic(boolean success, Topic topic) {
-        if (success && topic != null){
-            mNewTopicView.postedTopic(topic);
-        }
-        //if (mListener != null)
-        // mListener.onPostingTopic(success);
     }
 
     public void setImage(Bitmap image){

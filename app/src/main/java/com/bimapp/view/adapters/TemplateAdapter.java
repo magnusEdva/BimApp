@@ -1,13 +1,17 @@
 package com.bimapp.view.adapters;
 
 import android.content.Context;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,6 +25,8 @@ import com.bimapp.model.entity.Template.TemplateNode;
 import com.bimapp.model.entity.Template.defaultNode;
 import com.bimapp.view.interfaces.NewTopicViewInterface;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,7 +44,57 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     private int mDefaultType;
     private int mDefaultAsssignedTo;
 
+    // required fields
+    private boolean description_required;
+    private boolean comment_required;
+
     //private final NewTopicViewInterface mListener;
+    private String mTitle;
+    private String mDescription;
+    private String mComment;
+    private String mAssignedTo;
+    private String mIssueType;
+    private String mIssueStatus;
+    private Date mDueDate;
+    private SimpleDateFormat mDateFormat;
+
+    public String getTitle() {
+        return mTitle;
+    }
+
+    public String getDesription() {
+        return mDescription;
+    }
+
+    public String getComment() {
+        return mComment;
+    }
+
+    public String getAssignedTo() {
+        return mAssignedTo;
+    }
+
+    public String getTopicType() {
+        return mIssueType;
+    }
+
+    public String getTopicStatus() {
+        return mIssueStatus;
+    }
+
+    public String getDueDat(){
+        return mDateFormat.format(mDueDate);
+    }
+
+    private final LinearLayout.LayoutParams NO_SIZE = new LinearLayout.LayoutParams(0,0);
+    private final LinearLayout.LayoutParams WRAP_CONTENT = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+    public boolean isDescription_required() {
+        return description_required;
+    }
+    public boolean isComment_required(){
+        return comment_required;
+    }
 
     /**
      * Enum to separate node types
@@ -49,8 +105,8 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         TOPIC_STATUS(3),
         TOPIC_TYPE(4),
         ASSIGNED_TO(5),
-        LABELS(0),
-        DUE_DATE(0),
+        LABELS(-1), // Set this to 6 when support is implemented
+        DUE_DATE(-1),// Set this to 6 when support is implemented
         IMAGE(8),
         COMMENT(9)
         ;
@@ -73,10 +129,14 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
         public final LinearLayout mLayout;
         public View mView;
         public TextView mItem_description;
-        public EditText mItem_input;
+        public TextInputEditText mItem_input;
         public Spinner mSpinner_input;
         public ArrayAdapter<CharSequence> mAdapter;
         public Button mItem_button;
+
+
+
+        private DatePicker mDatePicker;
 
         /**
          * Constructor which makes a ViewHolder depending on what subtype the {@link TemplateNode} has
@@ -89,12 +149,12 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
             switch (viewType) {
                 case 1: // TITLE
                     //this.mItem_description = itemView.findViewById(R.id.topic_title);
-                    this.mItem_input = itemView.findViewById(R.id.topic_title_input);
+                    this.mItem_input = (TextInputEditText) itemView.findViewById(R.id.topic_title_input);
                     this.mSpinner_input = null;
                     break;
                 case 2: // DESCRIPTION
                     //this.mItem_description = itemView.findViewById(R.id.topic_description);
-                    this.mItem_input = itemView.findViewById(R.id.topic_description_input);
+                    this.mItem_input = (TextInputEditText) itemView.findViewById(R.id.topic_description_input);
                     this.mSpinner_input = null;
                     break;
                 case 3: // TOPIC_STATUS
@@ -129,9 +189,9 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                     mSpinner_input =null;
                     break;
                 case 7: // DUE_DATE
-                    mItem_description = itemView.findViewById(R.id.topic_due_date);
+                    /*mItem_description = itemView.findViewById(R.id.topic_due_date);
                     mItem_input = itemView.findViewById(R.id.topic_due_date_input);
-                    mSpinner_input = null;
+                    mItem_button = itemView.findViewById(R.id.topic_date_pick_button);*/
                     break;
                 case 8: // IMAGE
                     mItem_description =null;
@@ -140,13 +200,13 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                     mItem_button = itemView.findViewById(R.id.topic_image_button);
                     break;
                 case 9: // COMMENT
-                    mItem_description = itemView.findViewById(R.id.topic_comment);
+                    //mItem_description = itemView.findViewById(R.id.topic_comment);
                     mItem_input = itemView.findViewById(R.id.topic_comment_input);
                     break;
                 default: // Defaults to no view
-//                    this.mItem_description = itemView.findViewById(R.id.topic_default);
-//                    this.mItem_input = itemView.findViewById(R.id.topic_default_input);
-//                    this.mSpinner_input = null;
+                    /*this.mItem_description = itemView.findViewById(R.id.topic_default);
+                    this.mItem_input = itemView.findViewById(R.id.topic_default_input);
+                    this.mSpinner_input = null;*/
                     break;
             }
             mLayout = itemView.findViewById(R.id.newtopic_list);
@@ -270,6 +330,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 viewHolder = new ViewHolder(view, viewType, context);
                 break;
         }
+        viewHolder.setIsRecyclable(false);
         return viewHolder;
     }
 
@@ -280,32 +341,115 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
      * @param position the position of this view in the RecyclerView, corresponds to the position in the data set
      */
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         switch (this.getItemViewType(position)) {
             case 1: // IssueTitle
-                //holder.mItem_description.setText(R.string.issue_name);
-                holder.mItem_input.setText(mList.get(position).getContent().toString());
+
+                // Title must always be mandatory
+                String content = mList.get(position).getContent().toString();
+                if (content.length() == 0)
+                    holder.mItem_input.setError(mContext.getString(R.string.title_required_field));
+                holder.mItem_input.setText(content);
+                mTitle = content;
+                holder.mItem_input.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        mTitle = s.toString();
+                        mList.get(position).setContent(s.toString());
+                    }
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (s.toString().equals("")){
+                            holder.mItem_input.setError(mContext.getString(R.string.title_required_field));
+                        }
+                    }
+                });
                 break;
             case 2: // IssueDescription
-                //holder.mItem_description.setText(R.string.issue_description);
-                holder.mItem_input.setText(mList.get(position).getContent().toString());
+                content = mList.get(position).getContent().toString();
+                mDescription = content;
+                holder.mItem_input.setText(content);
+                if (mList.get(position).isMandatory()){
+                    description_required = true;
+                    if (holder.mItem_input.getText().length() == 0)
+                        holder.mItem_input.setError(mContext.getString(R.string.desc_required_field));
+                } else
+                    description_required = false;
+
+                holder.mItem_input.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        mDescription = s.toString();
+                        mList.get(position).setContent(s.toString());
+                    }
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (mList.get(position).isMandatory() && s.toString().equals("")){
+                            holder.mItem_input.setError(mContext.getString(R.string.desc_required_field));
+                        }
+                    }
+                });
                 break;
             case 3: // IssueStatus
                 holder.mItem_description.setText(R.string.issue_status);
                 holder.mSpinner_input.setAdapter(holder.mAdapter);
                 holder.mSpinner_input.setSelection(mDefaultStatus);
+                mIssueStatus = (String) holder.mSpinner_input.getSelectedItem();
+                holder.mSpinner_input.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        mDefaultStatus = parent.getSelectedItemPosition();
+                        mIssueStatus = (String) parent.getSelectedItem();
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
                 //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 4: // TOPIC_TYPE
                 holder.mItem_description.setText(R.string.topic_type);
                 holder.mSpinner_input.setAdapter(holder.mAdapter);
                 holder.mSpinner_input.setSelection(mDefaultType);
+                mIssueType = (String) holder.mSpinner_input.getSelectedItem();
+                holder.mSpinner_input.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        mDefaultType = parent.getSelectedItemPosition();
+                        mIssueType = (String) parent.getSelectedItem();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
                 //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 5: // Assigned to
                 holder.mItem_description.setText(R.string.assigned_to);
                 holder.mSpinner_input.setAdapter(holder.mAdapter);
                 holder.mSpinner_input.setSelection(mDefaultAsssignedTo);
+                mAssignedTo = (String) holder.mSpinner_input.getSelectedItem();
+                holder.mSpinner_input.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        mDefaultAsssignedTo = parent.getSelectedItemPosition();
+                        mAssignedTo = (String) parent.getSelectedItem();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
                 //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 6: // LABELS
@@ -313,21 +457,65 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
                 //holder.mItem_input.setText(mList.get(position).getContent().toString());
                 break;
             case 7: // DUE DATE
-                holder.mItem_description.setText(R.string.due_date);
-                holder.mItem_input.setText(mList.get(position).getContent().toString());
+                //holder.mItem_description.setText(R.string.due_date);
+                //holder.mItem_input.setText(mList.get(position).getContent().toString());
+                /*holder.mItem_button.setOnClickListener(new View.OnClickListener() {
+                                                           @Override
+                                                           public void onClick(View v) {
+                                                               holder.mDatePicker.setVisibility(View.VISIBLE);
+                                                               holder.mDatePicker.setLayoutParams(WRAP_CONTENT);
+                                                               holder.mItem_button.setLayoutParams(NO_SIZE);
+                                                               v.invalidate();
+                                                           }
+                                                       }
+
+                );*/
+                // Requires Android 26
+                /*holder.mDatePicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
+                    @Override
+                    public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                    }
+                });*/
                 break;
             case 8: //IMAGE
                 holder.mItem_button.setText(R.string.add_image);
                 holder.mItem_button.setOnClickListener(mListener);
                 break;
             case 9: // COMMENT
-                holder.mItem_description.setText("Comment");
-                holder.mItem_input.setText(mList.get(position).getContent().toString());
+                //holder.mItem_description.setText("Comment");
+                content = mList.get(position).getContent().toString();
+                holder.mItem_input.setText(content);
+                mComment = content;
+                if (mList.get(position).isMandatory()) {
+                    comment_required = true;
+                    if (holder.mItem_input.getText().length() == 0)
+                        holder.mItem_input.setError(mContext.getString(R.string.desc_required_field));
+                } else
+                    comment_required = false;
+
+
+                holder.mItem_input.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    mComment = s.toString();
+                    mList.get(position).setContent(s.toString());
+                }
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (comment_required && s.toString().length() == 0){
+                        holder.mItem_input.setError("Comment is a required field");
+                    }
+                }
+            });
                 break;
             default: // DEFAULT
-//                holder.mItem_description.setText(mTemplate.getNodes().get(position).getTitle());
-//                holder.mItem_input.setHint(mTemplate.getNodes().get(position).getTitle());
-//                holder.mItem_input.setText("");
+                /*holder.mItem_description.setText(mTemplate.getNodes().get(position).getTitle());
+                holder.mItem_input.setHint(mTemplate.getNodes().get(position).getTitle());
+                holder.mItem_input.setText("");*/
                 break;
 
         }

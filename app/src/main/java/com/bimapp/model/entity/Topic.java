@@ -1,7 +1,18 @@
 package com.bimapp.model.entity;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Database;
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverter;
+import android.arch.persistence.room.TypeConverters;
+import android.content.ContentValues;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.bimapp.model.data_access.AppDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,141 +26,155 @@ import java.util.Map;
  * A topic is a model class which can be used to showcase a problem
  * or something else.
  */
+@Entity(tableName = "topic")
+public class Topic implements entity {
+    public static final String GUID = "guid";
+    public static final String TOPIC_TYPE = "topic_type";
+    public static final String TOPIC_STATUS = "topic_status";
+    public static final String REFERENCE_LINKS = "reference_links";
+    public static final String TITLE = "title";
+    public static final String PRIORITY = "priority";
+    public static final String INDEX = "index";
+    public static final String LABELS = "labels";
+    public static final String CREATION_DATE = "creation_date";
+    public static final String CREATION_AUTHOR = "creation_author";
+    public static final String MODIFIED_DATE = "modified_date";
+    public static final String MODIFIED_AUTHOR = "modified_author";
+    public static final String ASSIGNED_TO = "assigned_to";
+    public static final String STAGE = "stage";
+    public static final String DESCRIPTION = "description";
+    public static final String BIM_SNIPPET = "bim_snippet";
+    public static final String DUE_DATE = "due_date";
+    public static final String AUTHORIZATION = "authorization";
 
-public class Topic implements Entity {
-    public static String GUID = "guid";
-    public static String TOPIC_TYPE = "topic_type";
-    public static String TOPIC_STATUS = "topic_status";
-    public static String REFERENCE_LINKS = "reference_links";
-    public static String TITLE = "title";
-    public static String PRIORITY = "priority";
-    public static String INDEX = "index";
-    public static String LABELS = "labels";
-    public static String CREATION_DATE = "creation_date";
-    public static String CREATION_AUTHOR = "creation_author";
-    public static String MODIFIED_DATE = "modified_date";
-    public static String MODIFIED_AUTHOR = "modified_author";
-    public static String ASSIGNED_TO = "assigned_to";
-    public static String STAGE = "stage";
-    public static String DESCRIPTION = "description";
-    public static String BIM_SNIPPET = "bim_snippet";
-    public static String DUE_DATE = "due_date";
-    public static String AUTHORIZATION = "authorization";
-
-
+    @PrimaryKey
+    @ColumnInfo(name = GUID)
+    @NonNull
     private String mGuid;
 
+    @ColumnInfo(name = TOPIC_TYPE)
     private String mTopicType;
 
+    @ColumnInfo(name = TOPIC_STATUS)
     private String mTopicStatus;
 
+    @ColumnInfo(name = REFERENCE_LINKS)
+    @TypeConverters(Topic.class)
     private List<String> mReferenceLinks;
     /**
      * title of the topic. Used to quickly identify what the topic is about.
      */
+
+    @ColumnInfo(name = TITLE)
     private String mTitle;
 
+    @ColumnInfo(name = PRIORITY)
     private String mPriority;
 
+    @ColumnInfo(name = INDEX)
     private Integer mIndex;
 
+    @ColumnInfo(name = CREATION_DATE)
     private String mCreationDate;
 
+    @ColumnInfo(name = CREATION_AUTHOR)
     private String mCreationAuthor;
 
+    @ColumnInfo(name = MODIFIED_AUTHOR)
     private String mModifiedAuthor;
 
+    @ColumnInfo(name = ASSIGNED_TO)
     private String mAssignedTo;
 
+    @ColumnInfo(name = LABELS)
+    @TypeConverters(Topic.class)
     private List<String> mLabels;
 
+    @ColumnInfo(name = STAGE)
     private String mStage;
     /**
      * actual description of the Topic. Used with the title to provide full context.
      */
+    @ColumnInfo(name = DESCRIPTION)
     private String mDescription;
 
+    @Embedded
     private BimSnippet mBimSnippet;
 
+    @ColumnInfo(name = DUE_DATE)
     private String mDueDate;
 
+    @ColumnInfo(name = Project.PROJECT_ID)
+    private String projectId;
+    /**
+     * local variable representing when the Topic was created on the local device.
+     */
+    @ColumnInfo(name = AppDatabase.DATE_COLUMN)
+    private Long dateAcquired;
+    /**
+     * Signifies this Topics situation relative to the server.
+     */
+    @TypeConverters(AppDatabase.class)
+    @ColumnInfo(name = AppDatabase.STATUS_COLUMN)
+    private AppDatabase.statusTypes localStatus;
 
-    public Topic(JSONObject obj) {
+    @Ignore
+    public Topic() {
+    }
+
+    public Topic(JSONObject obj, String projectId) {
+        this.projectId = projectId;
+        dateAcquired = System.currentTimeMillis();
+        localStatus = AppDatabase.statusTypes.live;
         construct(obj);
     }
 
+    /**
+     * Creates a NEW topic on the local device, to be posted to the server.
+     */
     public Topic(@NonNull String title, @Nullable String topicType, @Nullable String topicStatus,
-                 @Nullable String assignedTo, @Nullable String description) {
+                 @Nullable String assignedTo, @Nullable String description, @NonNull String projectId) {
         mTitle = title;
         mTopicType = topicType;
         mTopicStatus = topicStatus;
         mAssignedTo = assignedTo;
         mDescription = description;
+
+        mGuid = Math.random() + "";
+
+        localStatus = AppDatabase.statusTypes.New;
+        dateAcquired = System.currentTimeMillis();
+
+        this.projectId = projectId;
     }
 
-    public String getGuid() {
-        return mGuid;
+    public Topic(ContentValues values) {
+        mGuid = values.getAsString(GUID);
+        mTitle = values.getAsString(TITLE);
+        mTopicType = values.getAsString(TOPIC_TYPE);
+        mTopicStatus = values.getAsString(TOPIC_STATUS);
+        mLabels = getListFromString(values.getAsString(LABELS));
+        mReferenceLinks = getListFromString((values.getAsString(REFERENCE_LINKS)));
+        mDueDate = values.getAsString(DUE_DATE);
+        mPriority = values.getAsString(PRIORITY);
+        mDescription = values.getAsString(DESCRIPTION);
+        mIndex = values.getAsInteger(INDEX);
+        mCreationAuthor = values.getAsString(CREATION_AUTHOR);
+        mCreationDate = values.getAsString(CREATION_DATE);
+        mAssignedTo = values.getAsString(ASSIGNED_TO);
+        mStage = values.getAsString(STAGE);
+        dateAcquired = values.getAsLong(AppDatabase.DATE_COLUMN);
+        localStatus = AppDatabase.convertStringToStatus(values.getAsString(AppDatabase.STATUS_COLUMN));
+        projectId = values.getAsString(Project.PROJECT_ID);
+        mModifiedAuthor = values.getAsString(MODIFIED_AUTHOR);
+        if (values.getAsString(BIM_SNIPPET) != null)
+            try {
+                mBimSnippet = new BimSnippet(new JSONObject(values.getAsString(BIM_SNIPPET)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
     }
 
-    public String getTopicType() {
-        return mTopicType;
-    }
-
-    public void setTopicType(String topicType) {
-        mTopicType = topicType;
-    }
-
-    public String getTopicStatus() {
-        return mTopicStatus;
-    }
-
-    public void setTopicStatus(String topicStatus) {
-        mTopicStatus = topicStatus;
-    }
-
-    public List<String> getReferenceLinks() {
-        return mReferenceLinks;
-    }
-
-    public String getmTitle() {
-        return mTitle;
-    }
-
-    public String getPriority() {
-        return mPriority;
-    }
-
-    public Integer getIndex() {
-        return mIndex;
-    }
-
-    public String getCreationDate() {
-        return mCreationDate;
-    }
-
-    public String getCreationAuthor() {
-        return mCreationAuthor;
-    }
-
-    public String getModifiedAuthor() {
-        return mModifiedAuthor;
-    }
-
-    public String getAssignedTo() {
-        return mAssignedTo;
-    }
-
-    public String getStage() {
-        return mStage;
-    }
-
-    public String getDescription() {
-        return mDescription;
-    }
-
-    public String getDueDate() {
-        return mDueDate;
-    }
 
     private void construct(JSONObject obj) {
 
@@ -182,40 +207,13 @@ public class Topic implements Entity {
                 mAssignedTo = obj.getString(ASSIGNED_TO);
             if (obj.has(STAGE))
                 mStage = obj.getString(STAGE);
-            if(obj.has(BIM_SNIPPET))
-             mBimSnippet = new BimSnippet(obj.getJSONObject("bim_snippet"));
+            if (obj.has(BIM_SNIPPET))
+                mBimSnippet = new BimSnippet(obj.getJSONObject("bim_snippet"));
             if (obj.has(DUE_DATE))
                 mDueDate = obj.getString(DUE_DATE);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * @param map @NonNull empty or non-empty map that is used to store the parameters
-     * @return map containing all of this topics variables.
-     */
-    @Override
-    public Map<String, String> getStringParams(@NonNull Map<String, String> map) {
-        if (mTopicType != null)
-            map.put("topic_type", "");
-        if (mTopicStatus != null)
-            map.put("topic_status", "");
-        //TODO map.put("reference_links", mReferenceLinks);
-        map.put("title", mTitle);
-        if (mPriority != null)
-            map.put("priority", mPriority);
-        if (mIndex != null)
-            map.put("index", mIndex.toString());
-        if (mAssignedTo != null)
-            map.put("assigned_to", "");
-        if (mStage != null)
-            map.put("stage", mStage);
-        if (mDescription != null)
-            map.put("description", mDescription);
-        if (mDueDate != null)
-            map.put("due_date", mDueDate);
-        return map;
     }
 
     @Override
@@ -242,7 +240,7 @@ public class Topic implements Entity {
                 map.put(STAGE, mStage);
             if (mDescription != null)
                 map.put(DESCRIPTION, mDescription);
-            if(mBimSnippet != null)
+            if (mBimSnippet != null)
                 map.put(BIM_SNIPPET, mBimSnippet.getJSON());
             if (mDueDate != null)
                 map.put(DUE_DATE, mDueDate);
@@ -253,7 +251,47 @@ public class Topic implements Entity {
         return map;
     }
 
-    public List<String> getListFromJSonArray(JSONArray array) {
+    public ContentValues getValues() {
+        ContentValues values = new ContentValues();
+        values.put(GUID, mGuid);
+        values.put(TOPIC_STATUS, mTopicStatus);
+        values.put(REFERENCE_LINKS, getStringFromList(mReferenceLinks));
+        values.put(LABELS, getStringFromList(mLabels));
+        values.put(TOPIC_TYPE, mTopicType);
+        values.put(TITLE, mTitle);
+        values.put(PRIORITY, mPriority);
+        values.put(INDEX, mIndex);
+        values.put(ASSIGNED_TO, mAssignedTo);
+        values.put(STAGE, mStage);
+        values.put(DESCRIPTION, mDescription);
+        values.put(AppDatabase.DATE_COLUMN, dateAcquired);
+        values.put(AppDatabase.STATUS_COLUMN, localStatus.status);
+        if (mBimSnippet != null)
+            values.put(BIM_SNIPPET, mBimSnippet.getJSON().toString());
+        values.put(Project.PROJECT_ID, projectId);
+        values.put(DUE_DATE, mDueDate);
+        values.put(CREATION_AUTHOR, mCreationAuthor);
+        values.put(CREATION_DATE, mCreationDate);
+        values.put(AppDatabase.STATUS_COLUMN, AppDatabase.convertStatusToString(localStatus));
+        values.put(AppDatabase.DATE_COLUMN, dateAcquired);
+        return values;
+    }
+
+    /**
+     * Sets the status Column in the database to be updated and the date aqcuired to now.
+     * only changes something if the status was LIVE.
+     */
+    public void updatedLocally() {
+        if (localStatus == AppDatabase.statusTypes.live) {
+            localStatus = AppDatabase.statusTypes.updated;
+            dateAcquired = System.currentTimeMillis();
+        }
+
+    }
+
+    public static List<String> getListFromJSonArray(JSONArray array) {
+        if (array == null)
+            return null;
         List<String> strings = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
             try {
@@ -264,12 +302,37 @@ public class Topic implements Entity {
         }
         return strings;
     }
-    public JSONArray getJSONArrayFromList(List<String> list){
+
+    public static JSONArray getJSONArrayFromList(List<String> list) {
+        if (list == null)
+            return null;
         JSONArray array = new JSONArray();
-        for(String s : list){
+        for (String s : list) {
             array.put(s);
         }
         return array;
+    }
+
+    @TypeConverter
+    public static String getStringFromList(List<String> list) {
+        JSONArray arr = getJSONArrayFromList(list);
+        if (arr != null)
+            return arr.toString();
+        else
+            return null;
+    }
+
+    @TypeConverter
+    public static List<String> getListFromString(String string) {
+        if (string == null)
+            return null;
+        JSONArray array = null;
+        try {
+            array = new JSONArray(string);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return getListFromJSonArray(array);
     }
 
     @Override
@@ -277,18 +340,209 @@ public class Topic implements Entity {
         return mTitle;
     }
 
-    private class BimSnippet {
-        final static String SNIPPET_TYPE = "snippet_type";
-        final static String IS_EXTERNAL = "is_external";
-        final static String REFERENCE = "reference";
-        final static String REFERENCE_SCHEMA = "reference_schema";
+    public String getMGuid() {
+        return mGuid;
+    }
 
-        String mSnippet_type;
-        boolean mExternal;
-        String mReference;
-        String mReferenceSchema;
+    public void setGuid(String guid) {
+        mGuid = guid;
+    }
+
+    public String getMTopicType() {
+        return mTopicType;
+    }
+
+    public void setTopicType(String topicType) {
+        mTopicType = topicType;
+    }
+
+    public String getMTopicStatus() {
+        return mTopicStatus;
+    }
+
+    public void setTopicStatus(String topicStatus) {
+        mTopicStatus = topicStatus;
+    }
+
+    public List<String> getMReferenceLinks() {
+        return mReferenceLinks;
+    }
+
+    public void setReferenceLinks(List<String> links) {
+        mReferenceLinks = links;
+    }
+
+    public String getMTitle() {
+        return mTitle;
+    }
+
+    public void setTitle(String title) {
+        mTitle = title;
+    }
+
+    public String getMPriority() {
+        return mPriority;
+    }
+
+    public void setPriority(String priority) {
+        mPriority = priority;
+    }
+
+    public Integer getMIndex() {
+        return mIndex;
+    }
+
+    public void setIndex(Integer index) {
+        mIndex = index;
+    }
+
+    public String getMCreationDate() {
+        return mCreationDate;
+    }
+
+    public void setCreationDate(String creationDate) {
+        mCreationDate = creationDate;
+    }
+
+    public String getMCreationAuthor() {
+        return mCreationAuthor;
+    }
+
+    public void setCreationAuthor(String author) {
+        mCreationAuthor = author;
+    }
+
+    public String getMModifiedAuthor() {
+        return mModifiedAuthor;
+    }
+
+    public void setModifiedAuthor(String modifiedAuthor) {
+        mModifiedAuthor = modifiedAuthor;
+    }
+
+    public void setAssignedTo(String assignedTo) {
+        mAssignedTo = assignedTo;
+    }
+
+    public String getMAssignedTo() {
+        return mAssignedTo;
+    }
+
+    public String getMStage() {
+        return mStage;
+    }
+
+    public void setStage(String stage) {
+        mStage = stage;
+    }
+
+    public void setDescription(String description) {
+        mDescription = description;
+    }
+
+    public String getMDescription() {
+        return mDescription;
+    }
+
+    public String getMDueDate() {
+        if (mDueDate != null){
+            return mDueDate.substring(0,10);
+        }
+        else
+            return null;
+    }
+
+    public void setDueDate(String dueDate) {
+        mDueDate = dueDate;
+    }
+
+    public BimSnippet getMBimSnippet() {
+        return mBimSnippet;
+    }
+
+    public void setBimSnippet(BimSnippet snippet) {
+        mBimSnippet = snippet;
+    }
+
+    public List<String> getMLabels() {
+        return mLabels;
+    }
+
+    public void setLabels(List<String> labels) {
+        mLabels = labels;
+    }
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
+
+    public Long getDateAcquired() {
+        return dateAcquired;
+    }
+
+    public void setDateAcquired(Long newDate) {
+        dateAcquired = newDate;
+    }
+
+    public void setLocalStatus(AppDatabase.statusTypes status) {
+        localStatus = status;
+    }
+
+    public AppDatabase.statusTypes getLocalStatus() {
+        return localStatus;
+    }
+
+    public static class BimSnippet {
+        public final static String SNIPPET_TYPE = "snippet_type";
+        public final static String IS_EXTERNAL = "is_external";
+        public final static String REFERENCE = "reference";
+        public final static String REFERENCE_SCHEMA = "reference_schema";
+
+
+        @ColumnInfo(name = SNIPPET_TYPE)
+        public String mSnippet_type;
+
+        @ColumnInfo(name = IS_EXTERNAL)
+        public boolean mExternal;
+
+        @ColumnInfo(name = REFERENCE)
+        public String mReference;
+
+        @ColumnInfo(name = REFERENCE_SCHEMA)
+        public String mReferenceSchema;
+
+        public BimSnippet() {
+        }
 
         public BimSnippet(JSONObject snippet) {
+            construct(snippet);
+        }
+
+        public BimSnippet(String Snippet_type, String Reference, String ReferenceSchema, boolean isExternal) {
+            mSnippet_type = Snippet_type;
+            mReference = Reference;
+            mReferenceSchema = ReferenceSchema;
+            mExternal = isExternal;
+        }
+
+        public JSONObject getJSON() {
+            JSONObject map = new JSONObject();
+            try {
+                map.put(SNIPPET_TYPE, mSnippet_type);
+                map.put(IS_EXTERNAL, mExternal);
+                map.put(REFERENCE, mReference);
+                map.put(REFERENCE_SCHEMA, mReferenceSchema);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return map;
+        }
+
+        private void construct(JSONObject snippet) {
             try {
                 if (snippet.has(SNIPPET_TYPE))
                     mSnippet_type = snippet.getString(SNIPPET_TYPE);
@@ -301,18 +555,6 @@ public class Topic implements Entity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
-        public JSONObject getJSON(){
-            JSONObject map = new JSONObject();
-            try {
-                map.put(SNIPPET_TYPE, mSnippet_type);
-                map.put(IS_EXTERNAL, mExternal);
-                map.put(REFERENCE, mReference);
-                map.put(REFERENCE_SCHEMA, mReferenceSchema);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return map;
         }
     }
 

@@ -1,9 +1,8 @@
 package com.bimapp.model.entity.Template;
 
 import android.graphics.Color;
-import android.support.annotation.NonNull;
 
-import com.bimapp.model.entity.Entity;
+import com.bimapp.model.entity.entity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,14 +10,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This represents a template for a particular Topic type.
  * To be created within bimsyncs desktop client.
  */
 
-public class Template implements Entity {
+public class Template implements entity {
     private final static String PROPERTIES = "properties";
     public final static String TEMPLATE_NAME = "templateName";
     public final static String TEMPLATE_DESCRIPTION = "templateDescription";
@@ -46,6 +44,18 @@ public class Template implements Entity {
 
     private List<TemplateNode> mNodes;
 
+    private Boolean filter;
+
+    private String filterArgs;
+
+    protected Template(String title, String description, String filterArgs){
+        mName = title;
+        mDescription = description;
+        filter = true;
+        this.filterArgs = filterArgs;
+        mColor = Color.GRAY;
+
+    }
     public Template(JSONObject jsonTemplate) {
         mNodes = new ArrayList<>();
         try {
@@ -53,6 +63,12 @@ public class Template implements Entity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static Template createTemplateIssues(String title, String desc, String args){
+    //    Template t = new Template("My issues", "Open issues assigned to me");
+        Template t = new Template(title, desc, args);
+        return t;
     }
 
     private void setProperties(JSONObject jsonTemplate) {
@@ -114,14 +130,15 @@ public class Template implements Entity {
         return mIcon;
     }
 
+    public Boolean getFilter(){
+        return filter;
+    }
+
     public List<TemplateNode> getNodes() {
         return mNodes;
     }
 
-    @Override
-    public Map<String, String> getStringParams(@NonNull Map<String, String> map) {
-        return null;
-    }
+    public String getFilterArgs(){return filterArgs;}
 
     @Override
     public JSONObject getJsonParams() {

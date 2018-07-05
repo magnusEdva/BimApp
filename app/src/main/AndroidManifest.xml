@@ -15,6 +15,15 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18"
         />
+    <uses-permission
+        android:name="android.permission.WRITE_SYNC_SETTINGS"
+        />
+    <uses-permission
+        android:name="android.permission.READ_SYNC_SETTINGS"
+        />
+    <uses-permission
+        android:name="android.permission.AUTHENTICATE_ACCOUNTS"
+        />
 
     <application
         android:name=".BimApp"
@@ -62,6 +71,12 @@
                 android:resource="@xml/file_paths"
                 />
         </provider>
+        <provider
+            android:name=".model.data_access.DataProvider"
+            android:authorities="com.bimapp.model.data_access.DataProvider"
+            android:exported="false"
+            android:syncable="true"
+            />
         <service
             android:name=".model.services.AuthenticatorService">
             <intent-filter>
@@ -71,6 +86,21 @@
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator"
+                />
+        </service>
+        <service
+            android:name=".model.services.SyncService"
+            android:exported="true"
+            android:process=":sync"
+            >
+            <intent-filter>
+                <action
+                    android:name="android.content.SyncAdapter"
+                    />
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter"
                 />
         </service>
     </application>

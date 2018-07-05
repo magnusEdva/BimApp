@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <account-authenticator
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accountType="com.bimapp"
+    android:accountType="@string/sync_account_type"
     android:icon="@drawable/ic_launcher_foreground"
     android:smallIcon="@android:drawable/ic_lock_lock"
     android:label="@string/app_name"

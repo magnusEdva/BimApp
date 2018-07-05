@@ -1,4 +1,4 @@
-package com.bimapp.model.network.oauth;
+package com.bimapp.model.data_access.network.oauth;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,14 +22,15 @@ import com.android.volley.toolbox.StringRequest;
 import com.bimapp.APIkey;
 import com.bimapp.BimApp;
 import com.bimapp.R;
-import com.bimapp.model.network.APICall;
-import com.bimapp.model.network.Callback;
+import com.bimapp.model.data_access.network.APICall;
+import com.bimapp.model.data_access.network.Callback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -81,6 +82,10 @@ public class OAuthHandler {
      * @param context a BimApp application
      */
 
+    private static final int MAX_AVAILABLE = 1;
+    private final Semaphore available = new Semaphore(MAX_AVAILABLE, true);
+    private final Semaphore AlreadyLooksForToken = new Semaphore(MAX_AVAILABLE, true);
+
     public OAuthHandler(BimApp context) {
         mContext = context;
         refreshCycleCheck = 0;
@@ -99,11 +104,21 @@ public class OAuthHandler {
      * @param callback  used when acquiring the first token.
      */
     public void getAccessToken(@NonNull final String code, @NonNull final String grantType, @Nullable final Callback callback) {
-
-
-        if (checkActiveRefresh())
-            return;
-        setActiveRefresh();
+        try {
+            AlreadyLooksForToken.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        final Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("Access Token", "server returned error");
+                if (error != null) {
+                    new CallbackHandler().onErrorResponse(error);
+                    error.printStackTrace();
+                }
+            }
+        };
 
         //TODO auth_url and token_url can be gotten from GET /bcf/{version}/auth
         String url = mContext.getString(R.string.api_token);
@@ -118,17 +133,7 @@ public class OAuthHandler {
                             e.printStackTrace();
                         }
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("Access Token", "server returned error");
-                        if (error != null) {
-                            new CallbackHandler().onErrorResponse(error);
-                            error.printStackTrace();
-                        }
-                    }
-                }
+                }, errorListener
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -161,6 +166,20 @@ public class OAuthHandler {
 
                 return headers;
             }
+
+            @Override
+            protected VolleyError parseNetworkError(VolleyError volleyError) {
+                if (volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
+                    VolleyError error = new VolleyError(new String(volleyError.networkResponse.data));
+                    volleyError = error;
+                }
+                return volleyError;
+            }
+
+            @Override
+            public void deliverError(VolleyError error) {
+                errorListener.onErrorResponse(error);
+            }
         };
         oAuthRequest.setRetryPolicy(new DefaultRetryPolicy(0,
                 -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -192,6 +211,7 @@ public class OAuthHandler {
      */
     public void getAccessToken(@NonNull final String code, @NonNull final String grantType) {
         getAccessToken(code, grantType, null);
+
     }
 
     private String getOAuthUri() {
@@ -262,9 +282,6 @@ public class OAuthHandler {
             SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFS_KEY, MODE_PRIVATE);
             accessToken = prefs.getString("AccessToken", null);
         }
-        if(accessToken == null){
-            Log.d("Access Token er null","??");
-        }
         return accessToken;
     }
 
@@ -293,28 +310,42 @@ public class OAuthHandler {
      * @return whether the app has a valid token or not.
      */
     public boolean isLoggedIn() {
+
         if (isValidAccessToken()) {
             return true;
-        } else
-            return hasTokens();
+        } else {
+            try {
+                return hasTokens();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
     /**
-     * checks initialLogin. Used only at app creation.
+     * checks tokens and acquires new if necessary
      */
-    public boolean hasTokens() {
-        if (getRefreshToken() != null) {
-            getAccessToken(getRefreshToken(), GRANT_TYPE_REFRESH_TOKEN);
+    public boolean hasTokens() throws InterruptedException {
+        available.acquire();
+        if (getRefreshToken() != null && !isValidAccessToken()) {
+            if (AlreadyLooksForToken.availablePermits() > 0)
+                getAccessToken(getRefreshToken(), GRANT_TYPE_REFRESH_TOKEN);
+
+            available.release();
             return true;
         } else
-            return false;
+            available.release();
+        return false;
+
 
     }
 
     private class CallbackHandler implements OAuthCallback {
         @Override
         public void onSuccessResponse(String result, Callback callback) {
-
+            available.release();
+            AlreadyLooksForToken.release();
             JSONObject response;
 
             String access_token;
@@ -340,11 +371,12 @@ public class OAuthHandler {
 
         @Override
         public void onErrorResponse(VolleyError error) {
-            setFinishedRefresh();
-            mContext.logOut();
+            available.release();
+            AlreadyLooksForToken.release();
             if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                 error.printStackTrace();
             } else if (error instanceof AuthFailureError) {
+                mContext.logOut();
                 error.printStackTrace();
             } else if (error instanceof ServerError) {
                 error.printStackTrace();

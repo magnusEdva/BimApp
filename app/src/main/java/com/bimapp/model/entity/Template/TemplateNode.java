@@ -1,8 +1,5 @@
 package com.bimapp.model.entity.Template;
 
-import android.content.Context;
-import android.view.View;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -57,4 +54,9 @@ public abstract class TemplateNode {
 
     public abstract Object getContent();
 
+    public abstract void setContent(String s);
+
+    public boolean isMandatory() {
+        return mMandatory;
+    }
 }

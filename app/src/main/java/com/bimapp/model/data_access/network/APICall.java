@@ -1,4 +1,4 @@
-package com.bimapp.model.network;
+package com.bimapp.model.data_access.network;
 
 import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.Project;
@@ -46,29 +46,45 @@ public class APICall {
     public static String POSTTopics(Project project){
         return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics";
     }
+    public static String POSTTopics(String projectID){
+        return BuildBcfURL() + "/projects/" + projectID + "/topics";
+    }
     public static String GETComments(Project project, Topic topic){
-        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/comments";
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getMGuid() + "/comments";
     }
     public static String POSTComment(Project project,Topic topic){
-        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/comments";
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getMGuid() + "/comments";
+    }
+    public static String POSTComment(String projectId,String topicId){
+        return BuildBcfURL() + "/projects/" + projectId + "/topics/" + topicId + "/comments";
     }
     public static String PUTTopic(Project project, Topic topic){
-        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid();
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getMGuid();
+    }
+    public static String PUTTopic(String projectId, Topic topic){
+        return BuildBcfURL() + "/projects/" + projectId + "/topics/" + topic.getMGuid();
     }
     public static String GETIssueBoardExtensions(Project project) {
         return (BuildBcfURL() + "/projects/" + project.getProjectId() + "/extensions");
     }
 
     public static String GETViewpoint(Project project, String topicGuid, Comment comment){
-        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topicGuid + "/viewpoints/" + comment.getViewpointGuid();
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topicGuid + "/viewpoints/" + comment.getMViewpointGuid();
     }
     public static String POSTViewpoints(Project project, Topic topic){
-        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/viewpoints";
-       // return "http:/10.0.0.8:8097/bcf/2.1" + "/projects/" + project.getProjectId() + "/topics/" + topic.getGuid() + "/viewpoints";
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topic.getMGuid() + "/viewpoints";
+       // return "http:/10.0.0.8:8097/bcf/2.1" + "/projects/" + project.getProjectId() + "/topics/" + topic.getMGuid() + "/viewpoints";
+    }
+    public static String POSTViewpoints(String projectId, String topicId){
+        return BuildBcfURL() + "/projects/" + projectId + "/topics/" + topicId + "/viewpoints";
     }
 
     public static String GETSnapshot(Project project, String topicGuid, Viewpoint vp){
-        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topicGuid + "/viewpoints/" + vp.getGuid() + "/snapshot";
+        return BuildBcfURL() + "/projects/" + project.getProjectId() + "/topics/" + topicGuid + "/viewpoints/" + vp.getMGuid() + "/snapshot";
     }
 
+
+    public static String GETSnapshot(String projectId, String topicGuid, Viewpoint vp){
+        return BuildBcfURL() + "/projects/" + projectId + "/topics/" + topicGuid + "/viewpoints/" + vp.getMGuid() + "/snapshot";
+    }
 }

@@ -1,6 +1,10 @@
 package com.bimapp;
 
 import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -21,29 +25,32 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.bimapp.controller.FragmentDashboard;
-import com.bimapp.controller.FragmentNewComment;
 import com.bimapp.controller.FragmentNewTopic;
 import com.bimapp.controller.FragmentProject;
 import com.bimapp.controller.FragmentTopic;
 import com.bimapp.controller.FragmentTopicList;
+import com.bimapp.controller.interfaces.NewTopicFragmentInterface;
 import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
 import com.bimapp.model.ImageFile;
+import com.bimapp.model.data_access.DataProvider;
+import com.bimapp.model.data_access.entityManagers.IssueBoardExtensionsEntityManager;
+import com.bimapp.model.data_access.entityManagers.ProjectEntityManager;
+import com.bimapp.model.data_access.entityManagers.TopicsEntityManager;
+import com.bimapp.model.data_access.network.APICall;
+import com.bimapp.model.data_access.network.Callback;
+import com.bimapp.model.data_access.network.NetworkConnManager;
+import com.bimapp.model.entity.Comment;
 import com.bimapp.model.entity.IssueBoardExtensions;
 import com.bimapp.model.entity.Project;
 import com.bimapp.model.entity.Template.Template;
 import com.bimapp.model.entity.Topic;
 import com.bimapp.model.entity.User;
-import com.bimapp.model.entityManagers.IssueBoardExtensionsEntityManager;
-import com.bimapp.model.entityManagers.ProjectEntityManager;
-import com.bimapp.model.network.APICall;
-import com.bimapp.model.network.Callback;
-import com.bimapp.model.network.NetworkConnManager;
+import com.bimapp.model.entity.Viewpoint;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,16 +69,18 @@ public class ProjectsViewActivity extends AppCompatActivity
         FragmentDashboard.DashboardListener,
         FragmentTopicList.TopicSelectionInterface,
         FragmentNewTopic.OnFragmentInteractionListener,
-        FragmentTopic.TopicFragmentListener {
+        FragmentTopic.TopicFragmentListener, NewTopicFragmentInterface {
     public final static String DASHBOARD_FRAGMENT_TAG = "fragment_dashboard";
     public final static String NEWTOPIC_FRAGMENT_TAG = "fragment_new_topic";
     public final static String TOPICLIST_FRAGMENT_TAG = "fragment_topics";
     public final static String PROJECTS_FRAGMENT_TAG = "fragment_projects";
     public final static String TOPIC_FRAGMENT_TAG = "fragment_topic";
     public final static String COMMENT_FRAGMENT_TAG = "fragment_comment";
+    public static final String SYNC_TAG = "sync_manual";
 
     // Variables to select unique requests to other apps, and provides a way for this activity to handle those callbacks
     private final static int TAKE_PHOTO_INTENT = 91;
+
 
     private BimApp mApplication;
     private DrawerLayout mDrawerLayout;
@@ -80,16 +89,29 @@ public class ProjectsViewActivity extends AppCompatActivity
 
     private Fragment mDashboardFragment;
     private FragmentNewTopic mNewTopicFragment;
-    private Fragment mTopicListFragment;
+    private FragmentTopicList mTopicListFragment;
     private Fragment mProjectsFragment;
-    private Fragment mTopicFragment;
-    private FragmentNewComment mNewCommentFragment;
+    private FragmentTopic mTopicFragment;
+    private Fragment mSyncFragment;
+    private TextView toolbarProjectNameText;
+    private NavigationView navigationView;
+    private ActionBar mActionBar;
 
+    // Variables for accounts
+    // The authority for the sync adapter's content provider
+    //public static final String AUTHORITY = "com.bimapp.model.data_access.DataProvider";
+    // An account type, in the form of a domain name
+    public static final String ACCOUNT_TYPE = "com.bimapp.sync";
+    // The account name
+    public static final String ACCOUNT = "BimAppSync";
+    // Instance fields
+    Account mAccount;
 
     /**
      * Used to manage the backstack Primarily.
      */
     final FragmentManager fragmentManager = ProjectsViewActivity.this.getSupportFragmentManager();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +124,41 @@ public class ProjectsViewActivity extends AppCompatActivity
         mNewTopicFragment = new FragmentNewTopic();
         mProjectsFragment = new FragmentProject();
         mTopicFragment = new FragmentTopic();
-        mNewCommentFragment = new FragmentNewComment();
+        //mSyncFragment = new FragmentManualSync();
+
+        toolbarProjectNameText = findViewById(R.id.toolbar_project_text);
+
+        if(mApplication.checkLogIn()) {
+        mAccount = CreateSyncAccount(this.getApplicationContext());
+/*
+        // Code for testing sync-adapter
+        String authority = getString(R.string.data_provider_authority);
+        String account_type = getString(R.string.sync_account_type);
+        String account = "default_account";
+        Account mAccount = new Account(account,account_type);
+        AccountManager am = (AccountManager) mApplication.getSystemService(ACCOUNT_SERVICE);
+        if (am.addAccountExplicitly(mAccount,null,null))
+            Log.d("Account", "Account added");
+        else
+            Log.d("Account", "Didn't add account");
+*/
+            Bundle b = new Bundle();
+            b.putBoolean(
+                    ContentResolver.SYNC_EXTRAS_MANUAL, true);
+            b.putBoolean(
+                    ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+            ContentResolver.setSyncAutomatically(mAccount, DataProvider.AUTHORITY, true);
+        }
+        //ContentResolver.requestSync(mAccount,DataProvider.AUTHORITY,b);
+
+        // End of code for sync-adapter testing
+
+
+
+        if (mApplication.checkLogIn())
+            NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
+                    APICall.GETUser(), this, null);
+
     }
 
     @Override
@@ -114,23 +170,19 @@ public class ProjectsViewActivity extends AppCompatActivity
     public void onResume() {
         super.onResume();
 
-        NetworkConnManager.networkRequest(mApplication, Request.Method.GET,
-                APICall.GETUser(), this, null);
 
-        if (mApplication.getActiveProject() == null)
-            setInitialActiveProject();
+
 
         //Setting toolbar as the actionbar.
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
-
+        mActionBar = getSupportActionBar();
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
         // Defines the drawer
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -146,13 +198,11 @@ public class ProjectsViewActivity extends AppCompatActivity
                                 openFragment(PROJECTS_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_issues:
+                                mTopicListFragment.setFilterArgs(null,null);
                                 openFragment(TOPICLIST_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_dashboard:
                                 openFragment(DASHBOARD_FRAGMENT_TAG);
-                                break;
-                            case R.id.nav_new_topic:
-                                openFragment(NEWTOPIC_FRAGMENT_TAG);
                                 break;
                             case R.id.nav_log_out:
                                 mApplication.logOut();
@@ -160,14 +210,25 @@ public class ProjectsViewActivity extends AppCompatActivity
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 break;
+                            //   case R.id.nav_sync:
+                            //     openFragment(SYNC_TAG);
+                            //   break;
                         }
                         return true;
                     }
                 }
         );
 
+        if (mApplication.getActiveProject() == null)
+            setInitialActiveProject();
+        else {
+            mActionBar.setTitle(mApplication.getActiveProject().getBimsyncProjectName());
+            toolbarProjectNameText.setText(mApplication.getActiveProject().getName());
+        }
         if (fragmentManager.getBackStackEntryCount() == 0)
             openFragment(DASHBOARD_FRAGMENT_TAG);
+
+
 
     }
 
@@ -185,6 +246,13 @@ public class ProjectsViewActivity extends AppCompatActivity
     public void onError(String response) {
         if (response != null)
             Log.d("ProjectsViewActivity", response);
+        if(mApplication.getCurrentUser() != null) {
+            TextView textView = findViewById(R.id.nav_header_title);
+            String headerString = mApplication.getCurrentUser().getName()
+                    + "\n(" + mApplication.getCurrentUser().getId() + ")";
+            textView.setText(headerString);
+        }
+
     }
 
     /**
@@ -203,7 +271,10 @@ public class ProjectsViewActivity extends AppCompatActivity
         user = new User(obj);
         Log.d("Created user", user.getName());
         TextView textView = findViewById(R.id.nav_header_title);
-        textView.setText(user.getName());
+        mApplication.setCurrentUser(user);
+        String headerString = mApplication.getCurrentUser().getName()
+                + "\n(" + mApplication.getCurrentUser().getId() + ")";
+        textView.setText(headerString);
     }
 
     /**
@@ -213,7 +284,10 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     @Override
     public void onFragmentProjectInteraction(Project project) {
+        navigationView.setCheckedItem(R.id.nav_dashboard);
         openFragment(DASHBOARD_FRAGMENT_TAG);
+        toolbarProjectNameText.setText(project.getName());
+        mActionBar.setTitle(project.getBimsyncProjectName());
 
     }
 
@@ -224,22 +298,28 @@ public class ProjectsViewActivity extends AppCompatActivity
      */
     @Override
     public void onDashboardItemClick(Template template) {
-        mNewTopicFragment = new FragmentNewTopic();
-        mNewTopicFragment.setTemplate(template);
-        openFragment(NEWTOPIC_FRAGMENT_TAG);
+        if(template.getFilter() == null) {
+            mNewTopicFragment = new FragmentNewTopic();
+            mNewTopicFragment.setTemplate(template);
+            navigationView.setCheckedItem(0);
+            openFragment(NEWTOPIC_FRAGMENT_TAG);
+        }else{
+            if(template.getFilterArgs().equals(DataProvider.ASSIGNED_TO)) {
+                mTopicListFragment.setFilterArgs(user.getId(), template.getFilterArgs());
+            }else if(template.getFilterArgs().equals(DataProvider.OPEN))
+                mTopicListFragment.setFilterArgs("", template.getFilterArgs());
+            navigationView.setCheckedItem(R.id.nav_issues);
+            openFragment(TOPICLIST_FRAGMENT_TAG);
+
+        }
 
     }
 
     @Override
     public void onTopicSelected(Topic topic) {
-        FragmentTopic.setTopic(topic);
+        mTopicFragment.setTopic(topic);
+        navigationView.setCheckedItem(0);
         openFragment(TOPIC_FRAGMENT_TAG);
-    }
-
-    @Override
-    public void openCommentFragment(Topic topic) {
-        FragmentNewComment.setTopic(topic);
-        openFragment(COMMENT_FRAGMENT_TAG);
     }
 
 
@@ -308,14 +388,9 @@ public class ProjectsViewActivity extends AppCompatActivity
 
 
     @Override
-    public void onPostingTopic(boolean success) {
-
-        if (success) {
-            Toast.makeText(mApplication, "Successfully posted topic", Toast.LENGTH_SHORT).show();
-
-        } else {
-            Toast.makeText(mApplication, "Didn't post topic", Toast.LENGTH_SHORT).show();
-        }
+    public void onPostingTopic(Topic topic, Comment comment, Viewpoint vp) {
+        TopicsEntityManager manager = new TopicsEntityManager(mApplication, this);
+        manager.postTopic(this, topic, comment, vp);
         openFragment(DASHBOARD_FRAGMENT_TAG);
     }
 
@@ -327,9 +402,9 @@ public class ProjectsViewActivity extends AppCompatActivity
 
         if (ContextCompat.checkSelfPermission(mApplication, Manifest.permission.CAMERA) !=
                 PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.CAMERA}, 123);
-        } else {
-
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, TAKE_PHOTO_INTENT);
+        }
+        else {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             // Ensure that there's a camera activity to handle the intent
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -353,11 +428,41 @@ public class ProjectsViewActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Callback for the result from requesting permissions. This method is invoked for every call
+     * on requestPermissions(android.app.Activity, String[], int).
+
+     Note: It is possible that the permissions request interaction with the user is interrupted. In this case you will receive empty permissions and results arrays which should be treated as a cancellation.
+     * @param requestCode int: The request code passed in
+     *                    requestPermissions(android.app.Activity, String[], int)
+     * @param permissions String: The requested permissions. Never null.
+     * @param grantResults int: The grant results for the corresponding permissions which is either
+     *                     PERMISSION_GRANTED or PERMISSION_DENIED. Never null.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case TAKE_PHOTO_INTENT: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    onTakePhoto();
+                } else {
+                    // permission denied, boo!
+                    // TODO Tell the user we need camera to take photos and ask again
+                }
+                break;
+            }
+            // For future implementations of asking permissions
+        }
+    }
+
     @Override
     public void onFragmentFinish() {
         int backStackEntryCount = fragmentManager.getBackStackEntryCount();
         String tag = DASHBOARD_FRAGMENT_TAG;
-        if(backStackEntryCount > 1){
+        if (backStackEntryCount > 1) {
             tag = fragmentManager.getBackStackEntryAt
                     (backStackEntryCount - 2).getName();
         }
@@ -391,15 +496,15 @@ public class ProjectsViewActivity extends AppCompatActivity
         }
     }
 
-    private void sendImageTOFragment(Bitmap bitmap){
+    private void sendImageTOFragment(Bitmap bitmap) {
         String tag = fragmentManager.getBackStackEntryAt
                 (fragmentManager.getBackStackEntryCount() - 1).getName();
-        switch (tag){
-            case(NEWTOPIC_FRAGMENT_TAG):
+        switch (tag) {
+            case (NEWTOPIC_FRAGMENT_TAG):
                 mNewTopicFragment.setImage(bitmap);
                 break;
-            case(COMMENT_FRAGMENT_TAG):
-                mNewCommentFragment.setImage(bitmap);
+            case (TOPIC_FRAGMENT_TAG):
+                mTopicFragment.setImage(bitmap);
                 break;
         }
 
@@ -420,6 +525,8 @@ public class ProjectsViewActivity extends AppCompatActivity
                         public void setExtensions(IssueBoardExtensions issueBoardExtensions) {
                             projects.get(0).setIssueBoardExtensions(issueBoardExtensions);
                             mApplication.setActiveProject(projects.get(0));
+                            toolbarProjectNameText.setText(projects.get(0).getName());
+                            mActionBar.setTitle(projects.get(0).getBimsyncProjectName());
                         }
                     });
 
@@ -431,29 +538,76 @@ public class ProjectsViewActivity extends AppCompatActivity
     /**
      * tag is one of the public static final String variables belonging
      * to this class.
+     *
      * @param tag a String connected to a certain fragment.
      */
-    public void openFragment(String tag){
-        switch (tag){
-            case(DASHBOARD_FRAGMENT_TAG):
-                openFragment(mDashboardFragment,tag);
+    public void openFragment(String tag) {
+        switch (tag) {
+            case (DASHBOARD_FRAGMENT_TAG):
+                openFragment(mDashboardFragment, tag);
                 break;
-            case(TOPIC_FRAGMENT_TAG):
-                openFragment(mTopicFragment,tag);
+            case (TOPIC_FRAGMENT_TAG):
+                openFragment(mTopicFragment, tag);
                 break;
-            case(NEWTOPIC_FRAGMENT_TAG):
-                openFragment(mNewTopicFragment,tag);
+            case (NEWTOPIC_FRAGMENT_TAG):
+                openFragment(mNewTopicFragment, tag);
                 break;
-            case(COMMENT_FRAGMENT_TAG):
-                openFragment(mNewCommentFragment,tag);
+            case (TOPICLIST_FRAGMENT_TAG):
+                openFragment(mTopicListFragment, tag);
+                mTopicListFragment.loadAllTopics();
                 break;
-            case(TOPICLIST_FRAGMENT_TAG):
-                openFragment(mTopicListFragment,tag);
+            case (PROJECTS_FRAGMENT_TAG):
+                openFragment(mProjectsFragment, tag);
                 break;
-            case(PROJECTS_FRAGMENT_TAG):
-                openFragment(mProjectsFragment,tag);
+            case (SYNC_TAG):
+                openFragment(mSyncFragment, tag);
                 break;
         }
     }
 
+    /**
+     * Create a new dummy account for the sync adapter
+     *
+     * @param context The application context
+     */
+    public static Account CreateSyncAccount(Context context) {
+        // Create the account type and default account
+        Account newAccount = new Account(
+                ACCOUNT, ACCOUNT_TYPE);
+        // Get an instance of the Android account manager
+        AccountManager accountManager =
+                (AccountManager) context.getSystemService(
+                        ACCOUNT_SERVICE);
+        /*
+         * Add the account and account type, no password or user data
+         * If successful, return the Account object, otherwise report an error.
+         */
+        if (accountManager.addAccountExplicitly(newAccount, null, null)) {
+            /*
+             * If you don't set android:syncable="true" in
+             * in your <provider> element in the manifest,
+             * then call context.setIsSyncable(account, AUTHORITY, 1)
+             * here.
+             */
+            Log.d("Account", "Added new account");
+            ContentResolver.setIsSyncable(newAccount, DataProvider.AUTHORITY, 1);
+            ContentResolver.setSyncAutomatically(newAccount, DataProvider.AUTHORITY, true);
+            return newAccount;
+        } else {
+            /*
+             * The account exists or some other error occurred. Log this, report it,
+             * or handle it internally.
+             */
+            Log.d("Account", "Not added account");
+            newAccount = accountManager.getAccountsByType(ACCOUNT_TYPE)[0];
+            return newAccount;
+        }
+    }
+
+    @Override
+    public void postedTopic(boolean success, Topic topic) {
+        Toast.makeText(getApplicationContext(),"Posted topic to server", Toast.LENGTH_LONG).show();
+
+    }
 }
+

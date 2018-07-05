@@ -4,18 +4,14 @@ package com.bimapp.controller;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bimapp.BimApp;
-import com.bimapp.controller.interfaces.ProjectsFragmentInterface;
 import com.bimapp.controller.interfaces.TopicsFragmentInterface;
-import com.bimapp.model.entity.Project;
+import com.bimapp.model.data_access.entityManagers.TopicsEntityManager;
 import com.bimapp.model.entity.Topic;
-import com.bimapp.model.entityManagers.ProjectEntityManager;
-import com.bimapp.model.entityManagers.TopicsEntityManager;
 import com.bimapp.view.TopicsListView;
 import com.bimapp.view.interfaces.TopicsViewInterface;
 
@@ -27,7 +23,7 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class FragmentTopicList extends Fragment
-        implements TopicsFragmentInterface , TopicsViewInterface.TopicsViewToPresenter{
+        implements TopicsFragmentInterface, TopicsViewInterface.TopicsViewToPresenter {
 
     // Interface for the view, setListener makes this the callback.
     // private TopicViewInterface mTopicViewInterface;
@@ -42,6 +38,10 @@ public class FragmentTopicList extends Fragment
     // Getting the application
     private BimApp mApplication;
 
+    private static String searchQuery;
+
+    private static String searchArg;
+
     public FragmentTopicList() {
         // Required empty public constructor
     }
@@ -49,6 +49,7 @@ public class FragmentTopicList extends Fragment
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     *
      * @return A new instance of fragment FragmentTopicList.
      */
     public static FragmentTopicList newInstance() {
@@ -64,6 +65,9 @@ public class FragmentTopicList extends Fragment
         mApplication = (BimApp) this.getActivity().getApplication();
         mTopicsEntityManager = new TopicsEntityManager(mApplication);
 
+
+        if (mTopicsView != null)
+            mTopicsView.clearSearch();
     }
 
     @Override
@@ -74,12 +78,12 @@ public class FragmentTopicList extends Fragment
         // Set this as the callback from the view
         mTopicsView.registerListener(this);
         // Inflate the layout for this fragment
-
+        mTopicsView.clearSearch();
         return mTopicsView.getRootView();
     }
 
     @Override
-    public void onAttach(Context context){
+    public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof TopicSelectionInterface)
             mListener = (TopicSelectionInterface) context;
@@ -88,27 +92,80 @@ public class FragmentTopicList extends Fragment
 
 
     }
+
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
+
         mTopicsEntityManager.getTopics(this);
+
+        mTopicsView.clearSearch();
+
+        if (searchForAssignedTo()) {
+            onSearch(searchArg, searchQuery, false);
+        } else mTopicsView.search();
+
+
     }
 
     @Override
-    public void onDetach(){
+    public void onDetach() {
         super.onDetach();
-        mTopicsEntityManager = null; // I think this helps prevent memory leaks
+        mTopicsEntityManager = null;
         mListener = null;
     }
 
     /**
      * From TopicsFragmentsInterface.
      * Calls on a method in the view and gives the topics the view should show.
+     *
      * @param topics the topics to be listed
      */
     @Override
     public void setTopics(List<Topic> topics) {
-            mTopicsView.setTopics(topics);
+        if (topics != null && !topics.isEmpty()) {
+            if (searchArg != null && searchQuery != null)
+                onSearch(searchArg, searchQuery, false);
+            else
+                mTopicsView.setTopics(topics);
+        }
+
+    }
+
+    @Override
+    public void setSearchResult(List<Topic> topic) {
+        mTopicsView.setSearchResult(topic);
+    }
+
+    private boolean searchForAssignedTo() {
+        return (searchQuery != null && searchArg != null);
+    }
+
+    @Override
+    public void onSearch(String argument, String searchString, boolean deleteArgs) {
+        mTopicsEntityManager.searchTopics(this, argument, searchString);
+
+        if (deleteArgs) {
+            searchQuery = null;
+            searchArg = null;
+        }
+    }
+
+
+    /**
+     * @param selection specified element to look for
+     * @param arg       column for the selection
+     */
+    public void setFilterArgs(String selection, String arg) {
+        searchArg = arg;
+        searchQuery = selection;
+    }
+
+
+    /**
+     *
+     */
+    public void loadAllTopics() {
 
     }
 
@@ -117,7 +174,8 @@ public class FragmentTopicList extends Fragment
         mListener.onTopicSelected(topic);
     }
 
-    public interface TopicSelectionInterface{
+    public interface TopicSelectionInterface {
         void onTopicSelected(Topic topic);
     }
+
 }

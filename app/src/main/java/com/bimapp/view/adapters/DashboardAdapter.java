@@ -1,10 +1,12 @@
 package com.bimapp.view.adapters;
 
+import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bimapp.R;
@@ -28,20 +30,23 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
         mListener = listener;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.dashboard_list, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         holder.template = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getTitle());
         holder.mContentView.setText(mValues.get(position).getDescription());
         holder.mLayout.setBackgroundColor(holder.template.getColor());
 
+        if(holder.template.getFilter() != null)
+            holder.icon.setImageDrawable(holder.mView.getContext().getDrawable(R.drawable.ic_filter_dashboar_list));
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,18 +65,20 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final LinearLayout mLayout;
-        public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public Template template;
+         final CardView mLayout;
+         final View mView;
+         final TextView mIdView;
+         final TextView mContentView;
+         final ImageView icon;
+         Template template;
 
         public ViewHolder(View view) {
             super(view);
-            mLayout = view.findViewById(R.id.dashboard_list_main_layout);
+            mLayout = view.findViewById(R.id.dashboard_card_view);
             mView = view;
-            mIdView = view.findViewById(R.id.id);
+            mIdView = view.findViewById(R.id.dashboard_id);
             mContentView = view.findViewById(R.id.content);
+            icon = view.findViewById(R.id.dashboard_icon);
         }
 
         @Override

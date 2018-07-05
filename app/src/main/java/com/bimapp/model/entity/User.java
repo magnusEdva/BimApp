@@ -1,23 +1,30 @@
 package com.bimapp.model.entity;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
  * User entity class. As defined in API.
  */
 
-public class User implements Entity {
+@Entity(tableName = "user")
+public class User implements entity {
     /*
 
      */
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "id")
     private String id;
+    @ColumnInfo(name = "name")
     private String name;
 
     public static final String ID = "id";
@@ -31,14 +38,12 @@ public class User implements Entity {
         construct(obj);
     }
 
-    /**
-     * not used.
-     * @param map @NonNull an empty map.
-     * @return null value
-     */
-    @Override
-    public Map<String, String> getStringParams(@NonNull Map<String, String> map) {
-            throw new UnsupportedOperationException();
+    public User(){}
+
+    @Ignore
+    public User(String id, String name){
+        this.id = id;
+        this.name = name;
     }
 
     /**
@@ -76,5 +81,8 @@ public class User implements Entity {
         return name;
     }
 
+    public void setName (String name) {this.name = name;}
+
+    public void setId (String id) {this.id = id;}
 
 }
